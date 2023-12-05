@@ -15,7 +15,7 @@ class Order(models.Model):
         ]
 
 
-class IntermediateModel(models.Model):
+class ItemOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     number_of_items = models.PositiveIntegerField()
