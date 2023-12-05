@@ -9,7 +9,7 @@ from forms.cart_form import OrderForm
 
 class OrderItemView(LoginRequiredMixin, ListView):
     model = Order
-    template_name = "cart.html"
+    template_name = "order.html"
     context_object_name = "order"
     form_class = OrderForm
     success_url = reverse_lazy("User:profile")
