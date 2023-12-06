@@ -1,17 +1,3 @@
 from django.contrib import admin
-from .models import *
 
-
-@admin.register(Items)
-class ItemAdmin(admin.ModelAdmin):
-    list_display = ['title','quantity' ]
-
-
-@admin.register(CategoryMeno)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['title']
-
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ['delivery']
+# Register your models here.

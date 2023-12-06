@@ -37,14 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account.apps.AccountConfig',
-<<<<<<< HEAD
-
-
-=======
-    'cafe.apps.CafeConfig',
-    'core.apps.CoreConfig',
->>>>>>> dbf5c2631ab9386061ae16d4a4c7c5d5edf9eb4d
+    'account',
+    'cafe',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -83,23 +78,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'Shad_M72770',
-=======
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'shima1993',
->>>>>>> dbf5c2631ab9386061ae16d4a4c7c5d5edf9eb4d
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -142,13 +125,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
-#                          "django.contrib.auth.backends.ModelBackend",
-# ]
-
-
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
