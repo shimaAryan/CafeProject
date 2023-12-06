@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/animate.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static css/owl.theme.default.min.css'' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/aos.css' %}">
@@ -30,9 +30,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
 <body>
-{% include 'partial/navigation.html' %}
+{% include 'partials/navigation.html' %}
 {% block content %}{% endblock %}
-{ % include 'partials/footer.html' %}
-{ % include 'partials/loader.html' %}
+{% include 'partials/footer.html' %}
+{% include 'partials/loader.html' %}
 </body>
 </html>
