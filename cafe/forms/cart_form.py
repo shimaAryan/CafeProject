@@ -10,5 +10,5 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = '__all__'
-        widgets = {'-order_time': forms.Select(choices=HOUR_CHOICES)}
+        widgets = {'delivery_time': forms.Select(choices=HOUR_CHOICES)}
 

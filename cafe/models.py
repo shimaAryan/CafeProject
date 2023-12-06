@@ -1,37 +1,10 @@
 from django.db import models
 # from account.models import User
 import datetime as dt
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
-<<<<<<< HEAD
-# Create your models here.
-class CategoryMeno(models.Model):
-    title = models.CharField(max_length=50)
-    SERVINGTIME=[
-        ("M","morning"),
-        ("N","noon"),
-        ("E","evening"),
-        ("N","night")
-    ]
-    serving_time=name = models.CharField(max_length=7,choices=SERVINGTIME)
+custom_user = get_user_model()
 
-class Items(models.Model):
-    category_id = models.ForeignKey(CategoryMeno, on_delete=models.CASCADE,related_name="items")
-    title = models.CharField(max_length=100)
-    price=models.FloatField()
-    deccription=models.TextField(max_length=255)
-    status=models.BooleanField()
-    LIKES=[
-        ("1","very bad"),
-        ("2","bad"),
-        ("3","good"),
-        ("4","very good"),
-        ("5","extra good"),
-        
-    ]
-    likes=models.CharField(max_length=10,choices=LIKES)
-                             
-=======
 
 class CategoryMenu(models.Model):
     title = models.CharField(max_length=50)
@@ -56,7 +29,7 @@ class Items(models.Model):
     discount = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     number_items = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
-    like = models.ManyToManyField(User, through='Like', related_name='liked_item')
+    like = models.ManyToManyField(custom_user, through='Like', related_name='liked_item')
 
     def __str__(self):
         return self.title
@@ -64,10 +37,9 @@ class Items(models.Model):
 
 class Order(models.Model):
     DoesNotExist = None
-    title = models.CharField(max_length=10,default="cart")
+    title = models.CharField(max_length=10, default="cart")
     order_time = models.DateTimeField(auto_now_add=True)
-    user_order = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_order")
-    # number_items = models.PositiveIntegerField()
+    user_order = models.ForeignKey(custom_user, on_delete=models.CASCADE, related_name="user_order")
     delivery_cost = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True, default=0)
     delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
     items = models.ManyToManyField(Items, related_name="item_order")
@@ -96,7 +68,7 @@ class Receipt(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users")
+    user = models.ForeignKey(custom_user, on_delete=models.CASCADE, related_name="users")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
->>>>>>> dbf5c2631ab9386061ae16d4a4c7c5d5edf9eb4d
+

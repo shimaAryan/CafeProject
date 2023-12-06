@@ -12,6 +12,7 @@ class OrderItemView(LoginRequiredMixin, ListView):
     template_name = "order.html"
     context_object_name = "item_orders"
     success_url = reverse_lazy("User:profile")
+    form_class = OrderForm
 
     def get_queryset(self):
         print('test')
@@ -21,6 +22,7 @@ class OrderItemView(LoginRequiredMixin, ListView):
         print('test2')
         context = super().get_context_data(**kwargs)
         context['all_order_items'] = [order.items for order in context['item_orders']]
+        context['form'] = self.form_class
         return context
 
 
