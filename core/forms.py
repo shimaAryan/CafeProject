@@ -13,4 +13,6 @@ class CommentForm(forms.ModelForm):
 
 class ImageForm(forms.ModelForm):
     
-    pass
+    class Meta:
+        model = Image
+        fields = ['image']
