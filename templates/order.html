@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    {% for order in item_orders %}
+    <p>Order Time: {{ order.order_time }}</p>
+    <p>User Order: {{ order.user_order }}</p>
+    <p>Delivery: {{ order.delivery }}</p>
+    <p>Delivery Time: {{ order.delivery_time }}</p>
+    <p>Items:</p>
+
+        {% for item in order.items.all %}
+            <li>{{ item.name }}</li>
+            <span>{{ count_item.number_of_items }}</span>
+        {% endfor %}
+
+{% endfor %}
+
+    <input type="button" value="submit">
+
+</body>
+</html>
+
