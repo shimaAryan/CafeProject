@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from .models import Comment
 from django.contrib import messages
+from .forms import CommentForm
 
 # Create your views here.
 
