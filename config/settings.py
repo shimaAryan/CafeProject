@@ -38,13 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
-<<<<<<< HEAD
-
-
-=======
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
->>>>>>> dbf5c2631ab9386061ae16d4a4c7c5d5edf9eb4d
 ]
 
 MIDDLEWARE = [
@@ -83,19 +78,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'Shad_M72770',
-=======
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'shima1993',
->>>>>>> dbf5c2631ab9386061ae16d4a4c7c5d5edf9eb4d
+        'PASSWORD': '9876',
         'HOST': 'localhost',
         'PORT': '5432',
     }

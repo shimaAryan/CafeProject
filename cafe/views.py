@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib import messages
-from .models import Order, ItemOrder
+from .models import Order
 from cafe.forms.cart_form import OrderForm
 
 
