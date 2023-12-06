@@ -1,4 +1,4 @@
-from django.apps import apps
+r cfrom django.apps import apps
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
