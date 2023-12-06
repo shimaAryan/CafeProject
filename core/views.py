@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
-from .models import Comment
+from .models import Comment, Image
+from .forms import CommentForm, ImageForm
 from django.contrib import messages
+
 
 # Create your views here.
 
@@ -40,5 +42,27 @@ def add_comment(request, content_type_id, object_id):
 
 
 
-    def add_image(request):
-        pass
+def add_image(request, content_type_id, object_id):
+    if request.method == 'POST':
+        content_type = ContentType.objects.get_for_id(content_type_id)
+        model_class = content_type.model_class()
+
+        try:
+            instance = model_class.objects.get(pk=object_id)
+        except model_class.DoesNotExist:
+            return HttpResponseForbidden("Invalid content type or object ID.")
+
+        form = ImageForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            image = form.save(commit=False)
+            image.content_type = content_type
+            image.object_id = object_id
+            image.save()
+
+            messages.success(request, 'Image added successfully.')
+            return redirect(instance)
+        else:
+            messages.error(request, 'Error adding image. Please check the form.')
+
+    return HttpResponseForbidden("Invalid request method.")

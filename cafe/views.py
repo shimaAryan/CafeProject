@@ -12,13 +12,17 @@ class OrderItemView(LoginRequiredMixin, ListView):
     template_name = "order.html"
     context_object_name = "item_orders"
     success_url = reverse_lazy("User:profile")
+    form_class = OrderForm
 
     def get_queryset(self):
         print('test')
-        return Order.objects.prefetch_related('item_order__items').order_by('-order_time')
+        return Order.objects.prefetch_related('items').all().order_by('-order_time')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         print('test2')
         context = super().get_context_data(**kwargs)
+        context['all_order_items'] = [order.items for order in context['item_orders']]
+        context['form'] = self.form_class
+        return context
 
 
