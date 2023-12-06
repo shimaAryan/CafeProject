@@ -4,7 +4,7 @@ from .models import *
 
 @admin.register(Items)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['title', ]
+    list_display = ['title','quantity' ]
 
 
 @admin.register(CategoryMeno)

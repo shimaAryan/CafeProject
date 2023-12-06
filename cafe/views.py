@@ -7,24 +7,18 @@ from .models import Order, ItemOrder
 from cafe.forms.cart_form import OrderForm
 
 
-
-
 class OrderItemView(LoginRequiredMixin, ListView):
-    model = ItemOrder
+    model = Order
     template_name = "order.html"
     context_object_name = "item_orders"
-    form_class = OrderForm
     success_url = reverse_lazy("User:profile")
 
     def get_queryset(self):
-        # Assuming you pass the 'order_id' as an URL parameter
-        order_id = self.kwargs.get('order_id')
-        # Retrieve the associated Order using the passed order_id
-        try:
-            order = Order.objects.get(pk=order_id)
-        except Order.DoesNotExist:
-            # Handle the case where the order does not exist if necessary
-            return ItemOrder.objects.none()
+        print('test')
+        return Order.objects.prefetch_related('item_order__items').order_by('-order_time')
 
-        # Filter ItemOrder objects for the given order and sort them by 'number_of_items'
-        return order.item_order.all().order_by('-number_of_items')
+    def get_context_data(self, *, object_list=None, **kwargs):
+        print('test2')
+        context = super().get_context_data(**kwargs)
+
+

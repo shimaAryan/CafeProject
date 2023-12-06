@@ -8,22 +8,23 @@
     <title>Document</title>
 </head>
 <body>
-<form>
-    {% csrf_token %}
-    {% for order in orders %}
+
+    {% for order in item_orders %}
     <p>Order Time: {{ order.order_time }}</p>
     <p>User Order: {{ order.user_order }}</p>
     <p>Delivery: {{ order.delivery }}</p>
     <p>Delivery Time: {{ order.delivery_time }}</p>
     <p>Items:</p>
-    <ul>
+
         {% for item in order.items.all %}
             <li>{{ item.name }}</li>
+            <span>{{ count_item.number_of_items }}</span>
         {% endfor %}
-    </ul>
+
 {% endfor %}
+
     <input type="button" value="submit">
-</form>
+
 </body>
 </html>
 
