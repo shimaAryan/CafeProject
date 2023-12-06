@@ -4,14 +4,12 @@ from .models import *
 
 @admin.register(Items)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['title','quantity' ]
+    list_display = ['title']
 
 
-@admin.register(CategoryMeno)
+@admin.register(CategoryMenu)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['title']
 
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ['delivery']
+admin.site.register(Order)
