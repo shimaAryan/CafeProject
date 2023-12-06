@@ -26,17 +26,7 @@ class UserCreationForm(forms.ModelForm):
         p1 = datas.get("password1")
         p2 = datas.get("password2")
         if p1 and p2 and p1 != p2:
-            self.add_error('password2', "your confirm password and password does not match")
-
-    # def clean_password2(self):
-    #     # Check that the two password entries match
-    #     password1 = self.cleaned_data.get("password1")
-    #     password2 = self.cleaned_data.get("password2")
-    #     if password1 and password2 and password1 != password2:
-    #         raise ValidationError("Passwords don't match")
-    #     return password2
-
-    def save(self, commit=True):
+            self.add_error('password2', "your confirm password and password does not match"def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
