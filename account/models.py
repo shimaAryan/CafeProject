@@ -1,5 +1,8 @@
 from django.core.validators import RegexValidator
 from django.db import models
+from datetime import date
+from django.core.exceptions import ValidationError
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 
@@ -60,7 +63,7 @@ class CustomUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = "phonenumber"
-    REQUIRED_FIELDS = ["email", "username"]
+    REQUIRED_FIELDS = ["email",]
 
     def __str__(self):
         return f"{self.firstname}_{self.lastname}"
@@ -85,5 +88,48 @@ class CustomUser(AbstractBaseUser):
         if self.is_admin:
             self.username = 'admin@Cofe'
         elif not self.username:
-            self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Cofe"
+            self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
+
+
+class ValidatorMixin:
+    def nationalcode_validator(value):
+        """
+             Function for checking the number of Iranian national code digits.
+             """
+        national_code = str(value)
+        length = len(national_code)
+        if length < 8 or length > 10:
+            raise ValidationError('Invalid national code length')
+
+
+class Staff(models.Model, ValidatorMixin):
+    """
+   Models for managing information of Staff in coffee .
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff')
+    nationalcode = models.CharField(
+        max_length=20,
+        validators=[ValidatorMixin.nationalcode_validator],
+        verbose_name="National Code",
+        unique=True
+    )
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day", default=date(1380, 1, 1))
+    experience = models.IntegerField(null=True, default=None)
+    rezome = models.FileField(upload_to='files/', blank=True, null=True)
+    profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage())
+    guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
+                                 default="None")
+
+    def __str__(self):
+        return f"{self.user.firstname} {self.user.lastname}"
+
+
+class LoginRecord(models.Model):
+    """
+   Models to observe User's login  in coffee website.
+    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    last_time = models.DateTimeField(auto_now=True)
+    login_count = models.PositiveIntegerField(default=0)
+    order_count = models.PositiveIntegerField(default=0)
