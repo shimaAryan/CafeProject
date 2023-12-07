@@ -56,7 +56,7 @@ class Order(models.Model):
 
 class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
     total_price = models.DecimalField(max_digits=10, decimal_places=5)
     final_price = models.DecimalField(max_digits=10, decimal_places=5)
 
@@ -71,4 +71,5 @@ class Like(models.Model):
     user = models.ForeignKey(custom_user, on_delete=models.CASCADE, related_name="users")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
+
 
