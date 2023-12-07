@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
-
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cafe',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'shima1993',
+        'PASSWORD': '9876',
         'HOST': 'localhost',
         'PORT': '5432',
     }}

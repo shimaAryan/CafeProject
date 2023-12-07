@@ -3,9 +3,7 @@ from django.db import models
 import datetime as dt
 from django.contrib.auth import get_user_model
 
-custom_user = get_user_model()
-
-
+from account.models import CustomUser
 class CategoryMenu(models.Model):
     title = models.CharField(max_length=50)
     SERVINGTIME = [
@@ -26,10 +24,10 @@ class Items(models.Model):
     price = models.FloatField()
     description = models.TextField(max_length=255)
     status = models.BooleanField()
-    discount = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    number_items = models.PositiveIntegerField(default=0)
+    discount = models.DecimalField(max_digits=2, decimal_places=2 ,blank=True,default=0)
+    number_items = models.PositiveIntegerField(default=1,blank=True)
     like_count = models.PositiveIntegerField(default=0)
-    like = models.ManyToManyField(custom_user, through='Like', related_name='liked_item')
+    like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
 
     def __str__(self):
         return self.title
@@ -39,8 +37,9 @@ class Order(models.Model):
     DoesNotExist = None
     title = models.CharField(max_length=10, default="cart")
     order_time = models.DateTimeField(auto_now_add=True)
-    user_order = models.ForeignKey(custom_user, on_delete=models.CASCADE, related_name="user_order")
-    delivery_cost = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True, default=0)
+    user_order = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_order")
+    number_items = models.PositiveIntegerField()
+    delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
     items = models.ManyToManyField(Items, related_name="item_order")
 
@@ -68,8 +67,6 @@ class Receipt(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(custom_user, on_delete=models.CASCADE, related_name="users")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="users")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
-
-
