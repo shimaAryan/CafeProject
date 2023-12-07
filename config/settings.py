@@ -73,8 +73,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
-SILENCED_SYSTEM_CHECKS = ["security.W019"]
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

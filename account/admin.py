@@ -1,13 +1,12 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import Group
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from account.models import CustomUser
 
 
-# @admin.register(CustomUser)
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -26,7 +25,9 @@ class UserCreationForm(forms.ModelForm):
         p1 = datas.get("password1")
         p2 = datas.get("password2")
         if p1 and p2 and p1 != p2:
-            self.add_error('password2', "your confirm password and password does not match"def save(self, commit=True):
+            self.add_error('password2', "your confirm password and password does not match")
+
+    def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
@@ -82,8 +83,16 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
 
 
+# Unregister the default Group admin
+admin.site.unregister(Group)
+
+
+class CustomGroupAdmin(GroupAdmin):
+    pass
+
+
 # Now register the new UserAdmin...
 admin.site.register(CustomUser, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
-# unregister the Group model from admin.
-admin.site.unregister(Group)
+# Register Group with the custom admin class
+admin.site.register(Group)
