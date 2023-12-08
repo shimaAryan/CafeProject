@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 from django.apps import apps
-=======
->>>>>>> 91d24123217ce67702e7574603d5bca1bd6a4d87
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -56,7 +53,7 @@ class CustomUser(AbstractBaseUser):
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
     how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default="None")
+                                            ("Fr", "Friends"), ("Other", "Other items")], default="None",max_length=20)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -92,7 +89,3 @@ class CustomUser(AbstractBaseUser):
         elif not self.username:
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Cofe"
         super().save(*args, **kwargs)
-<<<<<<< HEAD
-=======
-
->>>>>>> 91d24123217ce67702e7574603d5bca1bd6a4d87

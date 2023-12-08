@@ -38,7 +38,7 @@ class Order(models.Model):
     title = models.CharField(max_length=10, default="cart")
     order_time = models.DateTimeField(auto_now_add=True)
     user_order = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_order")
-    number_items = models.PositiveIntegerField()
+    number_items = models.PositiveIntegerField(default=1,blank=True)
     delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
     items = models.ManyToManyField(Items, related_name="item_order")
