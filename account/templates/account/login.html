@@ -4,70 +4,69 @@
   {% block content %}
     <!-- END nav -->
     <section class="home-slider owl-carousel" style="height: 500px;">
+    <div class="container py-5 h-100">
       <div class="slider-item" style="background-image: {% static 'images/bg_3.jpg' %}:; height: 500px;" data-stellar-background-ratio="0.5" >
       	<div class="overlay"></div>
         <div class="container">
           <div class="row slider-text justify-content-center align-items-center">
-
             <div class="col-md-7 col-sm-12 text-center ftco-animate">
             	<h1 class="mb-3 mt-5 bread">Welcome to your Coffee </h1>
-	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'account:index' %}">Home</a></span> <span>login</span></p>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'account:index' %}">Staff</a></span> <span>Customer</span></p>
             </div>
-
+          </div>
           </div>
         </div>
       </div>
     </section>
-
     <section class="ftco-section">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-xl-8 ftco-animate">
-             <form action="" class="billing-form ftco-bg-dark p-3 p-md-5" method="post" novalidate autocomplete="off">
-                 <h3 class="mb-4 billing-heading">Login Caffe</h3>
-                 <div class="row align-items-end">
-                     <div class="col-md-12">
-                         <div class="form-group">
-                             <div>
-                                 <label for="firstname">{{ form.phonenumber.label_tag }}</label>
-                             </div>
-                             <div class="col-md-12">
-                                {{ form.phonenumber }}
-                             </div>
-                         </div>
-                         <small class="form-text text-muted"><label>{{ form.nationalcode.help_text }}</label></small>
-                     </div>
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card " style="border-radius: 1rem; background: linear-gradient(to bottom, #251001, #836a4b);">
+                        <div class="row m-3 g-0">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <!-- Center the image within the left column -->
+                                <div class="d-flex align-items-center  m-3 h-100">
+                                    <img src="{% static 'images/menu-4.jpg' %}" alt="login form" class="img-fluid"
+                                        style="border-radius: 1rem 0 0 1rem; margin: 0 auto;" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                              <form class="m-4">
 
-                     <div class="w-100"></div>
+                                <div class="d-flex align-items-center mb-3 pb-1">
+                                <i class="fas fa-cubes fa-2x me-3"></i>
+                                <span class="h1 fw-bold mb-0">Login</span>
+                                </div>
+                                <h4 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">sign in into your account</h4>
+                                <div class="form-outline mb-4">
+                                  <label class="form-label" for="form2Example17">{{ form.phonenumber.label_tag }}</label>
+                                </div>
+                                <div id="form2Example27" class="form-control form-control-lg">
+                                  {{ form.phonenumber }}
+                                </div>
+                                <div class="form-outline mb-4">
+                                  <label class="form-label" for="form2Example17">{{ form.password.label_tag }}</label>
+                                </div>
+                                <div id="form2Example27" class="form-control form-control-lg">
+                                 {{ form.password }}
+                                </div>
+                                <div class="pt-1 mb-4">
+                                  <button class="btn btn-dark btn-lg btn-block" type="button">Login</button>
+                                </div>
 
-                     <div class="col-md-12">
-                         <div class="form-group">
-                             <div>
-                                 <label for="streetaddress">{{ form.password.label_tag }}</label>
-                             </div>
-                             {{ form.password }}
-                         </div>
-                         <a>
-                             <small class="form-text text-muted"><label>{{ form.password.help_text }}</label></small>
-                         </a>
-                     </div>
-
-                     <div class="col-md-12">
-                         <button type="submit" class="btn btn-primary btn-sm btn-block" style="max-width: 100px;">Log in</button>
-                         <a href="" class="sing_up_sign_in" target="_self" style="color:white;">Register in Coffee site</a>
-                     </div>
-                 </div>
-             </form>
-
-              <!-- END -->
-          </div>
+                                <small class="form-text text-muted"><label>{{ form.password.help_text }}</label></small>
+                                <p class="mb-5 pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="#!"
+                                    style="color: #c4c7e7;">Register here</a></p>
+                              </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
   {% endblock %}
-
-  <!-- loader -->
-
 
   <script>
 		$(document).ready(function(){
@@ -106,6 +105,5 @@
 		});
 	</script>
 
-    
   </body>
 </html>
