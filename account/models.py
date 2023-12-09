@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 from django.apps import apps
-=======
->>>>>>> 91d24123217ce67702e7574603d5bca1bd6a4d87
+
 from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -92,7 +90,4 @@ class CustomUser(AbstractBaseUser):
         elif not self.username:
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Cofe"
         super().save(*args, **kwargs)
-<<<<<<< HEAD
-=======
 
->>>>>>> 91d24123217ce67702e7574603d5bca1bd6a4d87
