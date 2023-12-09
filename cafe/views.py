@@ -3,32 +3,24 @@ from django.db import models
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View,DetailView
+from django.views.generic import ListView, View,DetailView,CreateView
 from django.contrib import messages
 from .models import Order,CategoryMenu,Items,Receipt
 from cafe.forms.cart_form import OrderForm
 from core.models import Image
+from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
+from django.contrib.contenttypes.models import ContentType
 
-class OrderItemView(LoginRequiredMixin, ListView):
+
+class CartView(LoginRequiredMixin, ListView):
     model = Order
     
     template_name = "cart.html"
     context_object_name = "item_orders"
-    success_url = reverse_lazy("User:profile")
     form_class = OrderForm
+    success_url = reverse_lazy("User:profile")
 
-    def get_queryset(self):
-
-        return Order.objects.prefetch_related('items').all().order_by('-order_time')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-
-        context = super().get_context_data(**kwargs)
-        context['all_order_items'] = [order.items for order in context['item_orders']]
-        context['form'] = self.form_class
-        
-        return context
-    
+   
 
 
 class CategoryItems(ListView):
@@ -42,7 +34,8 @@ class CategoryItems(ListView):
     def get_context_data(self,*, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        context["images"]=Image.objects.all
+        context["images"]= Image.objects.filter( content_type=ContentType.objects.get_for_model(Items))
+        
 
         return context
 class DetailItemView(LoginRequiredMixin,DetailView):
@@ -66,7 +59,9 @@ class ReceiptView(LoginRequiredMixin, View):
     template_name = 'receipt.html'
     context_object_name = 'receipt'
     success_url = reverse_lazy("cafe:cart")
-    form_class = OrderForm
 
-    def get(self, request):
-        receipt_item = Receipt.objects.select_related('order').get(id=request.POST.get('id'))
+    def get_queryset(self):
+        order_id = Receipt.objects.select_related('order').prefetch_related('items').get(
+            id=self.request.POST.get('order_id'))
+        print("order:===", order_id)
+        return order_id

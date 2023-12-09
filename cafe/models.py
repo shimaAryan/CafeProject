@@ -4,15 +4,22 @@ import datetime as dt
 from django.contrib.auth import get_user_model
 
 from account.models import CustomUser
+
+class ServingTime(models.Model):
+    time = models.CharField(max_length=7)
+
+# class CategoryMenu(models.Model):
+#     title = models.CharField(max_length=50)
+#     serving_time = models.ManyToManyField(ServingTime)
 class CategoryMenu(models.Model):
     title = models.CharField(max_length=50)
-    SERVINGTIME = [
-        ("M", "morning"),
-        ("N", "noon"),
-        ("E", "evening"),
-        ("N", "night")
-    ]
-    serving_time = models.CharField(max_length=7, choices=SERVINGTIME)
+    # SERVINGTIME = [
+    #     ("M", "morning"),
+    #     ("N", "noon"), 
+    #     ("E", "evening"),
+    #     ("N", "night")
+    # ]
+    serving_time = models.ManyToManyField(ServingTime)
 
     def __str__(self):
         return self.title
@@ -21,11 +28,10 @@ class CategoryMenu(models.Model):
 class Items(models.Model):
     category_id = models.ForeignKey(CategoryMenu, on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=100)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=7, decimal_places=4, default=0)
     description = models.TextField(max_length=255)
     status = models.BooleanField()
-    discount = models.DecimalField(max_digits=2, decimal_places=2 ,blank=True,default=0)
-    number_items = models.PositiveIntegerField(default=1,blank=True)
+    discount = models.PositiveIntegerField(default=0)
     like_count = models.PositiveIntegerField(default=0)
     like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
 
@@ -56,8 +62,6 @@ class Order(models.Model):
 class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
-    total_price = models.DecimalField(max_digits=10, decimal_places=5)
-    final_price = models.DecimalField(max_digits=10, decimal_places=5)
 
     class Meta:
         ordering = ['-time']

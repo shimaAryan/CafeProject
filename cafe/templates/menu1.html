@@ -107,21 +107,23 @@
         			
 					
 
-					{% for picture in images %}
+					 {% for picture in images %}
 					
-						{% if picture.id == item.id %}
+						{% if picture.object_id == item.id %}
 						
 							<div class="img" style="background-image: url('{% static picture.image %}');"></div>
 																	     
 						{% endif %}
-					{% endfor %}
+					{% endfor %} 
+					
+					
         			<div class="desc pl-3">
 	        			<div class="d-flex text align-items-center">
 	        				<a href={% url 'cafe:detail_item' item.id %}><h3><span>{{item.title}}</span></h3></a>
 	        				<span class="price">{{item.price}}</span>
 	        			</div>
 	        			<div class="d-block">
-	        				<p>{{item.description}}</p>
+	        				<p>{{item.description|truncatewords:5}}</p>
 	        			</div>
         			</div>
                     
