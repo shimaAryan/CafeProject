@@ -26,7 +26,7 @@ class Items(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=4, default=0)
     description = models.TextField(max_length=255)
     status = models.BooleanField()
-    discount = models.DecimalField(max_digits=7, decimal_places=4, blank=True, default=0)
+    discount = models.PositiveIntegerField(default=0)
     number_items = models.PositiveIntegerField(default=1, )
     like_count = models.PositiveIntegerField(default=0)
     like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
