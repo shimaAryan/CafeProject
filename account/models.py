@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.core.validators import RegexValidator
 from django.db import models
 from datetime import date
@@ -98,7 +99,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         elif not self.username:
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
-
 
 class ValidatorMixin:
     def nationalcode_validator(value):

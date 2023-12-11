@@ -13,7 +13,9 @@
     <p>Order Time: {{ order.order_time }}</p>
     <p>User Order: {{ order.user_order }}</p>
     <p>Delivery: {{ order.delivery_cost }}</p>
-    <p>Delivery Time: {{ form.delivery_time }}</p>
+        <form>
+        {% csrf_token %}
+    <p>Delivery Time: {{ form.delivery_time }}</p></form>
     <p>Items:</p>
 
         {% for item in order.items.all %}

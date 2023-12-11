@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -25,6 +26,7 @@ SECRET_KEY = 'django-insecure-w4cm7ld3*g=csup9(h1la5v14bc6#h!sewg9zod-osjee=vg2_
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,18 +75,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Coffee',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'Shad_M72770',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
-    }}
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -103,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -114,11 +118,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_URL = 'static/'
+STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
@@ -127,6 +132,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
+#                          "django.contrib.auth.backends.ModelBackend",
+# ]
+
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
                            "account.authenticate.PhoneBackend",
