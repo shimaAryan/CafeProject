@@ -1,6 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import Group
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -32,7 +33,6 @@ class CustomerSignUpView(CreateView):
     template_name = 'account/customer_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     fields = ("phonenumber", "email", "firstname", "lastname", "password", "how_know_us")
-
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -74,3 +74,22 @@ class IndexView(TemplateView):
 
 class UserLogoutView(LogoutView):
     next_page = reverse_lazy('cafe:home')
+
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'account/password_resetform.html'
+    success_url = reverse_lazy('account:password_reset_done')
+    email_template_name = "account/password_reset_email.html"
+
+
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'account/password_reset_done.html'
+
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'account/password_reset_confirm.html'
+    success_url = reverse_lazy('account:password_reset_completed')
+
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'account/password_reset_complete.html'
