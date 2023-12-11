@@ -128,9 +128,13 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
-#                          "django.contrib.auth.backends.ModelBackend",
-# ]
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
+                           "account.authenticate.PhoneBackend",
+                           "account.authenticate.EmailBackend",
 
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+                           ]
+
+SESSION_COOKIE_AGE = 3600
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LOGIN_URL = 'account:User_login'

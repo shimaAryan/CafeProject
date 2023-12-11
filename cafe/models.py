@@ -21,22 +21,6 @@ class CategoryMenu(models.Model):
         return self.title
 
 
-class Items(models.Model):
-    category_id = models.ForeignKey(CategoryMenu, on_delete=models.CASCADE, related_name="items")
-    title = models.CharField(max_length=100)
-    price = models.FloatField()
-    description = models.TextField(max_length=255)
-    status = models.BooleanField()
-    LIKES = [
-        ("1", "very bad"),
-        ("2", "bad"),
-        ("3", "good"),
-        ("4", "very good"),
-        ("5", "extra good"),
-
-    ]
-    likes = models.CharField(max_length=10, choices=LIKES)
-
 
 class Items(models.Model):
     category_id = models.ForeignKey(CategoryMenu, on_delete=models.CASCADE, related_name="items")
@@ -78,6 +62,7 @@ class Order(models.Model):
         indexes = [
             models.Index(fields=['-order_time'])
         ]
+
 
 class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)

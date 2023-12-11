@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_account.html' %}
 {% load static %}
 {% block title %}Login{% endblock %}
   {% block content %}
@@ -32,27 +32,27 @@
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                              <form class="m-4">
-
+                              <form action="{% url 'account:User_login' %}" method="post" class=" col-md-6 col-lg-12">
+                                {% csrf_token %}
                                 <div class="d-flex align-items-center mb-3 pb-1">
                                 <i class="fas fa-cubes fa-2x me-3"></i>
                                 <span class="h1 fw-bold mb-0">Login</span>
                                 </div>
                                 <h4 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">sign in into your account</h4>
                                 <div class="form-outline mb-4">
-                                  <label class="form-label" for="form2Example17">{{ form.phonenumber.label_tag }}</label>
+                                  <label class="form-label m-2" for="form2Example17">{{ form.username.label_tag }}</label>
                                 </div>
                                 <div id="form2Example27" class="form-control form-control-lg">
-                                  {{ form.phonenumber }}
+                                  {{ form.username }}
                                 </div>
                                 <div class="form-outline mb-4">
-                                  <label class="form-label" for="form2Example17">{{ form.password.label_tag }}</label>
+                                  <label class="form-label mt-2" for="form2Example17">{{ form.password.label_tag }}</label>
                                 </div>
                                 <div id="form2Example27" class="form-control form-control-lg">
                                  {{ form.password }}
                                 </div>
                                 <div class="pt-1 mb-4">
-                                  <button class="btn btn-dark btn-lg btn-block" type="button">Login</button>
+                                  <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
                                 </div>
 
                                 <small class="form-text text-muted"><label>{{ form.password.help_text }}</label></small>

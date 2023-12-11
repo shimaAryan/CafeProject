@@ -30,13 +30,15 @@ class MyUserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+        user.is_customer = False
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     phonenumber = models.CharField(
-        max_length=20,
+        max_length=50,
         validators=[
             RegexValidator(
                 regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
@@ -55,6 +57,7 @@ class CustomUser(AbstractBaseUser):
     lastname = models.CharField(max_length=40)
     how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
                                             ("Fr", "Friends"), ("Other", "Other items")], default="None")
+    is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -63,7 +66,7 @@ class CustomUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = "phonenumber"
-    REQUIRED_FIELDS = ["email",]
+    REQUIRED_FIELDS = ["email", ]
 
     def __str__(self):
         return f"{self.firstname}_{self.lastname}"
@@ -82,7 +85,12 @@ class CustomUser(AbstractBaseUser):
     def is_staff(self):
         """Is the user a member of staff?"""
         # Simplest possible answer: All staff in staff model
-        return self.is_admin
+        if not self.is_customer:
+            return self.is_admin or not self.is_customer
+
+    @is_staff.setter
+    def is_staff(self, value):
+        self._is_staff = value
 
     def save(self, *args, **kwargs):
         if self.is_admin:
@@ -103,26 +111,30 @@ class ValidatorMixin:
             raise ValidationError('Invalid national code length')
 
 
-class Staff(models.Model, ValidatorMixin):
+class Staff(CustomUser, models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff')
     nationalcode = models.CharField(
-        max_length=20,
+        max_length=50,
         validators=[ValidatorMixin.nationalcode_validator],
         verbose_name="National Code",
         unique=True
     )
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day", default=date(1380, 1, 1))
     experience = models.IntegerField(null=True, default=None)
-    rezome = models.FileField(upload_to='files/', blank=True, null=True)
-    profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage())
+    rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
+    profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
+                                      default=None)
     guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
                                  default="None")
 
     def __str__(self):
-        return f"{self.user.firstname} {self.user.lastname}"
+        return f"{self.firstname} {self.lastname}"
+
+    def save(self, *args, **kwargs):
+        CustomUser.is_staff, CustomUser.is_customer = True, False
+        super().save(*args, **kwargs)
 
 
 class LoginRecord(models.Model):

@@ -329,6 +329,22 @@ h5, .h5 {
 h6, .h6 {
   font-size: 1rem; }
 
+.base_account{
+  background-image: url(/static/images/account_background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 1200px;
+}
+
+.center-box {
+  width: 70%;
+  height: 500px;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-sizing: border-box; }
+
 .lead {
   font-size: 1.25rem;
   font-weight: 300; }
@@ -490,7 +506,8 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px; }
+  margin-left: -15px;
+  align-items: center;}
 
 .no-gutters {
   margin-right: 0;

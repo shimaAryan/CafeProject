@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View
+from django.views.generic import ListView, View, TemplateView
 from django.contrib import messages
 from .models import Order, Receipt
 from cafe.forms.cart_form import OrderForm
@@ -15,11 +15,9 @@ class OrderItemView(LoginRequiredMixin, ListView):
     form_class = OrderForm
 
     def get_queryset(self):
-
         return Order.objects.prefetch_related('items').all().order_by('-order_time')
 
     def get_context_data(self, *, object_list=None, **kwargs):
-
         context = super().get_context_data(**kwargs)
         context['all_order_items'] = [order.items for order in context['item_orders']]
         context['form'] = self.form_class
@@ -35,3 +33,7 @@ class ReceiptView(LoginRequiredMixin, View):
 
     def get(self, request):
         receipt_item = Receipt.objects.select_related('order').get(id=request.POST.get('id'))
+
+
+class HomeView(TemplateView):
+    template_name = 'home.html'

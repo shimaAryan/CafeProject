@@ -1,39 +1,59 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views import View
-from .forms import UserLoginForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.views.generic import TemplateView
+from django.contrib.auth.models import Group
+from django.contrib.auth.views import LoginView, LogoutView
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, CreateView
+from .forms import CustomAuthenticationForm
+from .models import Staff
 
 
-class UserLoginView(View):
-    form_login = UserLoginForm
+class StaffSignUpView(CreateView):
+    model = Staff
+    template_name = 'account/sign_up.html'
+    success_url = reverse_lazy('account:User_login')
+    fields = ("phonenumber", "email", "firstname", "lastname", "password", "nationalcode", "date_of_birth",
+              "experience", "rezome", "profile_image", "guarantee", "how_know_us")
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        password = form.cleaned_data['password']
+        user.set_password(password)
+        user.save()
+        # Add the Staff user to a group
+        group, created = Group.objects.get_or_create(name="staff")
+        user.groups.add(group)
+        return super().form_valid(form)
+
+
+class UserLoginView(LoginView):
     template_name = 'account/login.html'
+    success_url = reverse_lazy('cafe:home')
+    form_class = CustomAuthenticationForm
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('home:home')
-        return super().dispatch(request, *args, **kwargs)
+    def form_valid(self, form) -> HttpResponse:
+        user = form.get_user()
+        # Check if the user is an admin
+        if user.is_admin:
+            return redirect(reverse('admin:index'))
+        elif user.is_customer:
+            return redirect(reverse('account:index'))
+        elif user.is_staff:
+            return redirect(reverse('cafe:home'))
+        else:
+            print("4" * 35)
+            return redirect(reverse('account:User_login'))
 
-    def get(self, request):
-        form = self.form_login()
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        log = self.form_login(request.POST)
-        if log.is_valid():
-            datas = log.cleaned_data
-            user = authenticate(request, username=datas["nationalcode"], password=datas["password"])
-            if user is not None:
-                login(request, user)
-                return redirect("cafe:home")
-        messages.warning(request,
-                         f"Please enter correct phone number or email and password or Please"
-                         f" register in Ada company site first before login",
-                         "warning")
-        return self.get(request)
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid login credentials. Please try again.')
+        print("5" * 35)
+        return redirect(reverse('account:User_signup'))
 
 
 class IndexView(TemplateView):
     template_name = 'index.html'
+
+
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy('cafe:home')
