@@ -5,8 +5,8 @@
     <!-- END nav -->
      <div class="container py-5">
          <div class="row d-flex justify-content-center align-items-center">
-             <div class="card col-md-10" style="border-radius: 1rem; height: 120vh; background: linear-gradient(to bottom, #251001, #836a4b);">
-                 <form action="{% url 'account:User_signup' %}" method="post" class=" col-md-6 col-lg-12" enctype="multipart/form-data">
+             <div class="card col-md-10" style="border-radius: 1rem; height: 90vh; background: linear-gradient(to bottom, #251001, #836a4b);">
+                 <form action="{% url 'account:Customer_signup' %}" method="post" class=" col-md-6 col-lg-12" enctype="multipart/form-data">
                      {% csrf_token %}
                      <div class="d-flex justify-content-center m-4 pb-1">
                          <i class="fas fa-cubes fa-2x me-3"></i>
@@ -35,6 +35,8 @@
                              <div id="form2Example27" >
                                  {{ form.password }}
                              </div>
+                         </div>
+                         <div class="col-md-4 ml-4">
                              <div class="form-outline mb-3">
                                  <label class="form-label " for="form2Example17">{{ form.firstname.label_tag }}</label>
                              </div>
@@ -54,50 +56,12 @@
                                  {{ form.how_know_us }}
                              </div>
                          </div>
-                         <div class="col-md-4 ml-4">
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.nationalcode.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.nationalcode }}
-                             </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.date_of_birth.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.date_of_birth }}
-                             </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.experience.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.experience }}
-                             </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.rezome.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.rezome}}
-                             </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.profile_image.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.profile_image}}
-                             </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.guarantee.label_tag }}</label>
-                             </div>
-                             <div id="form2Example27" >
-                                 {{ form.guarantee}}
-                             </div>
-                         </div>
                      </div>
                      <div class="pt-1 mb-4">
                          <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
                      </div>
                      <small class="form-text text-muted"><label>{{ form.password.help_text }}</label></small>
-                     <p class="mb-5 pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="#!" style="color: #c4c7e7;">Register here</a></p>
+                     <p class="mb-5 pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="{% url 'account:User_login' %}" style="color: #c4c7e7;">login</a></p>
                  </form>
              </div>
          </div>
