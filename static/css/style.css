@@ -211,8 +211,11 @@ optgroup,
 textarea {
   margin: 0;
   font-family: inherit;
-  font-size: inherit;
-  line-height: inherit; }
+  font-size: 12px;
+  line-height: 30px;
+width: 300px;
+}
+
 
 button,
 input {
@@ -237,8 +240,8 @@ button::-moz-focus-inner,
 
 input[type="radio"],
 input[type="checkbox"] {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  /*-webkit-box-sizing: border-box;*/
+  /*box-sizing: border-box;*/
   padding: 0; }
 
 input[type="date"],
@@ -325,6 +328,22 @@ h5, .h5 {
 
 h6, .h6 {
   font-size: 1rem; }
+
+.base_account{
+  background-image: url(/static/images/account_background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 1200px;
+}
+
+.center-box {
+  width: 70%;
+  height: 500px;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-sizing: border-box; }
 
 .lead {
   font-size: 1.25rem;
@@ -487,7 +506,8 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px; }
+  margin-left: -15px;
+  align-items: center;}
 
 .no-gutters {
   margin-right: 0;
