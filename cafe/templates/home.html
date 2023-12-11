@@ -12,7 +12,7 @@
             <div class="col-md-8 col-sm-12 text-center ftco-animate">
             	<h1 class="mb-3 bread">Welcome to your Coffee </h1>
                 <h3 class="mb-3 mt-5 m-3 bread"><a href="{% url 'account:User_login' %}">login</a> </h3>
-                <p class="justify-content-center align-items-center"><span class="mr-2" style="font-size: 20px;"><a class="m-4" href="{% url 'account:User_signup' %}">Sign Up</a></span></p>
+                <p class="justify-content-center align-items-center"><span class="mr-2" style="font-size: 20px;"><a class="m-4" href="{% url 'account:Customer_signup' %}">Sign Up</a></span></p>
             </div>
           </div>
           </div>
@@ -21,39 +21,3 @@
   </section>
   {% endblock %}
 
-  <script>
-		$(document).ready(function(){
-
-		var quantitiy=0;
-		   $('.quantity-right-plus').click(function(e){
-
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-
-		        // If is not undefined
-
-		            $('#quantity').val(quantity + 1);
-
-
-		            // Increment
-
-		    });
-
-		     $('.quantity-left-minus').click(function(e){
-		        // Stop acting like a button
-		        e.preventDefault();
-		        // Get the field name
-		        var quantity = parseInt($('#quantity').val());
-
-		        // If is not undefined
-
-		            // Increment
-		            if(quantity>0){
-		            $('#quantity').val(quantity - 1);
-		            }
-		    });
-
-		});
-	</script>

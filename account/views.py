@@ -5,13 +5,13 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
-from .forms import CustomAuthenticationForm
-from .models import Staff
+from .forms import CustomAuthenticationForm, UserRegisterForm
+from .models import Staff, CustomUser
 
 
 class StaffSignUpView(CreateView):
     model = Staff
-    template_name = 'account/sign_up.html'
+    template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     fields = ("phonenumber", "email", "firstname", "lastname", "password", "nationalcode", "date_of_birth",
               "experience", "rezome", "profile_image", "guarantee", "how_know_us")
@@ -23,6 +23,24 @@ class StaffSignUpView(CreateView):
         user.save()
         # Add the Staff user to a group
         group, created = Group.objects.get_or_create(name="staff")
+        user.groups.add(group)
+        return super().form_valid(form)
+
+
+class CustomerSignUpView(CreateView):
+    model = CustomUser
+    template_name = 'account/customer_sign_up.html'
+    success_url = reverse_lazy('account:User_login')
+    fields = ("phonenumber", "email", "firstname", "lastname", "password", "how_know_us")
+
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        password = form.cleaned_data['password']
+        user.set_password(password)
+        user.save()
+        # Add the Staff user to a group
+        group, created = Group.objects.get_or_create(name="Customer")
         user.groups.add(group)
         return super().form_valid(form)
 
@@ -42,7 +60,6 @@ class UserLoginView(LoginView):
         elif user.is_staff:
             return redirect(reverse('cafe:home'))
         else:
-            print("4" * 35)
             return redirect(reverse('account:User_login'))
 
     def form_invalid(self, form):
