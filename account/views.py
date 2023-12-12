@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import Group
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView,PasswordResetDoneView,PasswordResetConfirmView,PasswordResetCompleteView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, \
+    PasswordResetConfirmView, PasswordResetCompleteView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
-from .forms import CustomAuthenticationForm, UserRegisterForm
+from .forms import CustomAuthenticationForm, StaffSignUpForm
 from .models import Staff, CustomUser
 
 
@@ -14,8 +15,7 @@ class StaffSignUpView(CreateView):
     model = Staff
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('account:User_login')
-    fields = ("phonenumber", "email", "firstname", "lastname", "password", "nationalcode", "date_of_birth",
-              "experience", "rezome", "profile_image", "guarantee", "how_know_us")
+    form_class = StaffSignUpForm
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -25,6 +25,7 @@ class StaffSignUpView(CreateView):
         # Add the Staff user to a group
         group, created = Group.objects.get_or_create(name="staff")
         user.groups.add(group)
+        messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
 
 

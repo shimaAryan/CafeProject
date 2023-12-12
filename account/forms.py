@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from account.models import CustomUser
+from account.models import CustomUser, Staff
 
 
 class UserRegisterForm(forms.Form):
@@ -49,7 +49,43 @@ class UserRegisterForm(forms.Form):
             self.add_error('password2', "your confirm password and password does not match")
 
 
-class CustomAuthenticationForm (AuthenticationForm):
+class StaffSignUpForm(forms.ModelForm):
+    """
+    Class for Create and handle the Staff sign up form.
+    """
+    password_confirm = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}),
+    )
+
+    class Meta:
+        model = Staff
+        fields = "__all__"
+
+    widgets = {
+        'phonenumber': forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
+        'nationalcode': forms.TextInput(attrs={'placeholder': 'Enter your national code'}),
+        'password': forms.PasswordInput(attrs={'placeholder': 'Enter your password'}),
+        'email': forms.EmailInput(attrs={'placeholder': 'Enter your email address'}),
+        'firstname': forms.TextInput(attrs={'placeholder': 'Enter your first name'}),
+        'lastname': forms.TextInput(attrs={'placeholder': 'Enter your last name'}),
+        'date_of_birth': forms.DateInput(attrs={'placeholder': 'Enter your date of birth', 'type': 'date'}),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field, widget in self.widgets.items():
+            self.fields[field].widget = widget
+
+    def clean(self):
+        datas = super().clean()
+        p1 = datas.get("password")
+        p2 = datas.get("password_confirm")
+        if p1 and p2 and p1 != p2:
+            self.add_error('password_confirm', "your confirm password and password does not match")
+
+
+class CustomAuthenticationForm(AuthenticationForm):
     """
     Base class for authenticating users. Extend this to get a form that accepts
     phonenumber/password logins.
@@ -63,10 +99,10 @@ class CustomAuthenticationForm (AuthenticationForm):
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password'}),
         help_text="forgot your "
                   "password", )
-#     error_messages = {
-#         "invalid_login": (
-#             "Please enter a correct %(username)s and password. Note that both "
-#             "fields may be case-sensitive."
-#         ),
-#         "inactive": ("This account is inactive."),
-#     }
+    error_messages = {
+        "invalid_login": (
+            "Please enter a correct  phone number or email as username and password. Note that both "
+            "fields may be case-sensitive."
+        ),
+        "inactive": "This account is inactive.",
+    }
