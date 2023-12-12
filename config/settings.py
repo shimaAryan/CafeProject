@@ -138,7 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
-                           "account.authenticate.PhoneBackend",
+                           # "account.authenticate.PhoneBackend",
                            "account.authenticate.EmailBackend",
                            ]
 
