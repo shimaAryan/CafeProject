@@ -100,6 +100,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
 
+
 class ValidatorMixin:
     def nationalcode_validator(value):
         """

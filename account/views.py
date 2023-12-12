@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import Group
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView,PasswordResetDoneView,PasswordResetConfirmView,PasswordResetCompleteView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -51,6 +51,7 @@ class UserLoginView(LoginView):
     form_class = CustomAuthenticationForm
 
     def form_valid(self, form) -> HttpResponse:
+        super().form_valid(form)
         user = form.get_user()
         # Check if the user is an admin
         if user.is_admin:
@@ -64,8 +65,7 @@ class UserLoginView(LoginView):
 
     def form_invalid(self, form):
         messages.error(self.request, 'Invalid login credentials. Please try again.')
-        print("5" * 35)
-        return redirect(reverse('account:User_signup'))
+        return redirect(reverse('account:User_login'))
 
 
 class IndexView(TemplateView):
@@ -86,10 +86,10 @@ class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
     template_name = 'account/password_reset_done.html'
 
 
-class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = 'account/password_reset_confirm.html'
     success_url = reverse_lazy('account:password_reset_completed')
 
 
-class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'account/password_reset_complete.html'
