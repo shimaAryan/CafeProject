@@ -5,6 +5,7 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 
 
 # Create your models here.
@@ -38,26 +39,19 @@ class MyUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    phonenumber = models.CharField(
-        max_length=50,
-        validators=[
-            RegexValidator(
+    phonenumber = models.CharField(max_length=50,validators=[RegexValidator(
                 regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
-                message="Invalid phone number format. Example: +989123456789 or 09123456789",
-            ),
-        ],
-        verbose_name="Phone number",
-        unique=True)
-    email = models.EmailField(
-        max_length=100,
-        verbose_name="email address",
-    )
+                message="Invalid phone number format. Example: +989123456789 or 09123456789",),
+                ], verbose_name="Phone number", unique=True)
+    email = models.EmailField(max_length=100, verbose_name="email address",
+                              unique=True
+                              )
     username = models.CharField(max_length=40, null=True, blank=True,
                                 help_text="Create the default username using the format firstname_lastname@cofe")
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
     how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default="None")
+                                            ("Fr", "Friends"), ("Other", "Other items")], default=None, null=True)
     is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -116,19 +110,16 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
-    nationalcode = models.CharField(
-        max_length=50,
-        validators=[ValidatorMixin.nationalcode_validator],
-        verbose_name="National Code",
-        unique=True
-    )
-    date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day", default=date(1380, 1, 1))
+    nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
+                                    verbose_name="National Code", unique=True)
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day",
+                                     default=timezone.now)
     experience = models.IntegerField(null=True, default=None)
     rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
     profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
                                       default=None)
     guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
-                                 default="None")
+                                 default=None, null=True)
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}"
