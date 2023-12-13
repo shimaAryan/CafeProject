@@ -10,5 +10,6 @@ urlpatterns = [
     path('detail_item/<int:pk>', DetailItemView.as_view(), name='detail_item'),
 
     path('cart/', CartView.as_view(), name='cart'),
-    path('cart-recipt/', ReceiptView.as_view(), name='receipt_list'),
+    path('index/', index,  name='index'),
+    path('cart-receipt/<int:user_id>', ReceiptView.as_view(), name='cart-receipt'),
 ]

@@ -9,6 +9,9 @@ from account.models import CustomUser
 class ServingTime(models.Model):
     time = models.CharField(max_length=7)
 
+    def __str__(self):
+        return self.time
+
 
 # class CategoryMenu(models.Model):
 #     title = models.CharField(max_length=50)
@@ -42,6 +45,9 @@ class Items(models.Model):
         return self.title
 
 
+from decimal import Decimal
+
+
 class Order(models.Model):
     DoesNotExist = None
     title = models.CharField(max_length=10, default="cart")
@@ -51,6 +57,7 @@ class Order(models.Model):
     delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
     items = models.ManyToManyField(Items, related_name="item_order")
+
 
     def __str__(self):
         return self.title
@@ -72,8 +79,14 @@ class Receipt(models.Model):
             models.Index(fields=['-time'])
         ]
 
+    def __str__(self):
+        return self.order.title
+
 
 class Like(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="users")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.id, self.items.title

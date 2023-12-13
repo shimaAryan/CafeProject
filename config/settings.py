@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
+    'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cafe',
+        'USER': 'postgres',
+        'PASSWORD': 'shima1993',
+        'PORT': '5432',
     }}
 
 # Password validation
@@ -128,3 +132,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_CACHE_ALIAS = 'default'

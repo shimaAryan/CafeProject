@@ -12,7 +12,7 @@
 
             <div class="col-md-7 col-sm-12 text-center ftco-animate">
             	<h1 class="mb-3 mt-5 bread">Product Detail</h1>
-	            <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Product Detail</span></p>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="#">Home</a></span> <span>Product Detail</span></p>
             </div>
 
           </div>
@@ -24,7 +24,7 @@
     	<div class="container">
     		<div class="row">
     			<div class="col-lg-6 mb-5 ftco-animate">
-    				<a href="images/menu-2.jpg" class="image-popup"><img src={% static image.image%} class="img-fluid" alt="Colorlib Template"></a>
+    				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src={% static image.image%} class="img-fluid" alt="Colorlib Template"></a>
     			</div>
     			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
     				<h3>{{item.title}}</h3>
@@ -55,10 +55,67 @@
 	             	</span>
 	          	</div>
           	</div>
-          	<p><a href={% url "cafe:cart"  %} class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+          	<p><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
     			</div>
     		</div>
     	</div>
     </section>
+
+ <script>
+
+ const csrftoken = '{{ csrf_token }}';
+ function getCsrfTokenFromCookies() {
+  let csrfToken = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith('csrftoken=')) {
+        csrfToken = decodeURIComponent(cookie.substring('csrftoken='.length));
+        break;
+      }
+    }
+  }
+  return csrfToken;
+}
+const product = {
+  id: {{item.id}},
+  name: "{{item.title}}",
+  quantity: 1,
+  price: {{ item.price }},
+  discount: {{ item.discount }},
+  description: "{{ item.description}}",
+
+};
+
+{#const url = new URL("blob:https://mozilla.org:443/");#}
+{#console.log(url.origin);#}
+document.getElementById('add_to_cart').addEventListener('click', function() {
+  sessionStorage.setItem('order', JSON.stringify(product));
+
+  // Now, send the cart data to the server
+    const baseUrl = window.location.origin
+    const csrfToken = getCsrfTokenFromCookies();
+    debugger
+  fetch(`${baseUrl}/cart/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
+    },
+    body: sessionStorage.getItem('order')
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Data saved:', data);
+    sessionStorage.setItem("data",data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    sessionStorage.setItem("Error",error);
+  });
+});
+
+</script>
 
 {% endblock %}

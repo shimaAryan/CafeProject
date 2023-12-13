@@ -22,12 +22,12 @@
     </section>
 
 		<section class="ftco-section ftco-cart">
-        {% if item_orders %}
+
 			<div class="container">
 				<div class="row">
     			<div class="col-md-12 ftco-animate">
     				<div class="cart-list">
-                    {{ receipt }}
+
 	    				<table class="table">
 						    <thead class="thead-primary">
 						      <tr class="text-center">
@@ -41,29 +41,34 @@
 						      </tr>
 						    </thead>
 						    <tbody>
-
+                            {% if item_data %}
 						      <tr class="text-center">
 
-
-                                    {% for item in items %}
+                                    {% for item in item_data %}
                                     <td class="product-remove"><a href="#"><span class="icon-close"></span></a></td>
+                                    {% for picture in order.images.item.pk %}
+						                {% if picture.object_id == item.id %}
+										 <td class="image-prod"><div class="img" style="background-image:url({% static picture %});"></div></td>
+						                {% endif %}
+					                     {% endfor %}
 
-						            <td class="image-prod"><div class="img" style="background-image:url({% static 'images/menu-2.jpg' %});"></div></td>
                                     <td class="product-name">
-						        	<h3>{{ item.title }}</h3>
+						        	<h3>{{ item.name }}</h3>
 						        	<p>{{ item.description }}</p>
                                     </td>
                                     <td class="price">${{ item.price }}</td>
                                     <td class="quantity">
 						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value={{ item.number_items }} min="1" max="100">
+					             	<input type="text" name="quantity" class="quantity form-control input-number" value={{ item.quantity }} min="1" max="100">
 					          	</div>
 					          </td>
                                     <td class="discount">{{ item.discount }}%</td>
-                                    <td class="total">${{ item.item_total }}</td>
-                                     </tr><!-- END TR-->
 
+                                    <td class="total">${{ item.item_total }}</td>
+
+                                     </tr><!-- END TR-->
                                 {% endfor %}
+
 						    </tbody>
 						  </table>
 					  </div>
@@ -79,7 +84,7 @@
     					</p>
     					<p class="d-flex">
     						<span>Delivery</span>
-    						<span>${{delivery_cost}}</span>
+    						<span>${{order.delivery_cost}}</span>
     					</p>
     					<p class="d-flex">
     						<span>Discount</span>
@@ -92,11 +97,13 @@
     						<span>${{total|floatformat:3}}</span>
     					</p>
     				</div>
+
                     {% else %}
                         <p>Your cart is empty.</p>
+
                     {% endif %}
-{#'checkout.html   		#}
-                    <p class="text-center"><a href="#" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+
+                    <p class="text-center"><a href="{% url 'cafe:cart-receipt' user_id=order.user_order.pk %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     			</div>
     		</div>
 			</div>
