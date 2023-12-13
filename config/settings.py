@@ -40,8 +40,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
-    'django.contrib.postgres',
-
+    
 ]
 
 MIDDLEWARE = [
@@ -135,6 +134,8 @@ AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
                            ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LOGIN_URL="User_Login"
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_AGE = 3600

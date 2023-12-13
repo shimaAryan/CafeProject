@@ -254,6 +254,9 @@ class DetailItemView(LoginRequiredMixin, DetailView):
     context_object_name = "item"
     template_name = "detail_item.html"
 
+    
+
+
     # def handle_no_permission(self):
     #      return render(request, 'unauthorized_access.html', {})
 

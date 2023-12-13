@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
-from account.models import CustomUser, Staff, ValidatorMixin
+from account.models import CustomUser, Staff
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -55,7 +53,8 @@ class StaffSignUpForm(forms.ModelForm):
         'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
         'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}),
         'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
-        'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth', 'type': 'date'}),
+        'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth',
+                                                'type': 'date'}),
     }
 
     def __init__(self, *args, **kwargs):
