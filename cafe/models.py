@@ -16,14 +16,10 @@ class ServingTime(models.Model):
 # class CategoryMenu(models.Model):
 #     title = models.CharField(max_length=50)
 #     serving_time = models.ManyToManyField(ServingTime)
+
 class CategoryMenu(models.Model):
     title = models.CharField(max_length=50)
-    # SERVINGTIME = [
-    #     ("M", "morning"),
-    #     ("N", "noon"), 
-    #     ("E", "evening"),
-    #     ("N", "night")
-    # ]
+
     serving_time = models.ManyToManyField(ServingTime)
 
     def __str__(self):
@@ -90,3 +86,4 @@ class Like(models.Model):
 
     def __str__(self):
         return self.user.id, self.items.title
+

@@ -1,6 +1,5 @@
 import json
 from json import JSONDecodeError
-
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpResponseRedirect
@@ -12,6 +11,12 @@ from django.contrib import messages
 from .models import Order, CategoryMenu, Items, Receipt
 from django.db.models import F, DecimalField, ExpressionWrapper, Sum
 import datetime
+from django.views.generic import ListView, View, DetailView, CreateView, TemplateView
+from django.contrib import messages
+from .models import Order, CategoryMenu, Items, Receipt
+from cafe.forms.cart_form import OrderForm
+from core.models import Image
+from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
 from django.contrib.contenttypes.models import ContentType
 from core.models import Image
 from .forms import search_form, receipt_form
@@ -249,6 +254,9 @@ class DetailItemView(LoginRequiredMixin, DetailView):
     context_object_name = "item"
     template_name = "detail_item.html"
 
+    # def handle_no_permission(self):
+    #      return render(request, 'unauthorized_access.html', {})
+
     def get_object(self, queryset=None):
         idd = self.kwargs.get('pk')
 
@@ -256,10 +264,21 @@ class DetailItemView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'))
         return context
 
 
+
 def index(request):
     return render(request, 'index.html')
+
+    # def get_queryset(self):
+    #     order_id = Receipt.objects.select_related('order').prefetch_related('items').get(
+    #         id=self.request.POST.get('order_id'))
+    #     print("order:===", order_id)
+    #     return order_id
+
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+

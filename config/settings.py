@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "admin_interface",
+    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +40,8 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
-    'django.contrib.postgres'
+    'django.contrib.postgres',
+
 ]
 
 MIDDLEWARE = [
@@ -79,9 +82,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cafe',
         'USER': 'postgres',
-        'PASSWORD': 'shima1993',
+        'PASSWORD': '1234',
         'PORT': '5432',
     }}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -115,10 +119,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-MEDIA_URL = '/images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -126,11 +130,21 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
-#                          "django.contrib.auth.backends.ModelBackend",
-# ]
-
+AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
+                           "django.contrib.auth.backends.ModelBackend",
+                           ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 3600
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LOGIN_URL = 'account:User_login'
+# google account
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "saharmahmoodi01@gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = "bxlmbhlfbnnktgvk"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "Group3 Coffee Project"

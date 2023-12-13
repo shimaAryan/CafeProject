@@ -211,8 +211,11 @@ optgroup,
 textarea {
   margin: 0;
   font-family: inherit;
-  font-size: inherit;
-  line-height: inherit; }
+  font-size: 12px;
+  line-height: 30px;
+width: 300px;
+}
+
 
 button,
 input {
@@ -237,8 +240,8 @@ button::-moz-focus-inner,
 
 input[type="radio"],
 input[type="checkbox"] {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  /*-webkit-box-sizing: border-box;*/
+  /*box-sizing: border-box;*/
   padding: 0; }
 
 input[type="date"],
@@ -325,6 +328,33 @@ h5, .h5 {
 
 h6, .h6 {
   font-size: 1rem; }
+
+.alert {
+  max-width: 350px;
+  margin: 0 auto;
+  font-family: "Time News", sans-serif;
+  font-size: 12px;
+  color: #1a120f !important;
+  background-color: rgba(130, 98, 73, 0.7)!important;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.base_account{
+  background-image: url(/static/images/account_background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 1200px;
+}
+
+.center-box {
+  width: 70%;
+  height: 500px;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-sizing: border-box; }
 
 .lead {
   font-size: 1.25rem;
@@ -487,7 +517,8 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px; }
+  margin-left: -15px;
+  align-items: center;}
 
 .no-gutters {
   margin-right: 0;
@@ -1555,11 +1586,22 @@ pre {
   .table-responsive > .table-bordered {
     border: 0; }
 
+.logout {
+border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  width: 130px;
+ font-size: 15px;
+}
+
+
 .form-control {
+
   display: block;
   width: 100%;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 10px!important;
   line-height: 1.5;
   color: #495057;
   background-color: #fff;
