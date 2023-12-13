@@ -1,9 +1,11 @@
 from django.apps import apps
-
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, validate_email
 from django.db import models
+from datetime import date
+from django.core.exceptions import ValidationError
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 
 
 # Create your models here.
@@ -30,31 +32,27 @@ class MyUserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+        user.is_customer = False
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
 
-class CustomUser(AbstractBaseUser):
-    phonenumber = models.CharField(
-        max_length=20,
-        validators=[
-            RegexValidator(
-                regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
-                message="Invalid phone number format. Example: +989123456789 or 09123456789",
-            ),
-        ],
-        verbose_name="Phone number",
-        unique=True)
-    email = models.EmailField(
-        max_length=100,
-        verbose_name="email address",
-    )
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    phonenumber = models.CharField(max_length=50, validators=[RegexValidator(
+        regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
+        message="Invalid phone number format. Example: +989123456789 or 09123456789", ),
+    ], verbose_name="Phone number", unique=True)
+    email = models.EmailField(max_length=100, verbose_name="email address", validators=[validate_email],
+                              unique=True
+                              )
     username = models.CharField(max_length=40, null=True, blank=True,
                                 help_text="Create the default username using the format firstname_lastname@cofe")
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
     how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default="None",max_length=20)
+                                            ("Fr", "Friends"), ("Other", "Other items")], default=None, null=True)
+    is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -63,7 +61,7 @@ class CustomUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = "phonenumber"
-    REQUIRED_FIELDS = ["email", "username"]
+    REQUIRED_FIELDS = ["email", ]
 
     def __str__(self):
         return f"{self.firstname}_{self.lastname}"
@@ -82,12 +80,60 @@ class CustomUser(AbstractBaseUser):
     def is_staff(self):
         """Is the user a member of staff?"""
         # Simplest possible answer: All staff in staff model
-        return self.is_admin
+        if not self.is_customer:
+            return self.is_admin or not self.is_customer
+
+    @is_staff.setter
+    def is_staff(self, value):
+        self._is_staff = value
 
     def save(self, *args, **kwargs):
         if self.is_admin:
             self.username = 'admin@Cofe'
         elif not self.username:
-            self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Cofe"
+            self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
 
+
+class ValidatorMixin:
+    def nationalcode_validator(value):
+        """
+             Function for checking the number of Iranian national code digits.
+             """
+        national_code = str(value)
+        length = len(national_code)
+        if length < 8 or length > 10:
+            raise ValidationError('Invalid national code length')
+
+
+class Staff(CustomUser, models.Model, ValidatorMixin):
+    """
+   Models for managing information of Staff in coffee .
+    """
+    nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
+                                    verbose_name="National Code", unique=True)
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day",
+                                     default=timezone.now)
+    experience = models.IntegerField(null=True, default=None)
+    rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
+    profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
+                                      default=None)
+    guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
+                                 default=None, null=True)
+
+    def __str__(self):
+        return f"{self.firstname} {self.lastname}"
+
+    def save(self, *args, **kwargs):
+        CustomUser.is_staff, CustomUser.is_customer = True, False
+        super().save(*args, **kwargs)
+
+
+class LoginRecord(models.Model):
+    """
+   Models to observe User's login  in coffee website.
+    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    last_time = models.DateTimeField(auto_now=True)
+    login_count = models.PositiveIntegerField(default=0)
+    order_count = models.PositiveIntegerField(default=0)

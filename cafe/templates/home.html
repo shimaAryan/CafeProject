@@ -1,0 +1,26 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+  {% block content %}
+    <!-- END nav -->
+   <section class="ftco-section justify-content-center align-items-center" >
+    <div class="center-box  py-5 h-60  justify-content-center" >
+      <div class="slider-item" style="background-image: {% static 'images/bg_3.jpg' %}; height: 500px;" data-stellar-background-ratio="0.5" >
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row slider-text justify-content-center">
+            <div class="col-md-8 col-sm-12 text-center ftco-animate">
+            	<h1 class="mb-3 bread">Welcome to your Coffee </h1>
+                <h2 class="mb-3 mt-5 bread">I hope you have a good time with us </h2>
+                <h3 class="breadcrumbs"><span><a href="{% url 'account:index' %}">Home coffee</a></span></h3>
+                <h3 class="mb-3 mt-5 m-3 bread"><a href="{% url 'account:User_login' %}">login</a> </h3>
+                <p class="justify-content-center align-items-center"><span class="mr-2" style="font-size: 20px;"><a class="m-4" >Sign Up</a></span></p>
+                <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'account:Staff_signup' %}">Staff</a></span> <span><a href="{% url 'account:Customer_signup' %}">Customer</a></span></p>
+            </div>
+          </div>
+          </div>
+        </div>
+    </div>
+  </section>
+  {% endblock %}
+

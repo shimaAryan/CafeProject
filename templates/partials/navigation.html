@@ -29,8 +29,16 @@
                 <a class="dropdown-item" href="#">Cart</a>
 {#                  checkout.html#}
                 <a class="dropdown-item" href="#">Checkout</a>
+
               </div>
             </li>
+             {% if user.is_authenticated %}
+                 <li class="nav-item-logout">
+                     <form action="{% url 'account:User_logout' %}" method="post" class="nav-link p-0">{% csrf_token %}<input  class="logout" type="submit" value="log out" ></form>
+                 </li>
+             {% else %}
+             <li class="nav-item"><a href="{% url 'cafe:home' %}" class="nav-link">Join Us</a></li>
+             {% endif %}
 {#                contact.html#}
 	          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
 {#                cart.html#}
