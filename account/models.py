@@ -1,5 +1,5 @@
 from django.apps import apps
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from datetime import date
 from django.core.exceptions import ValidationError
@@ -39,11 +39,11 @@ class MyUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    phonenumber = models.CharField(max_length=50,validators=[RegexValidator(
-                regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
-                message="Invalid phone number format. Example: +989123456789 or 09123456789",),
-                ], verbose_name="Phone number", unique=True)
-    email = models.EmailField(max_length=100, verbose_name="email address",
+    phonenumber = models.CharField(max_length=50, validators=[RegexValidator(
+        regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
+        message="Invalid phone number format. Example: +989123456789 or 09123456789", ),
+    ], verbose_name="Phone number", unique=True)
+    email = models.EmailField(max_length=100, verbose_name="email address", validators=[validate_email],
                               unique=True
                               )
     username = models.CharField(max_length=40, null=True, blank=True,

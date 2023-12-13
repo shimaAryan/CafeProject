@@ -2,51 +2,37 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from account.models import CustomUser, Staff
+from account.models import CustomUser, Staff, ValidatorMixin
 
 
-class UserRegisterForm(forms.Form):
-    phonenumber = forms.CharField(
-        widget=forms.TimeInput(attrs={"class": "form-control", 'placeholder': 'Enter your phone number'}),
-        help_text="Please enter a valid phonenumber", label='Phone Number', )
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control", 'placeholder': 'Enter your password'}))
-    password2 = forms.CharField(label="confirm password", widget=forms.PasswordInput(
-        attrs={"class": "form-control", 'placeholder': 'confirm password'}))
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"class": "form-control", 'placeholder': 'Enter Email address'}),
-        help_text="Please enter a valid email address.", )
-    firstname = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Enter your First Name'}),
-        max_length=40, label='First Name', )
-    lastname = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Enter your Last Name'}),
-        max_length=40, label='Last Name', )
+class UserRegisterForm(forms.ModelForm):
+    """
+    Class for Create and handle the User sign up form.in fact this form is create
+    for handling Customer.
+    """
+    password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(attrs={"class": "form-control", 'placeholder': 'Confirm your password'}))
     how_know_us = forms.CharField(widget=forms.Select(choices=[("Ch_Tel", "Chanel Telegram"),
                                                                ("Ins", "Instagram"),
                                                                ("Web", "Web Site"),
                                                                ]))
 
-    def clean_email(self):
-        email_input = self.cleaned_data["email"]
-        validator = RegexValidator(
-            "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:["
-            "a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-        user = CustomUser.objects.filter(email=email_input).exists()
-        try:
-            validator(email_input)
-            if user:
-                self.add_error("email", "this email is already exists")
-        except ValidationError:
-            self.add_error("email", "Invalid email format")
-        return email_input
+    class Meta:
+        model = CustomUser
+        fields = ["phonenumber", "email", "firstname", "lastname", "password", "how_know_us"]
+        widgets = {
+            'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
+            'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}),
+            'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
+        }
 
-    def clean(self):
-        datas = super().clean()
-        p1 = datas.get("password")
-        p2 = datas.get("password2")
-        if p1 and p2 and p1 != p2:
-            self.add_error('password2', "your confirm password and password does not match")
+    def clean_password_confirm(self):
+        password = self.cleaned_data.get("password")
+        password_confirm = self.cleaned_data.get("password_confirm")
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError("Your confirm password and password do not match")
+        return password_confirm
 
 
 class StaffSignUpForm(forms.ModelForm):
@@ -63,13 +49,13 @@ class StaffSignUpForm(forms.ModelForm):
         fields = "__all__"
 
     widgets = {
-        'phonenumber': forms.TextInput(attrs={'placeholder': 'Enter your phone number'}),
-        'nationalcode': forms.TextInput(attrs={'placeholder': 'Enter your national code'}),
-        'password': forms.PasswordInput(attrs={'placeholder': 'Enter your password'}),
-        'email': forms.EmailInput(attrs={'placeholder': 'Enter your email address'}),
-        'firstname': forms.TextInput(attrs={'placeholder': 'Enter your first name'}),
-        'lastname': forms.TextInput(attrs={'placeholder': 'Enter your last name'}),
-        'date_of_birth': forms.DateInput(attrs={'placeholder': 'Enter your date of birth', 'type': 'date'}),
+        'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
+        'nationalcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your national code'}),
+        'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}),
+        'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
+        'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}),
+        'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
+        'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth', 'type': 'date'}),
     }
 
     def __init__(self, *args, **kwargs):
@@ -78,11 +64,11 @@ class StaffSignUpForm(forms.ModelForm):
             self.fields[field].widget = widget
 
     def clean(self):
-        datas = super().clean()
-        p1 = datas.get("password")
-        p2 = datas.get("password_confirm")
-        if p1 and p2 and p1 != p2:
-            self.add_error('password_confirm', "your confirm password and password does not match")
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+        if password and password_confirm and password != password_confirm:
+            self.add_error('password_confirm', "Your confirm password and password do not match")
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -99,10 +85,4 @@ class CustomAuthenticationForm(AuthenticationForm):
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password'}),
         help_text="forgot your "
                   "password", )
-    error_messages = {
-        "invalid_login": (
-            "Please enter a correct  phone number or email as username and password. Note that both "
-            "fields may be case-sensitive."
-        ),
-        "inactive": "This account is inactive.",
-    }
+
