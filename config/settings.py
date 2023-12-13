@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
     'core.apps.CoreConfig',
-
+    
 ]
 
 MIDDLEWARE = [
@@ -79,13 +79,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Coffee',
+        'NAME': 'cafe',
         'USER': 'postgres',
-        'PASSWORD': 'Shad_M72770',
-        'HOST': 'localhost',
+        'PASSWORD': '1234',
         'PORT': '5432',
-    }
-}
+    }}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -135,7 +134,10 @@ AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
                            ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LOGIN_URL="User_Login"
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_AGE = 3600
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = 'account:User_login'

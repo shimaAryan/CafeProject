@@ -14,8 +14,14 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
+<<<<<<< HEAD
+    <orderEntry type="jdk" jdkName="Python 3.11 (env)" jdkType="Python SDK" />
+=======
     <orderEntry type="jdk" jdkName="Python 3.11 (CafeProject) (2)" jdkType="Python SDK" />
+>>>>>>> 662390d3b91825b8e939912a3d6aee6115dea109
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="templates" />
+    <orderEntry type="module" module-name="coffee-template" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
