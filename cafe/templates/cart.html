@@ -46,9 +46,9 @@
 
                                     {% for item in item_data %}
                                     <td class="product-remove"><a href="#"><span class="icon-close"></span></a></td>
-                                    {% for picture in order.images.item.pk %}
+                                    {% for picture in images %}
 						                {% if picture.object_id == item.id %}
-										 <td class="image-prod"><div class="img" style="background-image:url({% static picture %});"></div></td>
+										 <td class="image-prod"><div class="img" style="background-image:url({% static 'picture.image' %});"></div></td>
 						                {% endif %}
 					                     {% endfor %}
 
@@ -103,7 +103,7 @@
 
                     {% endif %}
 
-                    <p class="text-center"><a href="{% url 'cafe:cart-receipt' user_id=order.user_order.pk %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+                    <p class="text-center"><a href="#" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     			</div>
     		</div>
 			</div>

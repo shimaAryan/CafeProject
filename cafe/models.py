@@ -54,7 +54,6 @@ class Order(models.Model):
     delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
     items = models.ManyToManyField(Items, related_name="item_order")
 
-
     def __str__(self):
         return self.title
 
@@ -86,4 +85,3 @@ class Like(models.Model):
 
     def __str__(self):
         return self.user.id, self.items.title
-

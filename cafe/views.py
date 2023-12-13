@@ -6,24 +6,20 @@ from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpR
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import FormView
 from django.contrib import messages
-from .models import Order, CategoryMenu, Items, Receipt
-from django.db.models import F, DecimalField, ExpressionWrapper, Sum
 import datetime
-from django.views.generic import ListView, View, DetailView, CreateView, TemplateView
+from django.views.generic import ListView, View, DetailView, TemplateView
 from django.contrib import messages
 from .models import Order, CategoryMenu, Items, Receipt
 from cafe.forms.cart_form import OrderForm
-from core.models import Image
-from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
 from django.contrib.contenttypes.models import ContentType
 from core.models import Image
 from .forms import search_form, receipt_form
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
-from django.utils.decorators import method_decorator
+
 from django.http import JsonResponse
 
 user = get_user_model()
@@ -62,9 +58,10 @@ class CartView(View):
         }
         try:
 
-            order_obj = Order.objects.get(user_order=request.session.get('_auth_user_id'))
-            print("99999999",order_obj)
+            order_obj = Order.objects.get(user_order=request.user.id)
+            print("99999999", order_obj)
             context['order'] = order_obj
+            print("8888888888", context['order'])
 
             order_data = request.session.get('order', [])
             for order in order_data:
@@ -78,6 +75,7 @@ class CartView(View):
 
                 context['subtotal'] += order['item_total']
             context['total'] += context['subtotal'] + order_obj.delivery_cost
+            context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
 
         except Order.DoesNotExist:
 
@@ -113,6 +111,7 @@ class CartView(View):
 
 class ReceiptView(LoginRequiredMixin, SuccessMessageMixin, FormView, CartView):
     template_name = 'checkout.html'
+    model = Receipt
     context_object_name = 'receipt'
     success_url = reverse_lazy("cafe:cart")
     form_class = receipt_form.PersonalInfo
@@ -126,12 +125,13 @@ class ReceiptView(LoginRequiredMixin, SuccessMessageMixin, FormView, CartView):
         user_pk = self.user_id
         if not user_pk == request.user.id:
             messages.error(request, "you must be logged in", "danger")
-            return redirect("account:login")
+            return redirect("account:User_login")
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order = CartView.get
+        print("++++++++++++++++++++", order)
         if order:
             context.update({
                 'form': self.form_class(),
@@ -268,17 +268,9 @@ class DetailItemView(LoginRequiredMixin, DetailView):
         return context
 
 
-
 def index(request):
     return render(request, 'index.html')
-
-    # def get_queryset(self):
-    #     order_id = Receipt.objects.select_related('order').prefetch_related('items').get(
-    #         id=self.request.POST.get('order_id'))
-    #     print("order:===", order_id)
-    #     return order_id
 
 
 class HomeView(TemplateView):
     template_name = 'home.html'
-
