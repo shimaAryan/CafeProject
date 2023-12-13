@@ -33,7 +33,9 @@
               </div>
             </li>
              {% if user.is_authenticated %}
-                 <li class="nav-item"><form action="{% url 'account:User_logout' %}" method="post" class="nav-link">{% csrf_token %}<input type="submit" value="log out"></form></li>
+                 <li class="nav-item-logout">
+                     <form action="{% url 'account:User_logout' %}" method="post" class="nav-link p-0">{% csrf_token %}<input  class="logout" type="submit" value="log out" ></form>
+                 </li>
              {% else %}
              <li class="nav-item"><a href="{% url 'cafe:home' %}" class="nav-link">Join Us</a></li>
              {% endif %}

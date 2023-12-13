@@ -1586,6 +1586,16 @@ pre {
   .table-responsive > .table-bordered {
     border: 0; }
 
+.logout {
+border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  width: 130px;
+ font-size: 15px;
+}
+
+
 .form-control {
 
   display: block;
