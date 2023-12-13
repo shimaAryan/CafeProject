@@ -1,7 +1,12 @@
+import cafe
+from cafe.apps import CafeConfig
+from cafe.models import CategoryMenu
+from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import views as auth_view
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -15,15 +20,15 @@ class StaffSignUpView(CreateView):
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     form_class = StaffSignUpForm
+    app_config = apps.get_app_config("cafe")
+    models = app_config.get_models()
 
     def form_valid(self, form):
         user = form.save(commit=False)
         password = form.cleaned_data['password']
         user.set_password(password)
         user.save()
-        # Add the Staff user to a group
-        group, created = Group.objects.get_or_create(name="staff")
-        user.groups.add(group)
+        user.groups.add('staff')
         messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
 
@@ -33,6 +38,8 @@ class CustomerSignUpView(CreateView):
     template_name = 'account/customer_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     form_class = UserRegisterForm
+    app_config = apps.get_app_config("cafe")
+    models = app_config.get_models()
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -40,8 +47,7 @@ class CustomerSignUpView(CreateView):
         user.set_password(password)
         user.save()
         # Add the Staff user to a group
-        group, created = Group.objects.get_or_create(name="Customer")
-        user.groups.add(group)
+        user.groups.add('customer')
         return super().form_valid(form)
 
 

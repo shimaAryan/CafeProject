@@ -1,10 +1,13 @@
 from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from datetime import date
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group, Permission
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -94,6 +97,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
 
+    @receiver(post_mig
+    def handle_group(sender, **kwargs):
+        app_config = apps.get_app_config("cafe")
+        models_app = app_config.get_models()
+        group, created = Group.objects.get_or_create(name="customer")
+        for model in models_app:
+            content_type = ContentType.objects.get_for_model(model)
+            model_permission = Permission.objects.filter(content_type=content_type)
+            for perm in model_permission:
+                if model.__name__ == 'items' or model.__name__ == 'categorymenu':
+                    if perm.codename == "view_items" or 'view_categorymenu':
+                        group.permissions.add(perm)
+                group.permissions.add(perm)
+
 
 class ValidatorMixin:
     def nationalcode_validator(value):
@@ -127,6 +144,21 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
     def save(self, *args, **kwargs):
         CustomUser.is_staff, CustomUser.is_customer = True, False
         super().save(*args, **kwargs)
+
+    @receiver(post_migrate, sender=None)
+    def handle_group(sender, **kwargs):
+        installed_apps = ['account', 'cafe', 'core']
+        print(installed_apps)
+        for app in installed_apps:
+            app_config = apps.get_app_config(app)
+            models_app = app_config.get_models()
+            group, created = Group.objects.get_or_create(name="staff")
+            for model in models_app:
+                if model.__name__ != "Staff":
+                    content_type = ContentType.objects.get_for_model(model)
+                    model_permission = Permission.objects.filter(content_type=content_type)
+                    for perm in model_permission:
+                        group.permissions.add(perm)
 
 
 class LoginRecord(models.Model):
