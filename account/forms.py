@@ -39,7 +39,7 @@ class StaffSignUpForm(forms.ModelForm):
     """
     password_confirm = forms.CharField(
         label='Confirm Password',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}),
+        widget=forms.PasswordInput(attrs={'class': '"form2Example27"', 'placeholder': 'Confirm your password'}),
     )
 
     class Meta:

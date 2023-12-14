@@ -65,7 +65,7 @@ class UserAdmin(BaseUserAdmin):
         ("General info", {"fields": ["how_know_us"]}),
         ("Permissions", {"fields": ["is_active", "is_admin", "is_customer","groups", "user_permissions"]}),
     ]
-
+    show_facets = admin.ShowFacets.ALWAYS
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = [
