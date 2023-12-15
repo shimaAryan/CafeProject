@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-w4cm7ld3*g=csup9(h1la5v14bc6#h!sewg9zod-osjee=vg2_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -132,14 +132,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
                            "django.contrib.auth.backends.ModelBackend",
                            ]
-
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL="User_Login"
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
-SESSION_COOKIE_AGE = 3600
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 LOGIN_URL = 'account:User_login'
 # google account
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from account.models import CustomUser
+from account.models import CustomUser, Staff
 
 
 class UserCreationForm(forms.ModelForm):
@@ -63,7 +63,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ["email", "password"]}),
         ("Personal info", {"fields": ["username", "phonenumber", "firstname", "lastname"]}),
         ("General info", {"fields": ["how_know_us"]}),
-        ("Permissions", {"fields": ["is_active", "is_admin", "is_customer","groups", "user_permissions"]}),
+        ("Permissions", {"fields": ["is_active", "is_admin", "is_customer", "groups", "user_permissions"]}),
     ]
     show_facets = admin.ShowFacets.ALWAYS
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -81,6 +81,14 @@ class UserAdmin(BaseUserAdmin):
     ordering = ["email", "created"]
     filter_horizontal = []
 
+
+class StaffAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('username', 'email')
+
+
+admin.site.register(Staff, StaffAdmin)
 
 # Unregister the default Group admin
 admin.site.unregister(Group)
