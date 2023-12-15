@@ -5,7 +5,7 @@
     <!-- END nav -->
      <div class="container py-5">
          <div class="row d-flex justify-content-center align-items-center">
-             <div class="card col-md-10" style="border-radius: 1rem; height: 130vh; background: linear-gradient(to bottom, #251001, #836a4b);">
+             <div class="card col-md-10" style="border-radius: 1rem; height: 150vh; background: linear-gradient(to bottom, #251001, #836a4b);">
                  <form action="{% url 'account:Customer_signup' %}" method="post" class=" col-md-6 col-lg-12" enctype="multipart/form-data" novalidate>
                      {% csrf_token %}
                      <div class="d-flex justify-content-center m-4 pb-1">
@@ -16,53 +16,53 @@
                          <h4 class="fw-normal mb-3 pb-3 " style="letter-spacing: 1px;">Create your account</h4>
                      </div>
                      <div class="row justify-content-center m-0 p-0">
-                         <div class="col-md-4 mr-4 mb-4">
-                             <div class="form-outline mb-3">
-                                 <label class="form-label" for="form2Example17">{{ form.phonenumber.label_tag }}</label>
+                         <div class="col-md-4 mr-4">
+                             <div class="form-outline">
+                                 <label class="form-label" >{{ form.phonenumber.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.phonenumber }}
                                   <div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
                              </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.email.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label" >{{ form.email.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.email }}
                                  <div style="font-size: 10px">{{ form.email.errors }}</div>
                              </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.password.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label" >{{ form.password.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.password }}
                                  <div style="font-size: 10px">{{ form.password.errors }}</div>
                              </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.password_confirm.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label" >{{ form.password_confirm.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.password_confirm }}
                                  <div style="font-size: 10px">{{ form.password_confirm.errors }}</div>
                              </div>
                          </div>
                          <div class="col-md-4 ml-4">
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.firstname.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label">{{ form.firstname.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.firstname }}
                              </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.lastname.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label">{{ form.lastname.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.lastname }}
                              </div>
-                             <div class="form-outline mb-3">
-                                 <label class="form-label " for="form2Example17">{{ form.how_know_us.label_tag }}</label>
+                             <div class="form-outline">
+                                 <label class="form-label" >{{ form.how_know_us.label_tag }}</label>
                              </div>
-                             <div id="form2Example27" >
+                             <div class="form2Example27" >
                                  {{ form.how_know_us }}
                              </div>
                          </div>

@@ -1,10 +1,13 @@
 from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from datetime import date
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group, Permission
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -70,10 +73,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """Does the user have a specific permission?"""
         # Simplest possible answer: Yes, always
         return True
+        # return super().has_perm(perm)
 
     def has_module_perms(self, app_label):
         """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
+        # return super().has_module_perms(app_label)
         return True
 
     @property
@@ -93,6 +98,29 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         elif not self.username:
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
+
+    @receiver(post_migrate, sender=None)
+    def handle_group(sender, **kwargs):
+        app_config = apps.get_app_config("cafe")
+        app_config2 = apps.get_app_config("core")
+        models_app = list(app_config.get_models())
+        CommentModel = app_config2.get_model("Comment")
+        models_app.append(CommentModel)
+        group, created = Group.objects.get_or_create(name="customer")
+        for model in models_app:
+            content_type = ContentType.objects.get_for_model(model)
+            model_permission = Permission.objects.filter(content_type=content_type)
+
+            for perm in model_permission:
+                list_view_model = ['Items', 'CategoryMenu', 'Order', 'Receipt']
+                if model.__name__ in list_view_model:
+                    view_perm = 'view_' + model.__name__.lower()
+                    if perm.codename == view_perm:
+                        group.permissions.add(perm)
+                    else:
+                        pass
+                else:
+                    group.permissions.add(perm)
 
 
 class ValidatorMixin:
@@ -125,8 +153,22 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
         return f"{self.firstname} {self.lastname}"
 
     def save(self, *args, **kwargs):
-        CustomUser.is_staff, CustomUser.is_customer = True, False
+        CustomUser.is_staff, CustomUser.is_customer, CustomUser.is_active = True, False, True
         super().save(*args, **kwargs)
+
+    @receiver(post_migrate, sender=None)
+    def handle_group(sender, **kwargs):
+        installed_apps = ['account', 'cafe', 'core']
+        for app in installed_apps:
+            app_config = apps.get_app_config(app)
+            models_app = app_config.get_models()
+            group, created = Group.objects.get_or_create(name="staff")
+            for model in models_app:
+                if model.__name__ != "Staff":
+                    content_type = ContentType.objects.get_for_model(model)
+                    model_permission = Permission.objects.filter(content_type=content_type)
+                    for perm in model_permission:
+                        group.permissions.add(perm)
 
 
 class LoginRecord(models.Model):

@@ -1,7 +1,12 @@
+import cafe
+from cafe.apps import CafeConfig
+from cafe.models import CategoryMenu
+from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import views as auth_view
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -21,8 +26,9 @@ class StaffSignUpView(CreateView):
         password = form.cleaned_data['password']
         user.set_password(password)
         user.save()
+        user.is_active = True
         # Add the Staff user to a group
-        group, created = Group.objects.get_or_create(name="staff")
+        group = Group.objects.get(name="staff")
         user.groups.add(group)
         messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
@@ -40,8 +46,9 @@ class CustomerSignUpView(CreateView):
         user.set_password(password)
         user.save()
         # Add the Staff user to a group
-        group, created = Group.objects.get_or_create(name="Customer")
+        group = Group.objects.get(name="customer")
         user.groups.add(group)
+        messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
 
 
@@ -59,7 +66,7 @@ class UserLoginView(auth_view.LoginView):
         elif user.is_customer:
             return redirect(reverse('account:index'))
         elif user.is_staff:
-            return redirect(reverse('cafe:home'))
+            return redirect(reverse('account:index'))
         else:
             return redirect(reverse('account:User_login'))
 
