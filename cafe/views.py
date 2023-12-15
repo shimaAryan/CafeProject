@@ -26,6 +26,7 @@ user = get_user_model()
 
 class ContextMixin:
     def get_context(self):
+        pass
 class CartView(LoginRequiredMixin, View):
     template_name = "cart.html"
 

@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.backends import ModelBackend
 from .models import CustomUser
 
 
-class EmailBackend:
+class EmailBackend(ModelBackend) :
 
     def __init__(self):
         self.UserModel = CustomUser
@@ -16,8 +16,3 @@ class EmailBackend:
         except self.UserModel.DoesNotExist:
             return None
 
-    def get_user(self, user_id):
-        try:
-            return self.UserModel.objects.get(pk=user_id)
-        except self.UserModel.DoesNotExist:
-            return None

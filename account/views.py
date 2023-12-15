@@ -20,15 +20,16 @@ class StaffSignUpView(CreateView):
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     form_class = StaffSignUpForm
-    app_config = apps.get_app_config("cafe")
-    models = app_config.get_models()
 
     def form_valid(self, form):
         user = form.save(commit=False)
         password = form.cleaned_data['password']
         user.set_password(password)
         user.save()
-        user.groups.add('staff')
+        user.is_active = True
+        # Add the Staff user to a group
+        group = Group.objects.get(name="staff")
+        user.groups.add(group)
         messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
 
@@ -38,8 +39,6 @@ class CustomerSignUpView(CreateView):
     template_name = 'account/customer_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     form_class = UserRegisterForm
-    app_config = apps.get_app_config("cafe")
-    models = app_config.get_models()
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -47,7 +46,9 @@ class CustomerSignUpView(CreateView):
         user.set_password(password)
         user.save()
         # Add the Staff user to a group
-        user.groups.add('customer')
+        group = Group.objects.get(name="customer")
+        user.groups.add(group)
+        messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
 
 
@@ -65,7 +66,7 @@ class UserLoginView(auth_view.LoginView):
         elif user.is_customer:
             return redirect(reverse('account:index'))
         elif user.is_staff:
-            return redirect(reverse('cafe:home'))
+            return redirect(reverse('account:index'))
         else:
             return redirect(reverse('account:User_login'))
 
