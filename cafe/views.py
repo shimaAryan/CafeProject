@@ -337,7 +337,7 @@ def index(request):
 
 
 class HomeView(TemplateView):
-    template_name = 'home.html'
+    template_name = 'index.html'
 
 # class CreateCommentView(CreateView):
 #     model = Comment

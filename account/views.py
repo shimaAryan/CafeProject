@@ -1,14 +1,8 @@
 from django.contrib.messages.views import SuccessMessageMixin
-
-import cafe
-from cafe.apps import CafeConfig
-from cafe.models import CategoryMenu
-from django.apps import apps
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 from django.contrib.auth import views as auth_view
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -56,7 +50,7 @@ class CustomerSignUpView(CreateView):
 
 class UserLoginView(auth_view.LoginView):
     template_name = 'account/login.html'
-    success_url = reverse_lazy('cafe:home')
+    success_url = reverse_lazy('account:index')
     form_class = CustomAuthenticationForm
 
     def form_valid(self, form) -> HttpResponse:
@@ -82,7 +76,7 @@ class IndexView(TemplateView):
 
 
 class UserLogoutView(auth_view.LogoutView):
-    next_page = reverse_lazy('cafe:home')
+    next_page = reverse_lazy('account:index')
 
 
 class UserPasswordResetView(auth_view.PasswordResetView):
