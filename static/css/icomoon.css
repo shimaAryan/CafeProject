@@ -4917,3 +4917,10 @@
 .icon-zoom_out_map:before {
   content: "\e56b";
 }
+.like-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #c49b63;
+  border-radius: 50%;
+}

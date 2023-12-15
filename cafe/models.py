@@ -85,5 +85,13 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.id, self.items.title
-
+        return f'{self.user.id}, {self.items.title}'
+    
+    @staticmethod
+    def is_liked(userr,itemm):
+        try:
+            Like.objects.get(user=userr,items=itemm)
+            return True
+        except :
+            return False
+        
