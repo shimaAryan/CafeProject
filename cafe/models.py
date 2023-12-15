@@ -1,9 +1,9 @@
 from django.db import models
-# from account.models import User
 import datetime as dt
 from django.contrib.auth import get_user_model
 
-from account.models import CustomUser
+
+user = get_user_model()
 
 
 class ServingTime(models.Model):
@@ -35,27 +35,21 @@ class Items(models.Model):
     discount = models.PositiveIntegerField(default=0)
     number_items = models.PositiveIntegerField(default=1)
     like_count = models.PositiveIntegerField(default=0)
-    like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
+    like = models.ManyToManyField(user, through='Like', related_name='liked_item')
 
     def __str__(self):
         return self.title
-
-
-from decimal import Decimal
 
 
 class Order(models.Model):
-    DoesNotExist = None
-    title = models.CharField(max_length=10, default="cart")
-    order_time = models.DateTimeField(auto_now_add=True)
-    user_order = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_order")
-    number_items = models.PositiveIntegerField(default=1, blank=True)
-    delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
-    delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
-    items = models.ManyToManyField(Items, related_name="item_order")
+    class OrderStatus(models.TextChoices):
+        ORDER = "ORDER", "order"
+        PAYMENT = "PAYMENT", "payment"
+        CANCELED = "CANCELED", "Canceled"
 
-    def __str__(self):
-        return self.title
+    user = models.OneToOneField(user, on_delete=models.CASCADE, related_name="user_cart")
+    status = models.CharField(max_length=10, choices=OrderStatus.choices, default=OrderStatus.ORDER)
+    order_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-order_time']
@@ -63,10 +57,25 @@ class Order(models.Model):
             models.Index(fields=['-order_time'])
         ]
 
+    def __str__(self):
+        return f" {self.id}"
+
+
+class OrderItem(models.Model):
+    DoesNotExist = None
+    number_items = models.PositiveIntegerField(default=1, blank=True)
+    delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True, default=0)
+    delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
+    items = models.ManyToManyField(Items, related_name="item_order")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order")
+
+    def __str__(self):
+        return f"{self.order.id} "
+
 
 class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='receipt_order')
 
     class Meta:
         ordering = ['-time']
@@ -75,13 +84,13 @@ class Receipt(models.Model):
         ]
 
     def __str__(self):
-        return self.order.title
+        return f"{self.time}"
 
 
 class Like(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="users")
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name="users")
     items = models.ForeignKey(Items, on_delete=models.CASCADE, related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.id, self.items.title
+        return f"{user.id}"
