@@ -14,9 +14,10 @@ class CategoryMenuAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['title']
+    list_display = ['order_time']
 
 
 admin.site.register(Like)
+admin.site.register(OrderItem)
 admin.site.register(ServingTime)
 admin.site.register(Receipt)

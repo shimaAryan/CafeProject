@@ -129,12 +129,11 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTHENTICATION_BACKENDS = ["account.authenticate.EmailBackend",
-                           "django.contrib.auth.backends.ModelBackend",
-                           ]
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
+                           "account.authenticate.EmailBackend",]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-LOGIN_URL="User_Login"
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
@@ -149,3 +148,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = "bxlmbhlfbnnktgvk"
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "Group3 Coffee Project"
+
+
+

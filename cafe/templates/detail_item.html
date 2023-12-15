@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<h1>{{item.id}}</h1>
+
 
 <section class="home-slider owl-carousel">
 
@@ -79,11 +79,11 @@
   return csrfToken;
 }
 const product = {
-  id: "{{item.id}}",
+  id: {{item.id}},
   name: "{{item.title}}",
   quantity: 1,
-  price: "{{ item.price }}",
-  discount: "{{ item.discount }}",
+  price: {{ item.price }},
+  discount: {{ item.discount }},
   description: "{{ item.description}}",
 
 };

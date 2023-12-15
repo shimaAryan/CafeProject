@@ -97,7 +97,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.username = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
 
-    @receiver(post_mig
+    @receiver(post_migrate)
     def handle_group(sender, **kwargs):
         app_config = apps.get_app_config("cafe")
         models_app = app_config.get_models()

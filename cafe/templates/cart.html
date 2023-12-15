@@ -84,7 +84,7 @@
     					</p>
     					<p class="d-flex">
     						<span>Delivery</span>
-    						<span>${{order.delivery_cost}}</span>
+    						<span>${{delivery_cost}}</span>
     					</p>
     					<p class="d-flex">
     						<span>Discount</span>
@@ -103,7 +103,7 @@
 
                     {% endif %}
 
-                    <p class="text-center"><a href="#" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+                    <p class="text-center"><a href="{% url 'cafe:cart-receipt' order.user.id %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     			</div>
     		</div>
 			</div>
