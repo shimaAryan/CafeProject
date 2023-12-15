@@ -51,7 +51,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
     how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default=None, null=True)
+                                            ("Fr", "Friends"), ("Other", "Other items")], default=None, null=True,max_length=30)
     is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -119,7 +119,7 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
     profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
                                       default=None)
     guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
-                                 default=None, null=True)
+                                 default=None, null=True,max_length=20)
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}"

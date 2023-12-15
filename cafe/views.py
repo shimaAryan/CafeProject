@@ -1,30 +1,32 @@
 import json
 from json import JSONDecodeError
 from django.contrib.messages.views import SuccessMessageMixin
+from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, FormView
 from django.contrib import messages
-from .models import Order, CategoryMenu, Items, Receipt
+from .models import Order, CategoryMenu, Items, Receipt,Like
 from django.db.models import F, DecimalField, ExpressionWrapper, Sum
 import datetime
-from django.views.generic import ListView, View, DetailView, CreateView, TemplateView
+from django.views.generic import ListView, View, DetailView, CreateView, TemplateView,DeleteView
 from django.contrib import messages
-from .models import Order, CategoryMenu, Items, Receipt
+
 from cafe.forms.cart_form import OrderForm
 from core.models import Image
 from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
 from django.contrib.contenttypes.models import ContentType
-from core.models import Image
-from .forms import search_form, receipt_form
+from core.models import Image,Comment
+from .forms import search_form, receipt_form,detail_view_form
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+
 
 user = get_user_model()
 
@@ -61,9 +63,10 @@ class CartView(View):
             'discount_total': 0,
         }
         try:
-
-            order_obj = Order.objects.get(user_order=request.session.get('_auth_user_id'))
-            print("99999999",order_obj)
+            print("/////////////////////////////////////////////",request.user.id)
+            # order_obj = Order.objects.get(user_order=request.session.get(user_order=request.user))
+            order_obj = Order.objects.get(user_order=request.user.id)
+            print("99999"*100,order_obj)
             context['order'] = order_obj
 
             order_data = request.session.get('order', [])
@@ -78,7 +81,7 @@ class CartView(View):
 
                 context['subtotal'] += order['item_total']
             context['total'] += context['subtotal'] + order_obj.delivery_cost
-
+            print("context total00000000000000000000000000000",context['total'])
         except Order.DoesNotExist:
 
             context['error'] = "Order does not exist"
@@ -249,26 +252,77 @@ class CategoryItems(ListView):
         return context
 
 
-class DetailItemView(LoginRequiredMixin, DetailView):
-    model = Items
-    context_object_name = "item"
-    template_name = "detail_item.html"
 
+class DetailItemView(LoginRequiredMixin,CreateView):
+    model = Comment
+    context_object_name = "comment"
+    template_name = "detail_item.html"
+    form_class=detail_view_form.CommentForm
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Comment created successfully!')
+        return reverse('cafe:detail_item', kwargs={'pk':self.kwargs["pk"]})
+  
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item_obj=Items.objects.get(id=self.kwargs["pk"])
+        context["item"]=item_obj
+        context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'), content_type=ContentType.objects.get_for_model(Items))
+        if Like.is_liked(self.request.user,item_obj):
+            context["like_status"]="True"
+        else:
+            context["like_status"]=False
+        context["likes_count"]=Like.objects.filter(items=item_obj.id,user=self.request.user).count()
+        
+
+        return context
+
+
+    def form_valid(self, form: BaseModelForm):
+        self.object = form.save(commit=False)
+        self.object.content_type=ContentType.objects.get_for_model(Items)
+        self.object.object_id=self.kwargs["pk"]
+        self.object.user=self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class CreateLikeView(View):
+    
+    def get(self,request,pk):
+        item_obj=Items.objects.get(id=pk)
+        print(request)
+        like_obj=Like.objects.get_or_create(items=item_obj,user=request.user)
+        if like_obj[1]==True:
+            like_obj[0].save()
+        messages.success(request, 'thanks!')
+        return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
+    
     
 
+class DeleteLikeView(View):
+    
+    def get(self,request,pk):
+        item_obj=Items.objects.get(id=pk)
+        print(request)
+        like_obj=Like.objects.get(items=item_obj,user=request.user)
+        like_obj.delete()
+        messages.success(request, 'oops !please like me again !')
+        return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
 
     # def handle_no_permission(self):
     #      return render(request, 'unauthorized_access.html', {})
 
-    def get_object(self, queryset=None):
-        idd = self.kwargs.get('pk')
+    # def get_object(self, queryset=None):
+    #     idd = self.kwargs.get('pk')
 
-        return Items.objects.get(id=idd)
+    #     return Items.objects.get(id=idd)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'))
-        return context
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'))
+    #     return context
 
 
 
@@ -285,3 +339,20 @@ def index(request):
 class HomeView(TemplateView):
     template_name = 'home.html'
 
+# class CreateCommentView(CreateView):
+#     model = Comment
+#     fields = ['content']
+#     template_name = "detail_item.html"
+#     success_message = "Your comment was sent successfully"
+#     success_url = reverse_lazy('cafe:detail_item')
+    
+#     def form_valid(self, form):
+#         print("yooohooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+#         comment = form.save(commit=False)
+#         # You can perform additional operations on the comment object here if needed
+#         print("ss"*10,self)
+#         comment.save()
+#         return super().form_valid(form)
+    
+#     # def get_success_message(self, cleaned_data):
+#     #     return self.success_message
