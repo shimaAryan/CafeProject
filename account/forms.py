@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.files.storage import FileSystemStorage
+
 from account.models import CustomUser, Staff
 
 
@@ -8,7 +10,8 @@ class UserRegisterForm(forms.ModelForm):
     Class for Create and handle the User sign up form.in fact this form is create
     for handling Customer.
     """
-    password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(attrs={"class": "form-control", 'placeholder': 'Confirm your password'}))
+    password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(
+        attrs={"class": "form-control", 'placeholder': 'Confirm your password'}))
     how_know_us = forms.CharField(widget=forms.Select(choices=[("Ch_Tel", "Chanel Telegram"),
                                                                ("Ins", "Instagram"),
                                                                ("Web", "Web Site"),
@@ -37,22 +40,17 @@ class StaffSignUpForm(forms.ModelForm):
     """
     Class for Create and handle the Staff sign up form.
     """
-    password_confirm = forms.CharField(
-        label='Confirm Password',
-        widget=forms.PasswordInput(attrs={'class': '"form2Example27"', 'placeholder': 'Confirm your password'}),
-    )
+    phonenumber = forms.CharField(
+        label='Phone Number',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}), )
+    profile_image = forms.ImageField()
 
     class Meta:
         model = Staff
-        fields = "__all__"
+        fields = ('nationalcode', 'date_of_birth', 'experience', 'rezome', 'guarantee')
 
     widgets = {
-        'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
         'nationalcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your national code'}),
-        'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}),
-        'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
-        'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}),
-        'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
         'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth',
                                                 'type': 'date'}),
     }
@@ -61,13 +59,6 @@ class StaffSignUpForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field, widget in self.widgets.items():
             self.fields[field].widget = widget
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
-        if password and password_confirm and password != password_confirm:
-            self.add_error('password_confirm', "Your confirm password and password do not match")
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -84,4 +75,3 @@ class CustomAuthenticationForm(AuthenticationForm):
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password'}),
         help_text="forgot your "
                   "password", )
-

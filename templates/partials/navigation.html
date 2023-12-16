@@ -39,13 +39,20 @@
 {#                   signup Staff.html#}
                	<a class="dropdown-item" href="{% url 'account:Staff_signup' %}">Job application form</a>
 {#                   logout.html#}
+                {% if user.is_authenticated %}
                 <form action="{% url 'account:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="color:grey;" type="submit" value="log out" ></form>
+                {% endif %}
 {#                    signup Customer.html#}
                 <a class="dropdown-item" href="{% url 'account:Customer_signup' %}">SignUp As Customer</a>
 {#                   login.html#}
+               {% if not user.is_authenticated %}
                  <a class="dropdown-item" href="{% url 'account:User_login' %}" >Log in</a>
+               {% endif %}
                </div>
               </li>
+              {% if user.is_authenticated and user.is_customer == 'False' %}
+              <li class="nav-item"><a href="{% url 'account:Staff_profile' user.id  %}" class="nav-link">Profile</a></li>
+              {% endif %}
 {#                contact.html#}
 	          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
 {#                cart.html#}

@@ -41,8 +41,6 @@ class Items(models.Model):
         return self.title
 
 
-from decimal import Decimal
-
 
 class Order(models.Model):
     DoesNotExist = None

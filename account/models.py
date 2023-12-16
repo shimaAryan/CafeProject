@@ -53,8 +53,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                 help_text="Create the default username using the format firstname_lastname@cofe")
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
-    how_know_us = models.CharField(choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default=None, null=True,max_length=30)
+    how_know_us = models.CharField(max_length=30,
+                                   choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
+                                            ("Fr", "Friends"), ("Other", "Other items")], default="other", null=True)
     is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -86,7 +87,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """Is the user a member of staff?"""
         # Simplest possible answer: All staff in staff model
         if not self.is_customer:
-            return self.is_admin or not self.is_customer
+            return not self.is_customer
 
     @is_staff.setter
     def is_staff(self, value):
@@ -134,23 +135,24 @@ class ValidatorMixin:
             raise ValidationError('Invalid national code length')
 
 
-class Staff(CustomUser, models.Model, ValidatorMixin):
+class Staff(models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE, related_name='staff')
     nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
                                     verbose_name="National Code", unique=True)
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day",
                                      default=timezone.now)
     experience = models.IntegerField(null=True, default=None)
     rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
-    profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
-                                      default=None)
+    # profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
+    #                                   default=None)
     guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
-                                 default=None, null=True,max_length=20)
+                                 default='check', null=True, max_length=20)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname}"
+        return f"{self.user.firstname} {self.user.lastname}"
 
     def save(self, *args, **kwargs):
         CustomUser.is_staff, CustomUser.is_customer, CustomUser.is_active = True, False, True
@@ -169,7 +171,6 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
                     model_permission = Permission.objects.filter(content_type=content_type)
                     for perm in model_permission:
                         group.permissions.add(perm)
-
 
 
 class LoginRecord(models.Model):
