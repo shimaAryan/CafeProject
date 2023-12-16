@@ -22,8 +22,8 @@ class StaffSignUpView(SuccessMessageMixin, CreateView):
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('cafe:index')
     form_class = StaffSignUpForm
-    success_message = ('Your cooperation request has been successfully registered.'
-                       ' Confirmation of cooperation will be emailed to you by management')
+    # success_message = ('Your cooperation request has been successfully registered.'
+    #                    ' Confirmation of cooperation will be emailed to you by management')
 
     def form_valid(self, form):
         staff = form.save(commit=False)
