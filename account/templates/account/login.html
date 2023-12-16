@@ -2,7 +2,17 @@
 {% load static %}
 {% block title %}Login{% endblock %}
   {% block content %}
-    <!-- END nav -->
+     <section class="section justify-content-center align-items-center" style="background-color:rgba(28,21,13,0.7);" >
+          <div class="container">
+            <div class="row slider-text justify-content-center">
+              <div class="col-md-8 col-sm-12 text-center ftco-animate">
+              	<h2 class="bread">Welcome to your Coffee </h2>
+                  <h3 class=" mt-5 bread">I hope you have a good time with us </h3>
+              </div>
+            </div>
+          </div>
+    </section>
+
     <section class="ftco-section">
         <div class="container">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -41,9 +51,9 @@
                                 </div>
                                 <p class="mb-2 pb-lg-2" style="color: #c4c7e7;"><a href="{% url 'account:reset_password' %}"
                                     style="color: #c4c7e7;">forgot your password</a></p>
-                                <p class="mb-5 pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="{% url 'cafe:home' %}"
+                                <p class=" pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="{% url 'account:Customer_signup' %}"
                                     style="color: #c4c7e7;">Register here</a></p>
->
+                                  <a href="{% url 'cafe:index' %}" style="color: #642c01;">Coffee BLEND Home Page</a>
                               </form>
                             </div>
                         </div>
@@ -52,7 +62,7 @@
             </div>
         </div>
     </section>
-  {% endblock %}
+{% endblock %}
 
   <script>
 		$(document).ready(function(){

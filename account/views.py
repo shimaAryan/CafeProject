@@ -1,12 +1,8 @@
-import cafe
-from cafe.apps import CafeConfig
-from cafe.models import CategoryMenu
-from django.apps import apps
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 from django.contrib.auth import views as auth_view
-from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -15,11 +11,13 @@ from .forms import CustomAuthenticationForm, StaffSignUpForm, UserRegisterForm
 from .models import Staff, CustomUser
 
 
-class StaffSignUpView(CreateView):
+class StaffSignUpView(SuccessMessageMixin, CreateView):
     model = Staff
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('account:User_login')
     form_class = StaffSignUpForm
+    success_message = ('Your cooperation request has been successfully registered.'
+                       ' Confirmation of cooperation will be emailed to you by management')
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -27,10 +25,7 @@ class StaffSignUpView(CreateView):
         user.set_password(password)
         user.save()
         user.is_active = True
-        # Add the Staff user to a group
-        group = Group.objects.get(name="staff")
-        user.groups.add(group)
-        messages.success(self.request, 'Account created successfully. You can now log in.')
+        messages.info(self.request, 'New staff sign-up: {} {}'.format(user.firstname, user.lastname))
         return super().form_valid(form)
 
 
@@ -47,6 +42,7 @@ class CustomerSignUpView(CreateView):
         user.save()
         # Add the Staff user to a group
         group = Group.objects.get(name="customer")
+        print("2" * 100, group)
         user.groups.add(group)
         messages.success(self.request, 'Account created successfully. You can now log in.')
         return super().form_valid(form)
@@ -54,7 +50,7 @@ class CustomerSignUpView(CreateView):
 
 class UserLoginView(auth_view.LoginView):
     template_name = 'account/login.html'
-    success_url = reverse_lazy('cafe:home')
+    success_url = reverse_lazy('account:index')
     form_class = CustomAuthenticationForm
 
     def form_valid(self, form) -> HttpResponse:
@@ -80,7 +76,7 @@ class IndexView(TemplateView):
 
 
 class UserLogoutView(auth_view.LogoutView):
-    next_page = reverse_lazy('cafe:home')
+    next_page = reverse_lazy('account:index')
 
 
 class UserPasswordResetView(auth_view.PasswordResetView):

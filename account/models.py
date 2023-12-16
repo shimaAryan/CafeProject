@@ -171,6 +171,7 @@ class Staff(CustomUser, models.Model, ValidatorMixin):
                         group.permissions.add(perm)
 
 
+
 class LoginRecord(models.Model):
     """
    Models to observe User's login  in coffee website.
