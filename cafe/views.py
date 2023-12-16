@@ -251,9 +251,12 @@ class CategoryItems(ListView):
 
         return context
 
+class CommentListView(ListView):
+    model = Comment  
+    context_object_name = 'commenttt'  # Set the context variable name for the comment list in the template
+    paginate_by = 4  # Set the number of comments per page
 
-
-class DetailItemView(LoginRequiredMixin,CreateView):
+class DetailItemView(LoginRequiredMixin,CreateView,CommentListView):
     model = Comment
     context_object_name = "comment"
     template_name = "detail_item.html"
@@ -275,7 +278,7 @@ class DetailItemView(LoginRequiredMixin,CreateView):
             context["like_status"]=False
         context["likes_count"]=Like.objects.filter(items=item_obj.id,user=self.request.user).count()
         
-
+        print("/////////////////////////////////////////////////////////////",context)
         return context
 
 

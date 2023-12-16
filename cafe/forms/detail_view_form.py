@@ -9,10 +9,3 @@ class CommentForm(forms.ModelForm):
             'content': forms.TextInput(attrs={'class': 'form-control'}),
         }
       
-# class CommentForm(forms.ModelForm):
-#    class Meta:
-#       model=Comment
-#       fields=["content"]
-#       widgets = {
-#             'content': forms.TextInput(attrs={'class': 'form-control'}),
-#         }
