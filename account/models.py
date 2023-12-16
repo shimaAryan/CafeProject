@@ -2,9 +2,7 @@ from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
-from datetime import date
 from django.core.exceptions import ValidationError
-from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group, Permission
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver

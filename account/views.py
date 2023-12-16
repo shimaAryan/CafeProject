@@ -1,5 +1,3 @@
-from urllib.parse import urlencode
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
@@ -8,10 +6,9 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import Group
 from django.contrib.auth import views as auth_view
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
-
 from core.models import Image
 from .forms import CustomAuthenticationForm, StaffSignUpForm, UserRegisterForm
 from .models import Staff, CustomUser
@@ -22,8 +19,6 @@ class StaffSignUpView(SuccessMessageMixin, CreateView):
     template_name = 'account/staff_sign_up.html'
     success_url = reverse_lazy('cafe:index')
     form_class = StaffSignUpForm
-    # success_message = ('Your cooperation request has been successfully registered.'
-    #                    ' Confirmation of cooperation will be emailed to you by management')
 
     def form_valid(self, form):
         staff = form.save(commit=False)
@@ -32,9 +27,11 @@ class StaffSignUpView(SuccessMessageMixin, CreateView):
             user_register = CustomUser.objects.get(phonenumber=phonenumber)
             staff.user = user_register
             staff.save()
-            Image.objects.create(image=form.cleaned_data['profile_image'], content_type=ContentType.objects.get_for_model(Staff),
+            Image.objects.create(image=form.cleaned_data['profile_image'],
+                                 content_type=ContentType.objects.get_for_model(Staff),
                                  object_id=staff.id)
-            messages.info(self.request, 'New staff sign-up: {} {}'.format(user_register.firstname, user_register.lastname))
+            messages.info(self.request, 'Cooperation Request: {} {} is registered'.format(user_register.firstname,
+                                                                                          user_register.lastname))
             return super().form_valid(form)
         except CustomUser.DoesNotExist:
             return redirect(reverse('account:User_login'))
