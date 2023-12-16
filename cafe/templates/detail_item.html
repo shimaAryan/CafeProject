@@ -86,6 +86,27 @@
 	                 </button>
 	             	</span>
 	          	</div>
+              {% comment %} .................................... {% endcomment %}
+
+              <div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="input-group d-flex mb-3">
+            <div class="input-group-prepend">
+                <button type="button" id="minusBtn" class="quantity-btn btn" data-type="minus" data-field="">
+                    <i class="icon-minus"></i>
+                </button>
+            </div>
+            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+            <div class="input-group-append">
+                <button type="button" id="plusBtn" class="quantity-btn btn" data-type="plus" data-field="">
+                    <i class="icon-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+              {% comment %} ................................... {% endcomment %}
           	</div>
           	<p><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
     			</div>
@@ -110,12 +131,63 @@
                       <div  class="col-2">
                         <input id="add_to_cart" class=" btn btn-primary py-3 px-5" type="submit" value="send comment"> 
                       </div>
-                      
+                      {% comment %} <div>{{commentt.all.count()}}</div> {% endcomment %}
                   </div>
       </form><!-- END -->
   </div>
 </div>
 
+
+
+
+<div class="row justify-content-center ">
+ <div class="col-11  ">
+    <div class="row justify-content-center ">
+{% for com in object_list%}
+  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; 
+         ">
+        
+   
+                  <h3 class="mb-4 billing-heading" >{{com.user.firstname}} {{com.user.lastname}}</h3>
+                  <div class="row align-items-end">
+                      <div  class="col-8" style="white-space: nowrap;">
+                     {{com.content}}
+                        {% comment %} <input type="text" name="content" class="form-control " placeholder="write your comment"> {% endcomment %}
+                      </div>
+                      
+                      {% comment %} <div>{{commentt.all.count()}}</div> {% endcomment %}
+                  </div>
+                  <div  class="col-2">
+                        <p>like</p> 
+                      </div>
+      
+  </div>
+{%endfor %}
+<div>
+ </div>
+</div>
+
+
+
+<div class="justify-content-center ">
+  <div class="pagination d-flex justify-content-center ">
+      <span class="step-links row">
+          {% if page_obj.has_previous %}
+              <a href="?page=1" class="btn btn-primary py-3 px-5 col-2 ">first</a>
+              <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary py-3 px-5 col-2 " >pervious</a>
+          {% endif %}
+
+          <span class="current mb-4 billing-heading col-2 text-center">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
+
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary py-3 px-5 col-2 ">next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-primary py-3 px-5 col-2 ">last</a>
+          {% endif %}
+      </span>
+  </div>
+</div>
     </section>
 
  <script>
@@ -232,6 +304,28 @@ document.getElementById('add_to_cart').addEventListener('click', function() {
 
 
   });
+</script>
+<script>
+let count = 1; // Initialize count
+document.getElementById('plusBtn').addEventListener('click', function() {
+    count++;
+    document.getElementById('quantity').value = count;
+});
+
+document.getElementById('minusBtn').addEventListener('click', function() {
+    if (count > 1) {
+        count--;
+        document.getElementById('quantity').value = count;
+    }
+});
+
+document.getElementById('showCountBtn').addEventListener('click', function() {
+    alert('Count: ' + count);
+});
+
+
+
+
 </script>
 
 
