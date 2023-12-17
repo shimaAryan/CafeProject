@@ -50,7 +50,7 @@
                {% endif %}
                </div>
               </li>
-              {% if user.is_authenticated  %}
+              {% if user.is_authenticated and ser.is_customer == False %}
               <li class="nav-item"><a href="{% url 'account:Staff_profile' user.id  %}" class="nav-link">Profile</a></li>
               {% endif %}
 {#                contact.html#}
@@ -58,7 +58,7 @@
 {#                cart.html#}
 	          <li class="nav-item cart "><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
               {% if user.is_authenticated  %}
-                <li class="nav-item"><a href="#" class="nav-link">{{ user.firstname }} {{ user.lastname }}</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" style="color:rgb(144,58,12); font-size: 17px">{{ user.firstname }} {{ user.lastname }}</a></li>
               {% endif %}
 	        </ul>
 	      </div>

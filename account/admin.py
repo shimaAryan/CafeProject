@@ -44,7 +44,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ["username", "phonenumber", "email",
+        fields = ["nickname", "phonenumber", "email",
                   "password", "firstname", "lastname", "how_know_us", "is_active", "is_admin"]
 
 
@@ -56,12 +56,12 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["username", "phonenumber", "firstname", "lastname", "how_know_us", "is_active", "is_admin"]
+    list_display = ["nickname", "phonenumber", "firstname", "lastname", "how_know_us", "is_active", "is_admin"]
     search_field = ["phonenumber", "email"]
     list_filter = ["is_admin", "created"]
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
-        ("Personal info", {"fields": ["username", "phonenumber", "firstname", "lastname"]}),
+        ("Personal info", {"fields": ["nickname", "phonenumber", "firstname", "lastname"]}),
         ("General info", {"fields": ["how_know_us"]}),
         ("Permissions", {"fields": ["is_active", "is_admin", "is_customer", "groups", "user_permissions"]}),
     ]
@@ -73,7 +73,7 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ["wide"],
-                "fields": ["username", "phonenumber", "email", "firstname",
+                "fields": ["nickname", "phonenumber", "email", "firstname",
                            "lastname", "password1", "password2", "how_know_us"],
             },
         ),
@@ -82,12 +82,6 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
 
 
-# class StaffAdmin(admin.ModelAdmin):
-#     list_display = ('username', 'email', 'is_active')
-#     list_filter = ('is_active',)
-#     search_fields = ('username', 'email')
-
-#
 admin.site.register(Staff)
 
 # Unregister the default Group admin
