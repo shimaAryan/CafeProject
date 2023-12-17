@@ -116,10 +116,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                     view_perm = 'view_' + model.__name__.lower()
                     if perm.codename == view_perm:
                         group.permissions.add(perm)
+                        CustomUser.permissions.add(perm)
                     else:
                         pass
                 else:
                     group.permissions.add(perm)
+                    CustomUser.permissions.add(perm)
 
 
 class ValidatorMixin:
@@ -169,6 +171,7 @@ class Staff(models.Model, ValidatorMixin):
                     model_permission = Permission.objects.filter(content_type=content_type)
                     for perm in model_permission:
                         group.permissions.add(perm)
+
 
 
 class LoginRecord(models.Model):

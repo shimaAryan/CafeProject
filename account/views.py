@@ -60,6 +60,11 @@ class UserLoginView(auth_view.LoginView):
     success_url = reverse_lazy('account:index')
     form_class = CustomAuthenticationForm
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('cafe:index')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form) -> HttpResponse:
         super().form_valid(form)
         user = form.get_user()
@@ -101,22 +106,26 @@ class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'account/password_reset_complete.html'
 
 
-class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Staff
     template_name = 'account/staff_profile.html'
     permission_required = 'Staff.view_staff'
 
+    def __init__(self):
+        super().__init__()
+        self.object_list = None
+
     def get_queryset(self):
-        queryset = Staff.objects.select_related('CustomUser').select_related('Image')
+        queryset = Staff.objects.select_related('user')
         return queryset
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     User = CustomUser.objects.all()
-    #     staff_members = Staff.objects.all()
-    #     profile_images = Image.objects.get(content_type=ContentType.objects.get_for_model(Staff), )
-    #     context = {'profile_images': profile_images,
-    #                'User': User,
-    #                'staff_members': staff_members
-    #                }
-    #     return context
+    def get_context_data(self, object_list=None, **kwargs):
+        """Get the context for this view."""
+        super().get_context_data()
+        profile_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Staff))
+        self.object_list = self.get_queryset()
+        context = {
+            "Images": profile_images,
+            "object_list": self.object_list,
+        }
+        return context
