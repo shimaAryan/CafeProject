@@ -1,6 +1,8 @@
 from django.db import models
 import datetime as dt
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 user = get_user_model()
@@ -36,9 +38,14 @@ class Items(models.Model):
     number_items = models.PositiveIntegerField(default=1)
     like_count = models.PositiveIntegerField(default=0)
     like = models.ManyToManyField(user, through='Like', related_name='liked_item')
+    tags = TaggableManager()
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('cafe:detail_item', args=[self.id])
+
 
 
 class Order(models.Model):
@@ -57,6 +64,8 @@ class Order(models.Model):
             models.Index(fields=['-order_time'])
         ]
 
+    def get_absolute_url(self):
+        return reverse('cafe:cart-receipt', args=[user.id])
     def __str__(self):
         return f" {self.id}"
 

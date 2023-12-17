@@ -12,7 +12,7 @@
 
             <div class="col-md-7 col-sm-12 text-center ftco-animate">
             	<h1 class="mb-3 mt-5 bread">Checkout</h1>
-	            <p class="breadcrumbs"><span class="mr-2"><a href="../../templates/index.html">Home</a></span> <span>Checout</span></p>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url cafe:index %}">Home</a></span> <span>Checout</span></p>
             </div>
 
           </div>
@@ -31,69 +31,72 @@
 	                <div class="form-group">
                         {% csrf_token %}
 
-	                	<label for="firstname">Firt Name</label>
-	                  <input type="text" class="form-control" placeholder="">{{ form.firstname }}
+	                	<label >Firt Name</label>
+						{{ form.firstname }}
+<!--	                  <input type="text" class="form-control" placeholder="" value={{ form.firstname }}>-->
 	                </div>
 	              </div>
 	              <div class="col-md-6">
 	                <div class="form-group">
-	                	<label for="lastname">Last Name</label>
-	                  <input type="text" class="form-control" placeholder="" value={{ form.lastname }}>
+	                	<label >Last Name</label>
+						{{form.lastname}}
+
 	                </div>
                 </div>
                 <div class="w-100"></div>
 		            <div class="col-md-12">
 		            	<div class="form-group">
-		            		<label for="country">State / Country</label>
+		            		<label >City</label>
 		            		<div class="select-wrap">
 		                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-		                  <select name="" id="" class="form-control">
-		                  	<option value="">France</option>
-		                    <option value="">Italy</option>
-		                    <option value="">Philippines</option>
-		                    <option value="">South Korea</option>
-		                    <option value="">Hongkong</option>
-		                    <option value="">Japan</option>
-		                  </select>
+								{{form.user_city}}
+<!--		                  <select name="" id="" class="form-control">-->
+<!--		                  	<option value="">France</option>-->
+<!--		                    <option value="">Italy</option>-->
+<!--		                    <option value="">Philippines</option>-->
+<!--		                    <option value="">South Korea</option>-->
+<!--		                    <option value="">Hongkong</option>-->
+<!--		                    <option value="">Japan</option>-->
+<!--		                  </select>-->
 		                </div>
 		            	</div>
 		            </div>
 		            <div class="w-100"></div>
 		            <div class="col-md-6">
 		            	<div class="form-group">
-	                	<label for="streetaddress">Street Address</label>
-	                  <input type="text" class="form-control" placeholder="House number and street name">
+	                	<label >Address</label>
+							{{form.user_address}}
 	                </div>
 		            </div>
+<!--		            <div class="col-md-6">-->
+<!--		            	<div class="form-group">-->
+<!--	                  <input type="text" class="form-control" placeholder="Appartment, suite, unit etc: (optional)">-->
+<!--	                </div>-->
+<!--		            </div>-->
+<!--		            <div class="w-100"></div>-->
+<!--		            <div class="col-md-6">-->
+<!--		            	<div class="form-group">-->
+<!--	                	<label for="towncity">Town / City</label>-->
+<!--	                  <input type="text" class="form-control" placeholder="">-->
+<!--	                </div>-->
+<!--		            </div>-->
 		            <div class="col-md-6">
 		            	<div class="form-group">
-	                  <input type="text" class="form-control" placeholder="Appartment, suite, unit etc: (optional)">
-	                </div>
-		            </div>
-		            <div class="w-100"></div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-	                	<label for="towncity">Town / City</label>
-	                  <input type="text" class="form-control" placeholder="">
-	                </div>
-		            </div>
-		            <div class="col-md-6">
-		            	<div class="form-group">
-		            		<label for="postcodezip">Postcode / ZIP *</label>
-	                  <input type="text" class="form-control" placeholder="">
+		            		<label >Postcode / ZIP *</label>
+							{{form.user_postcode}}
 	                </div>
 		            </div>
 		            <div class="w-100"></div>
 		            <div class="col-md-6">
 	                <div class="form-group">
-	                	<label for="phone">Phone</label>
-	                  <input type="text" class="form-control" placeholder="">
+	                	<label >Phone</label>
+						{{form.phonenumber}}
 	                </div>
 	              </div>
 	              <div class="col-md-6">
 	                <div class="form-group">
-	                	<label for="emailaddress">Email Address</label>
-	                  <input type="text" class="form-control" placeholder="">
+	                	<label >Email Address</label>
+						{{form.email}}
 	                </div>
                 </div>
                 <div class="w-100"></div>
@@ -116,7 +119,7 @@
 	          			<h3 class="billing-heading mb-4">Cart Total</h3>
 	          			<p class="d-flex">
 		    						<span>Subtotal</span>
-		    						<span>{{subtotal}}</span>
+		    						<span>${{subtotal}}</span>
 		    					</p>
 		    					<p class="d-flex">
 		    						<span>Delivery</span>
@@ -124,12 +127,14 @@
 		    					</p>
 		    					<p class="d-flex">
 		    						<span>Discount</span>
-		    						<span>{{item_data.discount}}</span>
+
+		    						<span>{{discount_total}}%</span>
+
 		    					</p>
 		    					<hr>
 		    					<p class="d-flex total-price">
 		    						<span>Total</span>
-		    						<span>{{total}}</span>
+		    						<span>${{total}}</span>
 		    					</p>
 								</div>
 	          	</div>
@@ -174,25 +179,45 @@
 
 
           <div class="col-xl-4 sidebar ftco-animate">
-            <div class="sidebar-box">
-              <form action="#" class="search-form">
+			  <div class="sidebar-box">
+              <form action="{% url 'cafe:cart-receipt' order.user_id %}" class="search-form" method="get">
                 <div class="form-group">
                 	<div class="icon">
 	                  <span class="icon-search"></span>
+
                   </div>
-                  <input type="text" class="form-control" placeholder="Search...">
+					{{search.search_form.as_p}}
                 </div>
+
               </form>
             </div>
+			{% if search.items %}
+			<h2 class="search-form">Search Results</h2>
+			<ul>
+			  {% for item in search.items %}
+				<li>
+				  <a>{{ item.title }}</a>
+				  <p>{{ item.description }}</p>
+				</li>
+			  {% endfor %}
+			</ul>
+		  {% else %}
+			<p>No items found.</p>
+		  {% endif %}
             <div class="sidebar-box ftco-animate">
               <div class="categories">
                 <h3>Categories</h3>
-                <li><a href="#">Tour <span>(12)</span></a></li>
-                <li><a href="#">Hotel <span>(22)</span></a></li>
-                <li><a href="#">Coffee <span>(37)</span></a></li>
-                <li><a href="#">Drinks <span>(42)</span></a></li>
-                <li><a href="#">Foods <span>(14)</span></a></li>
-                <li><a href="#">Travel <span>(140)</span></a></li>
+				  <ul>
+				    {% for item in category_item_counts %}
+				  <li><a href="{% url 'cafe:menu' %}">{{ item.title }} <span>({{item.item_count}})</span></a></li>
+				  {% endfor %}
+					  </ul>
+<!--                <li><a href="#">Tour <span>(12)</span></a></li>-->
+<!--                <li><a href="#">Hotel <span>(22)</span></a></li>-->
+<!--                <li><a href="#">Coffee <span>(37)</span></a></li>-->
+<!--                <li><a href="#">Drinks <span>(42)</span></a></li>-->
+<!--                <li><a href="#">Foods <span>(14)</span></a></li>-->
+<!--                <li><a href="#">Travel <span>(140)</span></a></li>-->
               </div>
             </div>
 
@@ -236,14 +261,26 @@
             <div class="sidebar-box ftco-animate">
               <h3>Tag Cloud</h3>
               <div class="tagcloud">
-                <a href="#" class="tag-cloud-link">dish</a>
-                <a href="#" class="tag-cloud-link">menu</a>
-                <a href="#" class="tag-cloud-link">food</a>
-                <a href="#" class="tag-cloud-link">sweet</a>
-                <a href="#" class="tag-cloud-link">tasty</a>
-                <a href="#" class="tag-cloud-link">delicious</a>
-                <a href="#" class="tag-cloud-link">desserts</a>
-                <a href="#" class="tag-cloud-link">drinks</a>
+				   {% for tag in all_tag %}
+        			<a href="{% url 'cafe:items_by_tag' tag_slug=tag %}">
+            			{{ tag }}
+       				 </a>
+				  {% if not forloop.last %}{% endif %}
+   				 {% endfor %}
+
+
+
+
+
+
+<!--                <a href="#" class="tag-cloud-link">dish</a>-->
+<!--                <a href="#" class="tag-cloud-link">menu</a>-->
+<!--                <a href="#" class="tag-cloud-link">food</a>-->
+<!--                <a href="#" class="tag-cloud-link">sweet</a>-->
+<!--                <a href="#" class="tag-cloud-link">tasty</a>-->
+<!--                <a href="#" class="tag-cloud-link">delicious</a>-->
+<!--                <a href="#" class="tag-cloud-link">desserts</a>-->
+<!--                <a href="#" class="tag-cloud-link">drinks</a>-->
               </div>
             </div>
 
