@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_view
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView, DetailView
 from core.models import Image
 from .forms import CustomAuthenticationForm, StaffSignUpForm, UserRegisterForm
 from .models import Staff, CustomUser
@@ -101,10 +101,22 @@ class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'account/password_reset_complete.html'
 
 
-class StaffProfileView(LoginRequiredMixin, ListView):
+class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Staff
-    template_name = 'staff_profile.html'
+    template_name = 'account/staff_profile.html'
+    permission_required = 'Staff.view_staff'
 
     def get_queryset(self):
-        user = self.request.user
-        return Staff.objects.filter(user=user)
+        queryset = Staff.objects.select_related('CustomUser').select_related('Image')
+        return queryset
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     User = CustomUser.objects.all()
+    #     staff_members = Staff.objects.all()
+    #     profile_images = Image.objects.get(content_type=ContentType.objects.get_for_model(Staff), )
+    #     context = {'profile_images': profile_images,
+    #                'User': User,
+    #                'staff_members': staff_members
+    #                }
+    #     return context

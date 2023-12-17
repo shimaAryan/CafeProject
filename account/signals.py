@@ -8,27 +8,11 @@ from account.models import CustomUser
 from config import settings
 
 
-# @receiver(post_save, sender=CustomUser)
-# def user_group_changed(sender, instance, **kwargs):
-#     if instance.pk:
-#         # Check if the group has changed
-#         original_instance = sender.objects.get(pk=instance.pk)
-#         print("1" * 35, original_instance)
-#         instance_groups = instance.is_customer
-#         customuser_groups = original_instance.is_customer
-#         if instance_groups != customuser_groups and instance.is_customer == False:
-#             # Send an email notification to the user
-#             subject = 'Group Change Notification'
-#             message = 'Your group has been changed on the site. Check your account for details.'
-#             from_email = settings.EMAIL_HOST_USER
-#             recipient_list = [instance.email]
-#             send_mail(subject, message, from_email, recipient_list)
-
-
 @receiver(post_save, sender=CustomUser)
 def send_email_on_is_customer_change(sender, instance, **kwargs):
     if instance.is_customer is False:
         send_customer_disabled_email(instance)
+
 
 def send_customer_disabled_email(user):
     subject = 'Account Deactivated'
