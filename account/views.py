@@ -109,7 +109,7 @@ class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
 class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Staff
     template_name = 'account/staff_profile.html'
-    permission_required = 'Staff.view_staff'
+    permission_required = 'Group.view_staff'
 
     def __init__(self):
         super().__init__()

@@ -50,7 +50,7 @@
                {% endif %}
                </div>
               </li>
-              {% if user.is_authenticated %}
+              {% if user.is_authenticated  %}
               <li class="nav-item"><a href="{% url 'account:Staff_profile' user.id  %}" class="nav-link">Profile</a></li>
               {% endif %}
 {#                contact.html#}

@@ -41,7 +41,7 @@ class StaffSignUpForm(forms.ModelForm):
     phonenumber = forms.CharField(
         label='Phone Number',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}), )
-    profile_image = forms.ImageField()
+    profile_image = forms.ImageField(required=True)
 
     class Meta:
         model = Staff

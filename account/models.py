@@ -116,12 +116,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                     view_perm = 'view_' + model.__name__.lower()
                     if perm.codename == view_perm:
                         group.permissions.add(perm)
-                        CustomUser.permissions.add(perm)
                     else:
                         pass
                 else:
                     group.permissions.add(perm)
-                    CustomUser.permissions.add(perm)
 
 
 class ValidatorMixin:
@@ -139,7 +137,7 @@ class Staff(models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
-    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE, related_name='staff')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff')
     nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
                                     verbose_name="National Code", unique=True)
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="birth day",
@@ -171,7 +169,6 @@ class Staff(models.Model, ValidatorMixin):
                     model_permission = Permission.objects.filter(content_type=content_type)
                     for perm in model_permission:
                         group.permissions.add(perm)
-
 
 
 class LoginRecord(models.Model):
