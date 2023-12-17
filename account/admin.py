@@ -82,13 +82,13 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
 
 
-class StaffAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_active')
-    list_filter = ('is_active',)
-    search_fields = ('username', 'email')
+# class StaffAdmin(admin.ModelAdmin):
+#     list_display = ('username', 'email', 'is_active')
+#     list_filter = ('is_active',)
+#     search_fields = ('username', 'email')
 
-
-admin.site.register(Staff, StaffAdmin)
+#
+admin.site.register(Staff)
 
 # Unregister the default Group admin
 admin.site.unregister(Group)
