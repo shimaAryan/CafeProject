@@ -14,7 +14,7 @@ from django.db.models import F, DecimalField, ExpressionWrapper, Sum
 import datetime
 from django.views.generic import ListView, View, DetailView, CreateView, TemplateView,DeleteView
 from django.contrib import messages
-
+from django.http import JsonResponse
 from cafe.forms.cart_form import OrderForm
 from core.models import Image
 from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
@@ -27,7 +27,7 @@ from django.db.models.functions import Greatest
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 
-
+from django.template.loader import render_to_string
 user = get_user_model()
 
 
@@ -251,12 +251,12 @@ class CategoryItems(ListView):
 
         return context
 
-class CommentListView(ListView):
+class CommentListViewMixin(ListView):
     model = Comment  
     context_object_name = 'commenttt'  # Set the context variable name for the comment list in the template
     paginate_by = 4  # Set the number of comments per page
 
-class DetailItemView(LoginRequiredMixin,CreateView,CommentListView):
+class DetailItemView(LoginRequiredMixin,CreateView,CommentListViewMixin):
     model = Comment
     context_object_name = "comment"
     template_name = "detail_item.html"
@@ -270,6 +270,7 @@ class DetailItemView(LoginRequiredMixin,CreateView,CommentListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         item_obj=Items.objects.get(id=self.kwargs["pk"])
+        
         context["item"]=item_obj
         context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'), content_type=ContentType.objects.get_for_model(Items))
         if Like.is_liked(self.request.user,item_obj):
@@ -278,7 +279,7 @@ class DetailItemView(LoginRequiredMixin,CreateView,CommentListView):
             context["like_status"]=False
         context["likes_count"]=Like.objects.filter(items=item_obj.id,user=self.request.user).count()
         
-        print("/////////////////////////////////////////////////////////////",context)
+        Items.best_items()
         return context
 
 
@@ -300,7 +301,11 @@ class CreateLikeView(View):
         if like_obj[1]==True:
             like_obj[0].save()
         messages.success(request, 'thanks!')
-        return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
+        html_like=render_to_string  ("partial/like.html",{'item':like_obj})
+        return JsonResponse({"like_html":html_like})
+
+
+        # return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
     
     
 

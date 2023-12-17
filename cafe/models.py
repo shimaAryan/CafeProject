@@ -2,7 +2,7 @@ from django.db import models
 # from account.models import User
 import datetime as dt
 from django.contrib.auth import get_user_model
-
+from django.db.models import Count
 from account.models import CustomUser
 
 
@@ -34,11 +34,25 @@ class Items(models.Model):
     status = models.BooleanField()
     discount = models.PositiveIntegerField(default=0)
     number_items = models.PositiveIntegerField(default=1)
-    like_count = models.PositiveIntegerField(default=0)
+    # like_count = models.PositiveIntegerField(default=0)
     like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
 
     def __str__(self):
         return self.title
+    
+    @staticmethod
+    def best_items(id_category=None,count=4):
+        if id_category:
+            obj_category=CategoryMenu.objects.get(id=id_category)
+            result = Items.objects.filter(category_id=obj_category).annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+           
+            return result
+        else:
+            result = Items.objects.annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+           
+            return result
+
+
 
 
 
