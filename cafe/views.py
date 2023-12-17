@@ -279,7 +279,7 @@ class DetailItemView(LoginRequiredMixin,CreateView,CommentListViewMixin):
             context["like_status"]=False
         context["likes_count"]=Like.objects.filter(items=item_obj.id,user=self.request.user).count()
         
-        Items.best_items(1)
+        Items.best_items()
         return context
 
 
