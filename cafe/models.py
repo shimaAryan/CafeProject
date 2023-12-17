@@ -41,8 +41,10 @@ class Items(models.Model):
         return self.title
     
     @staticmethod
-    def best_items(count=4):
-        result = Items.objects.annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+    def best_items(id_category,count=4):
+        obj_category=CategoryMenu.objects.get(id=id_category)
+        result = Items.objects.filter(category_id=obj_category).annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+        print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",result)
         return result
 
 
