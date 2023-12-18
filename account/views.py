@@ -120,6 +120,7 @@ class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             context = self.get_context_data()
             context['error_message'] = "You don't have access to this part of the page."
             return self.render_to_response(context, status=403)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = Staff.objects.select_related('user')
