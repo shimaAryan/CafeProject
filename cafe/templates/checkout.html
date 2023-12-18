@@ -12,7 +12,7 @@
 
             <div class="col-md-7 col-sm-12 text-center ftco-animate">
             	<h1 class="mb-3 mt-5 bread">Checkout</h1>
-	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url cafe:index %}">Home</a></span> <span>Checout</span></p>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'cafe:index' %}">Home</a></span> <span>Checout</span></p>
             </div>
 
           </div>
@@ -24,7 +24,7 @@
       <div class="container">
         <div class="row">
           <div class="col-xl-8 ftco-animate">
-						<form action="{% url cafe:cart-receipt user_id}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post">
+						<form action="{% url cafe:cart-receipt user_id}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post" novalidate>
 							<h3 class="mb-4 billing-heading">Billing Details</h3>
 	          	<div class="row align-items-end">
 	          		<div class="col-md-6">
@@ -84,6 +84,7 @@
 		            	<div class="form-group">
 		            		<label >Postcode / ZIP *</label>
 							{{form.user_postcode}}
+							<div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
 	                </div>
 		            </div>
 		            <div class="w-100"></div>
@@ -91,22 +92,26 @@
 	                <div class="form-group">
 	                	<label >Phone</label>
 						{{form.phonenumber}}
+						<div style="font-size: 10px">{{ form.user_postcode.errors }}</div>
 	                </div>
 	              </div>
 	              <div class="col-md-6">
 	                <div class="form-group">
 	                	<label >Email Address</label>
 						{{form.email}}
+						<div style="font-size: 10px">{{ form.email.errors }}</div>
 	                </div>
-					  <p><a href="#"class="btn btn-primary py-3 px-4">accept information</a></p>
+
                 </div>
                 <div class="w-100"></div>
+
                 <div class="col-md-12">
                 	<div class="form-group mt-4">
-										<div class="radio">
-										  <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
-										  <label><input type="radio" name="optradio"> Ship to different address</label>
-										</div>
+					<p class="btn btn-primary py-3 px-4">accept information</p>
+<!--										<div class="radio">-->
+<!--										  <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>-->
+<!--										  <label><input type="radio" name="optradio"> Ship to different address</label>-->
+<!--										</div>-->
 									</div>
                 </div>
 	            </div>
@@ -198,7 +203,7 @@
 			  {% for item in search.items %}
 				<li>
 				  <a>{{ item.title }}</a>
-				  <p>{{ item.description }}</p>
+				  <p>{{ item.description|truncatewords:10 }}</p>
 				</li>
 			  {% endfor %}
 			</ul>
@@ -210,7 +215,7 @@
                 <h3>Categories</h3>
 				  <ul>
 				    {% for item in category_item_counts %}
-				  <li><a href="{% url 'cafe:menu' %}">{{ item.title }} <span>({{item.item_count}})</span></a></li>
+				  <li><a href="{% url 'cafe:menu' %}" target="_blank">{{ item.title }} <span>({{item.item_count}})</span></a></li>
 				  {% endfor %}
 					  </ul>
 <!--                <li><a href="#">Tour <span>(12)</span></a></li>-->
@@ -263,7 +268,7 @@
               <h3>Tag Cloud</h3>
               <div class="tagcloud">
 				   {% for tag in all_tag %}
-        			<a href="{% url 'cafe:items_by_tag' tag_slug=tag %}">
+        			<a href="{% url 'cafe:items_by_tag' tag_slug=tag %}" target="_blank">
             			{{ tag }}
        				 </a>
 				  {% if not forloop.last %}{% endif %}

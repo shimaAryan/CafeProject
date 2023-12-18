@@ -28,7 +28,7 @@
 {#                  cart.html#}
                 <a class="dropdown-item" href="{% url 'cafe:cart' %}">Cart</a>
                 {% if user.is_authenticated %}
-                <a class="dropdown-item" href="{% url order.get_absolute_url %}">Checkout</a>
+                <a class="dropdown-item" href="">Checkout</a>
                   {% endif %}
 
               </div>

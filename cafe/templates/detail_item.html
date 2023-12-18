@@ -200,7 +200,10 @@
 </div>
     </section>
 
- <script>
+
+
+
+<script>
 
  const csrftoken = '{{ csrf_token }}';
  function getCsrfTokenFromCookies() {
@@ -227,9 +230,6 @@ const product = {
 
 };
 
-
-// const url = new URL("blob:https://mozilla.org:443/");
-
 document.getElementById('add_to_cart').addEventListener('click', function() {
   sessionStorage.setItem('order', JSON.stringify(product));
 
@@ -254,60 +254,7 @@ document.getElementById('add_to_cart').addEventListener('click', function() {
     sessionStorage.setItem("Error",error);
   });
 })
-// const product = {
-// id: "{{ item.id }}",
-// name: "{{ item.title }}",
-// quantity: 1,
-// price: "{{ item.price }}",
-// discount: "{{ item.discount }}",
-// description: "{{ item.description }}"
-// };
-//
-// document.getElementById('add_to_cart').addEventListener('click', function() {
-// const baseUrl = window.location.origin
-// fetch(`${baseUrl}/cart/`, {
-//  method: 'POST',
-//  headers: {
-//    'Content-Type': 'application/json',
-//    'X-CSRFToken': getCsrfTokenFromCookies('csrftoken')
-//  },
-//  body: JSON.stringify(product)
-// })
-// .then(response => response.json())
-// .then(data => {
-//  console.log('Data saved:', data);
-//  sessionStorage.setItem("data", JSON.stringify(data));
-// })
-// .catch(error => {
-//  console.error('Error:', error);
-//  sessionStorage.setItem("Error", JSON.stringify(error));
-// });
-// });
-
-<<<<<<< HEAD
-// function getCookie(name) {
-//  let cookieValue = null;
-//  if (document.cookie && document.cookie !== '') {
-//      const cookies = document.cookie.split(';');
-//      for (let i = 0; i < cookies.length; i++) {
-//          const cookie = cookies[i].trim();
-//          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//              break;
-//          }
-//      }
-//  }
-//  return cookieValue;
-// }
-=======
-
-    
-
-     
-
-
->>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
-</script>
+ </script>
 
 
 

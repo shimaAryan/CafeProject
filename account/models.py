@@ -176,6 +176,7 @@ class Staff(models.Model, ValidatorMixin):
             group, created = Group.objects.get_or_create(name="staff")
             for model in models_app:
                 if model.__name__ == "Staff":
+
                     content_type = ContentType.objects.get_for_model(Staff)
                     permissions_queryset = Permission.objects.get(content_type=content_type, codename='view_staff')
                     group.permissions.add(permissions_queryset.id)
