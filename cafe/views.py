@@ -24,7 +24,7 @@ from django.template.loader import render_to_string
 user = get_user_model()
 
 
-class ContextMixin():
+class ContextMixin(LoginRequiredMixin):
     def get_context(self, user, session_data):
         context = {}
         if not user or not user.is_authenticated:
@@ -333,7 +333,7 @@ class CreateLikeView(View):
 
 class DeleteLikeView(View):
     def get(self, request, pk):
-        item_objn = Items.objects.get(id=pk)
+        item_obj = Items.objects.get(id=pk)
         print(request)
         like_obj = Like.objects.get(items=item_obj, user=request.user)
         like_obj.delete()
@@ -352,7 +352,6 @@ class DeleteLikeView(View):
     #     context = super().get_context_data(**kwargs)
     #     context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'))
     #     return context
-
 
 
 class IndexView(TemplateView):

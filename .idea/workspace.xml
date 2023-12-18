@@ -5,6 +5,19 @@
   </component>
   <component name="ChangeListManager">
 <<<<<<< HEAD
+    <list default="true" id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="" />
+||||||| 42bcec1
+    <list default="true" id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/templates/account/staff_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/account/templates/account/staff_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/navigation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/navigation.html" afterDir="false" />
+    </list>
+=======
+<<<<<<< HEAD
     <list default="true" id="230e001d-1885-4718-aba5-ae84f6e419a7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cafe/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/admin.py" afterDir="false" />
@@ -24,6 +37,7 @@
       <change beforePath="$PROJECT_DIR$/templates/partials/navigation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/navigation.html" afterDir="false" />
 >>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
     </list>
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -69,6 +83,37 @@
 <<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/python/python-code/CafeProject/media/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+||||||| 42bcec1
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "develop",
+    "last_opened_file_path": "D:/python/python-code/CafeProject/media/images",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+=======
+<<<<<<< HEAD
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
@@ -99,8 +144,9 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\python\python-code\CafeProject\media\images" />
@@ -164,7 +210,12 @@
       <workItem from="1702702296502" duration="42533000" />
       <workItem from="1702814482412" duration="1592000" />
       <workItem from="1702816551376" duration="23177000" />
+<<<<<<< HEAD
+      <workItem from="1702874551974" duration="317000" />
+||||||| 42bcec1
+=======
 >>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
     </task>
     <servers />
   </component>

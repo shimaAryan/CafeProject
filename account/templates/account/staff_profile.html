@@ -2,6 +2,11 @@
 <!-- END nav -->
 {% block content %}
 <section class="ftco-section contact-section" >
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% else %}
     {% for user in object_list %}
     {% for Image in Images %}
     {% if Image.object_id == user.id %}
@@ -9,6 +14,12 @@
         <div class="row block-9">
             <div class="col-md-4 contact-info ftco-animate">
                 <div class="row">
+                     <div class="col-md-12 m-4 align-content-center">
+                         {% if user.user.is_customer == True %}
+                         <span style="color: #8f7763;font-size: 18px;">Request for cooperation: </span><a href="#" style="color: #8f7763">under decision</a>
+                             <h2 class="h4"></h2>
+                        {% endif %}
+                     </div>
                     <div class="col-md-12 mb-4 justify-content-center align-content-center">
                         <img src="{{ Image.image.url }}" class="img-fluid m-5" alt="Profile Staff picture">
                         <h2 class="h4"></h2>
@@ -58,5 +69,6 @@
         {% endif %}
         {% endfor %}
         {% endfor %}
+        {% endif %}
 </section>
 {% endblock %}
