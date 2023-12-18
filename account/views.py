@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import Group
 from django.contrib.auth import views as auth_view
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView, DetailView
@@ -115,13 +115,18 @@ class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         super().__init__()
         self.object_list = None
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission():
+            context = self.get_context_data()
+            context['error_message'] = "You don't have access to this part of the page."
+            return self.render_to_response(context, status=403)
+
     def get_queryset(self):
         queryset = Staff.objects.select_related('user')
         return queryset
 
     def get_context_data(self, object_list=None, **kwargs):
-        """Get the context for this view."""
-        super().get_context_data()
+        super().get_context_data(**kwargs)
         profile_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Staff))
         self.object_list = self.get_queryset()
         context = {

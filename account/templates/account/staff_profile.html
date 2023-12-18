@@ -2,6 +2,11 @@
 <!-- END nav -->
 {% block content %}
 <section class="ftco-section contact-section" >
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% else %}
     {% for user in object_list %}
     {% for Image in Images %}
     {% if Image.object_id == user.id %}
@@ -64,5 +69,6 @@
         {% endif %}
         {% endfor %}
         {% endfor %}
+        {% endif %}
 </section>
 {% endblock %}

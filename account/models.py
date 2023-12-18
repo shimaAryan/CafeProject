@@ -70,9 +70,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
-        # Simplest possible answer: Yes, always
-        return True
-        # return super().has_perm(perm)
+        if self.is_active:
+            if self.is_admin:
+                return True
+            else:
+                user_groups = self.groups.all()
+                app_label, codename = perm.split('.')
+                for group in user_groups:
+                    return group.permissions.filter(codename=codename).exists()
+        return False
+        # return True
 
     def has_module_perms(self, app_label):
         """Does the user have permissions to view the app `app_label`?"""
@@ -98,7 +105,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.nickname = f"{self.firstname.lower()}_{self.lastname.lower()}@Coffee"
         super().save(*args, **kwargs)
 
-
     @receiver(post_migrate, sender=None)
     def handle_group(sender, **kwargs):
         app_config = apps.get_app_config("cafe")
@@ -111,6 +117,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         models_app.append(CommentModel)
         group, created = Group.objects.get_or_create(name="customer")
         for model in models_app:
+            if model.__name__ == 'CustomUser':
+                continue
             content_type = ContentType.objects.get_for_model(model)
             model_permission = Permission.objects.filter(content_type=content_type)
             for perm in model_permission:
@@ -119,8 +127,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                     view_perm = 'view_' + model.__name__.lower()
                     if perm.codename == view_perm:
                         group.permissions.add(perm)
-                if model.__name__ == 'CustomUser':
-                    pass
+                    else:
+                        continue
                 else:
                     group.permissions.add(perm)
 
@@ -167,7 +175,11 @@ class Staff(models.Model, ValidatorMixin):
             models_app = app_config.get_models()
             group, created = Group.objects.get_or_create(name="staff")
             for model in models_app:
-                if model.__name__ != "Staff":
+                if model.__name__ == "Staff":
+                    content_type = ContentType.objects.get_for_model(Staff)
+                    permissions_queryset = Permission.objects.get(content_type=content_type, codename='view_staff')
+                    group.permissions.add(permissions_queryset.id)
+                else:
                     content_type = ContentType.objects.get_for_model(model)
                     model_permission = Permission.objects.filter(content_type=content_type)
                     for perm in model_permission:
