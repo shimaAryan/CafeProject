@@ -9,8 +9,6 @@ from account.models import CustomUser
 user = get_user_model()
 
 
-
-
 class ServingTime(models.Model):
     time = models.CharField(max_length=7)
 
@@ -43,26 +41,24 @@ class Items(models.Model):
     like = models.ManyToManyField(user, through='Like', related_name='liked_item')
     tags = TaggableManager()
 
-
     def __str__(self):
         return self.title
-    
+
     @staticmethod
-    def best_items(id_category=None,count=4):
+    def best_items(id_category=None, count=4):
         if id_category:
-            obj_category=CategoryMenu.objects.get(id=id_category)
-            result = Items.objects.filter(category_id=obj_category).annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
-           
+            obj_category = CategoryMenu.objects.get(id=id_category)
+            result = Items.objects.filter(category_id=obj_category).annotate(num_likes=Count("like")).order_by(
+                "-num_likes")[:count]
+
             return result
         else:
             result = Items.objects.annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
-           
-            return result
 
+            return result
 
     def get_absolute_url(self):
         return reverse('cafe:detail_item', args=[self.id])
-
 
 
 class Order(models.Model):
@@ -83,6 +79,7 @@ class Order(models.Model):
 
     def get_absolute_url(self):
         return reverse('cafe:cart-receipt', args=[user.id])
+
     def __str__(self):
         return f" {self.id}"
 
@@ -121,12 +118,10 @@ class Like(models.Model):
     def __str__(self):
         return f"{user.id}"
 
-    
     @staticmethod
-    def is_liked(userr,itemm):
+    def is_liked(userr, itemm):
         try:
-            Like.objects.get(user=userr,items=itemm)
+            Like.objects.get(user=userr, items=itemm)
             return True
-        except :
+        except:
             return False
-

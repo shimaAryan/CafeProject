@@ -135,3 +135,21 @@ class StaffProfileView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             "object_list": self.object_list,
         }
         return context
+
+
+class CustomUserProfileView(LoginRequiredMixin, ListView):
+    model = CustomUser
+    template_name = 'account/customuser_profile.html'
+    context_object_name = 'Customuser_profile'
+
+    def dispatch(self, request, *args, **kwargs):
+        if Staff.objects.filter(user=request.user.id).exists() and request.user.is_customer:
+            messages.warning(
+                self.request,
+                'Management is reviewing your cooperation request. Thank you for joining our members.'
+            )
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.filter(id=self.request.user.id)
+        return queryset
