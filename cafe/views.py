@@ -1,239 +1,263 @@
 import json
 from json import JSONDecodeError
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Count
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy,reverse
-from django.views import View
-from django.views.generic import ListView, DetailView, FormView
+from psycopg2 import OperationalError
+from django.views.generic import ListView, View, DetailView, CreateView, TemplateView, DeleteView, FormView
 from django.contrib import messages
-from .models import Order, CategoryMenu, Items, Receipt,Like
-from django.db.models import F, DecimalField, ExpressionWrapper, Sum
-import datetime
-from django.views.generic import ListView, View, DetailView, CreateView, TemplateView,DeleteView
-from django.contrib import messages
-from django.http import JsonResponse
-from cafe.forms.cart_form import OrderForm
-from core.models import Image
-from django.db.models import Sum, F, Value, DecimalField, ExpressionWrapper
 from django.contrib.contenttypes.models import ContentType
 from core.models import Image,Comment
 from .forms import search_form, receipt_form,detail_view_form
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
-from django.utils.decorators import method_decorator
+from .models import *
 from django.http import JsonResponse
-
+from taggit.models import Tag
 from django.template.loader import render_to_string
+
 user = get_user_model()
 
 
-def set_cookie(response, key, value, days_expire=7):
-    if days_expire is None:
-        max_age = 30 * 24 * 60 * 60  # one month
-    else:
-        max_age = days_expire * 24 * 60 * 60
-    expires = datetime.datetime.strftime(
-        datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age),
-        "%a, %d-%b-%Y %H:%M:%S GMT",
-    )
-    response.set_cookie(
-        key,
-        value,
-        max_age=max_age,
-        expires=expires,
-    )
+
+class ContextMixin(LoginRequiredMixin):
+    def get_context(self, user, session_data):
+        context = {}
+        if not user or not user.is_authenticated:
+            messages.error(user, "You must have an account and be logged in", "danger")
+            return redirect("account:User_login")
+        else:
+            try:
+                order, created = Order.objects.get_or_create(user=user)
+
+                order_items = OrderItem.objects.filter(order=order)
 
 
-class CartView(View):
+                if order.status == "ORDER":
+                    context = {
+                        'item_data': session_data,
+                        'order': order,
+                        'user_id': user.id,
+                        'item_total': 0,
+                        'subtotal': 0,
+                        'total': 0,
+                        'discount_total': 0,
+                        'delivery_cost': 0,
+                    }
+
+                    for item in session_data:
+                        quantity = item.get('quantity', 0)
+                        price = item.get('price', 0)
+                        discount = item.get('discount', 0)
+                        item_total = quantity * price - discount
+                        item['item_total'] = item_total
+                        context['discount_total'] += discount
+                        context['subtotal'] += item_total
+                        context['delivery_cost'] = item_total * 2
+
+                    context['total'] = context['subtotal'] + context['delivery_cost']
+                else:
+                    return HttpResponse("you dont have any order items in your cart ")
+
+            except OrderItem.DoesNotExist:
+                context['error'] = "Order Items does not exist"
+            except Order.DoesNotExist:
+                context['error'] = "Order does not exist"
+        # print("*_" * 30, context)
+        return context
+
+    @staticmethod
+    def item_search(request):
+        items = Items.objects.all()
+        form = search_form.SearchForm()
+        if "search" in request.GET:
+            form = search_form.SearchForm(request.GET)
+            if form.is_valid():
+                try:
+                    cd = form.cleaned_data["search"]
+                    items = (items.annotate(similarity=Greatest(
+                        TrigramSimilarity("title", cd),
+                        TrigramSimilarity("description", cd), ))
+                             .filter(similarity__gt=0.1).order_by("-similarity"))
+                except OperationalError:
+                    messages.error("operational error", "danger")
+                    items = []
+
+        context = {
+            "search_form": form,
+            "items": items
+        }
+        return context
+
+
+class SimilarityItemMixin:
+    def get_similar_data(self, item_id):
+        current_item = get_object_or_404(Items, id=item_id)
+        item_tags_ids = current_item.tags.values_list('id', flat=True)
+        similar_item = Items.objects.filter(tags__in=item_tags_ids).exclude(id=item_id)
+        similar_item = similar_item.annotate(same_tags=Count('tags')).order_by('-same_tags', '-price')[:4]
+        context = {
+            'item': current_item,
+            'similar_item': similar_item,
+        }
+        return context
+
+
+class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
-    context_object_name = "item_orders"
-    model = Order
 
     def get(self, request, *args, **kwargs):
-        context = {
-            'item_data': request.session.get('order', 'No items in cart'),
-            'order': None,
-            'item_total': 0,
-            'subtotal': 0,
-            'total': 0,
-            'discount_total': 0,
-        }
-        try:
-            print("/////////////////////////////////////////////",request.user.id)
-            # order_obj = Order.objects.get(user_order=request.session.get(user_order=request.user))
-            order_obj = Order.objects.get(user_order=request.user.id)
-            print("99999"*100,order_obj)
-            context['order'] = order_obj
 
-            order_data = request.session.get('order', [])
-            for order in order_data:
-                quantity = order.get('quantity', 0)
-                price = order.get('price', 0)
-                discount = order.get('discount', 0)
-
-                item_total = quantity * price - discount
-                order['item_total'] = item_total
-                context['discount_total'] += discount
-
-                context['subtotal'] += order['item_total']
-            context['total'] += context['subtotal'] + order_obj.delivery_cost
-            print("context total00000000000000000000000000000",context['total'])
-        except Order.DoesNotExist:
-
-            context['error'] = "Order does not exist"
-
-            return render(request, self.template_name, context)
+        session_order = request.session.get('order', [])
+        item_ids = [item['id'] for item in session_order]
+        similarity_item = self.get_similar_data(item_ids[0])
+        context = self.get_context(request.user, session_order) if session_order else {
+            'error': "Order does not exist"}
+        context['similarity_item'] = similarity_item
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         try:
-
             new_order = json.loads(request.body)
-            existing_orders = request.session.get('order', [])
-            existing_orders.append(new_order)
-
-            request.session['order'] = existing_orders
-
-            request.session.modified = True
-            print("------------------", existing_orders)
+            session_order = request.session.get('order', [])
+            if new_order not in session_order:
+                session_order.append(new_order)
+                request.session['order'] = session_order
+                request.session.modified = True
             return JsonResponse({'message': 'Order has been added successfully'})
-
         except JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            return JsonResponse({'error': 'Invalid JSON data in the request'}, status=400)
+            return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
-            print(f"An error occurred: {e}")
-            return JsonResponse({'error': 'An error occurred while processing the request'},
-                                status=500)
-
-    # -----------------------------------------------------------------------
+            return JsonResponse({'error': str(e)}, status=500)
 
 
-class ReceiptView(LoginRequiredMixin, SuccessMessageMixin, FormView, CartView):
+# ------------------------------------------------------------------------------------
+
+class ReceiptView(ContextMixin, FormView):
     template_name = 'checkout.html'
-    context_object_name = 'receipt'
-    success_url = reverse_lazy("cafe:cart")
     form_class = receipt_form.PersonalInfo
+    success_url = reverse_lazy("cafe:cart")
     success_message = "Your information has been successfully registered"
 
-    def setup(self, request, *args, **kwargs):
-        self.user_id = get_object_or_404(user, id=kwargs["user_id"])
-        return super().setup(request, *args, **kwargs)
-
     def dispatch(self, request, *args, **kwargs):
-        user_pk = self.user_id
-        if not user_pk == request.user.id:
-            messages.error(request, "you must be logged in", "danger")
-            return redirect("account:login")
+        user_id = kwargs.get("user_id")
+        self.user1 = get_object_or_404(user, id=user_id)
+        if not self.user1 == request.user:
+            messages.error(request, "You must be logged in", "danger")
+            return redirect("account:User_login")
         return super().dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        order = CartView.get
-        if order:
-            context.update({
-                'form': self.form_class(),
-            })
-        else:
-            raise Http404("No such order found")
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return render(request, self.template_name, context)
-
     def form_valid(self, form):
-        peyment = form.save(commit=False)
+        payment = form.save(commit=False)
         for field_name, field_value in form.cleaned_data.items():
             self.request.session[field_name] = field_value
         messages.success(self.request, self.success_message, 'success')
         return super().form_valid(form)
 
-    @staticmethod
-    def item_search(self, request):
-        items = request.GET.get("items")
-        results = []
-        if "items":
-            form = search_form.SearchForm(request.GET)
-            if form.is_valid():
-                items = form.cleaned_data["items"]
-                results = (Items.objects.annotate(similarity=Greatest(
-                    TrigramSimilarity("title", items),
-                    TrigramSimilarity("description", items), ))
-                           .filter(similarity__gt=0.1).order_by("-similarity"))
+    def get(self, request, **kwargs):
+        context = self.get_context(self.user1, self.request.session.get('order', []))
+        search = self.item_search(request)
+        category_item_counts = CategoryMenu.objects.annotate(item_count=Count('items'))
+        print("888", category_item_counts)
 
-        context = {
-            "item_search": items,
-            "results": results
-        }
+        all_tag = Tag.objects.values_list('name', flat=True).distinct()
+
+        if not context:
+            raise Http404("No such order found")
+
+        context.update({
+            'all_tag': all_tag,
+            "search": search,
+            "form": self.form_class,
+            "category_item_counts": category_item_counts,
+        })
+        print("!!!!!!!!!", context)
         return render(request, self.template_name, context)
 
 
-# -----------------------------------------------------------------------
-# class ReceiptView(LoginRequiredMixin, SuccessMessageMixin, FormView, CartView):
+class ItemByTag(ListView):
+    template_name = "tag_items.html"
+    model = Items
+
+    def get_context_data(self, *, tag_slug=None, **kwargs):
+        super().get_context_data(**kwargs)
+        tag = None
+        select_item = Items.objects.all()
+        if tag_slug:
+            tag = get_object_or_404(Tag, slug=tag_slug)
+            select_item = Items.objects.filter(tags__in=[tag])
+
+        context = {
+            'select_item': select_item,
+            'tags': tag,
+        }
+        return context
+
+
+# class ItemSearchView(ListView):
+#     model = Items
 #     template_name = 'checkout.html'
-#     context_object_name = 'receipt'
-#     success_url = reverse_lazy("cafe:cart")
-#     form_class = receipt_form.PersonalInfo
-#     success_message = "Your information has been successfully registered"
-#     def setup(self, request, *args, **kwargs):
-#         self.user_id = get_object_or_404(user, id=kwargs["id"])
-#         return super().setup(request, *args, **kwargs)
-#     def dispatch(self, request, *args, **kwargs):
-#         user_pk = self.user_id
-#         if not user_pk == request.user.id:
-#             messages.error(request, "you must be logged in", "danger")
-#             return redirect("account:login")
-#         return super().dispatch(request, *args, **kwargs)
-# def get_context_data(self, **kwargs):
-#     context = super().get_context_data(**kwargs)
-#     order = self.request.session.get('order')
-#     if order:
-#         context.update({
-#             "subtotal": order['subtotal'],
-#             "total": order['total'],
-#             "delivery_cost": order['delivery_cost'],
-#             "discount_total": order['discount_total'],
-#             'form': self.form_class(),
-#         })
-#     else:
-#         raise Http404("No such order found")
-#     return context
+#     context_object_name = 'items'
+#     form_class = search_form.SearchForm
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         search_query = self.request.GET.get('search', None)
+#         if search_query:
+#             queryset = queryset.annotate(similarity=Greatest(
+#                 TrigramSimilarity("title", search_query),
+#                 TrigramSimilarity("description", search_query)))
+#             queryset = queryset.filter(similarity__gt=0.1).order_by('-similarity')
+#         return queryset
 #
-# def get(self, request, *args, **kwargs):
-#     context = self.get_context_data()
-#     return render(request, self.template_name, context)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['search_form'] = self.get_form()
+#         print("kkkkkkkkkkk",context)
+#         return context
+
+# def get_form(self):
+#     form = self.form_class()
+#     if 'search' in self.request.GET:
+#         form = self.form_class(self.request.GET)
+#     return form
+
+
+# class CreateItem(LoginRequiredMixin,FormView):
+#     form_class = create_post.CreateItem
+#     template_name = "item_create.html"
+#     success_url = reverse_lazy("cafe:menu")
 #
-# def form_valid(self, form):
-#     peyment = form.save(commit=False)
-#     for field_name, field_value in form.cleaned_data.items():
-#         self.request.session[field_name] = field_value
-#     messages.success(self.request, self.success_message, 'success')
-#     return super().form_valid(form)
-#
-# @staticmethod
-# def item_search(self, request):
-#     items = request.GET.get("items")
-#     results = []
-#     if "items":
-#         form = search_form.SearchForm(request.GET)
-#         if form.is_valid():
-#             items = form.cleaned_data["items"]
-#             results = (Items.objects.annotate(similarity=Greatest(
-#                 TrigramSimilarity("title", items),
-#                 TrigramSimilarity("description", items), ))
-#                        .filter(similarity__gt=0.1).order_by("-similarity"))
-#
-#     context = {
-#         "item_search": items,
-#         "results": results
-#     }
-#     return render(request, self.template_name, context)
+#     def get_context_data(self, **kwargs):
+#         user = Items.objects.select_related(Order)
+#     def form_valid(self, form):
+#         super().form_valid(self, form)
+#         new_item = form.save(commit=False)
+#         post.author = request.user
+#         new_item.save()
+#         form.save_m2m()
+
+class DeleteCartItemView(View):
+    template_name = "cart.html"
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            item_id = request.POST.get('item_id')
+            session_order_item = self.request.session.get('order',[])
+            order_item_ids = [item['id'] for item in session_order_item]
+            if item_id in order_item_ids:
+                del session_order_item['item_data'][item_id]
+                request.session.modified = True
+                return JsonResponse({'message': 'Item deleted from the cart.'})
+        return JsonResponse({'error': 'An error occurred while deleting the item from the cart.'}, status=400)
+
+
+
 
 
 class CategoryItems(ListView):
@@ -265,7 +289,6 @@ class DetailItemView(LoginRequiredMixin,CreateView,CommentListViewMixin):
     def get_success_url(self):
         messages.success(self.request, 'Comment created successfully!')
         return reverse('cafe:detail_item', kwargs={'pk':self.kwargs["pk"]})
-  
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -310,7 +333,6 @@ class CreateLikeView(View):
     
 
 class DeleteLikeView(View):
-    
     def get(self,request,pk):
         item_obj=Items.objects.get(id=pk)
         print(request)
@@ -318,6 +340,7 @@ class DeleteLikeView(View):
         like_obj.delete()
         messages.success(request, 'oops !please like me again !')
         return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
+
 
     # def handle_no_permission(self):
     #      return render(request, 'unauthorized_access.html', {})
@@ -333,19 +356,13 @@ class DeleteLikeView(View):
     #     return context
 
 
-
 def index(request):
     return render(request, 'index.html')
-
-    # def get_queryset(self):
-    #     order_id = Receipt.objects.select_related('order').prefetch_related('items').get(
-    #         id=self.request.POST.get('order_id'))
-    #     print("order:===", order_id)
-    #     return order_id
 
 
 class HomeView(TemplateView):
     template_name = 'index.html'
+
 
 # class CreateCommentView(CreateView):
 #     model = Comment
@@ -364,3 +381,4 @@ class HomeView(TemplateView):
     
 #     # def get_success_message(self, cleaned_data):
 #     #     return self.success_message
+
