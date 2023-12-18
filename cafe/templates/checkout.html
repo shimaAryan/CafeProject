@@ -24,7 +24,7 @@
       <div class="container">
         <div class="row">
           <div class="col-xl-8 ftco-animate">
-						<form action="#" class="billing-form ftco-bg-dark p-3 p-md-5" method="post">
+						<form action="{% url cafe:cart-receipt user_id}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post">
 							<h3 class="mb-4 billing-heading">Billing Details</h3>
 	          	<div class="row align-items-end">
 	          		<div class="col-md-6">
@@ -98,6 +98,7 @@
 	                	<label >Email Address</label>
 						{{form.email}}
 	                </div>
+					  <p><a href="#"class="btn btn-primary py-3 px-4">accept information</a></p>
                 </div>
                 <div class="w-100"></div>
                 <div class="col-md-12">

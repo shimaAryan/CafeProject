@@ -172,7 +172,7 @@ class Staff(models.Model, ValidatorMixin):
                     model_permission = Permission.objects.filter(content_type=content_type)
                     for perm in model_permission:
                         group.permissions.add(perm)
-
+#
 
 class LoginRecord(models.Model):
     """
