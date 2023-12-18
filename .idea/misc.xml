@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (DjangoProject)" project-jdk-type="Python SDK" />
+=======
+  <component name="Black">
+    <option name="sdkName" value="Python 3.11 (CafeProject) (6)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (CafeProject) (6)" project-jdk-type="Python SDK" />
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
 </project>

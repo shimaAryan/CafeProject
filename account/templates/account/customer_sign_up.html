@@ -68,11 +68,10 @@
                          </div>
                      </div>
                      <div class="pt-1 mb-4">
-                         <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
+                         <button class="btn btn-dark btn-lg btn-block" type="submit">Sign Up</button>
                      </div>
-                     <small class="form-text text-muted"><label>{{ form.password.help_text }}</label></small>
-                     <p class="mb-2 pb-lg-2" style="color: #c4c7e7;">you have an account? <a href="{% url 'account:User_login' %}" style="color: #c4c7e7;">login here</a></p>
-                     <a href="{% url 'account:index' %}" style="color: #642c01;">Coffee BLEND Home Page</a>
+                     <p class="mb-2 pb-lg-2" style="color: #c4c7e7;">you have an account? <a href="{% url 'account:User_login'%}" style="color: #c4c7e7;">login here</a></p>
+                     <a href="{% url 'cafe:index' %}" style="color: #642c01;">Coffee BLEND Home Page</a>
                  </form>
              </div>
          </div>

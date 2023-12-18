@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-w4cm7ld3*g=csup9(h1la5v14bc6#h!sewg9zod-osjee=vg2_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account.apps.AccountConfig',
     'cafe.apps.CafeConfig',
+    'account.apps.AccountConfig',
     'core.apps.CoreConfig',
     'taggit',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -82,10 +82,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cafe',
         'USER': 'postgres',
-        'PASSWORD': 'shima1993',
+        'PASSWORD': '1234',
         'PORT': '5432',
     }}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -130,16 +129,16 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
                            "account.authenticate.EmailBackend",]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 80000
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
-SESSION_COOKIE_AGE = 3600
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = 'account:User_login'
 # google account
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

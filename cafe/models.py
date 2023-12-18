@@ -3,9 +3,12 @@ import datetime as dt
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from taggit.managers import TaggableManager
-
+from django.db.models import Count
+from account.models import CustomUser
 
 user = get_user_model()
+
+
 
 
 class ServingTime(models.Model):
@@ -36,12 +39,26 @@ class Items(models.Model):
     status = models.BooleanField()
     discount = models.PositiveIntegerField(default=0)
     number_items = models.PositiveIntegerField(default=1)
-    like_count = models.PositiveIntegerField(default=0)
+    # like_count = models.PositiveIntegerField(default=0)
     like = models.ManyToManyField(user, through='Like', related_name='liked_item')
     tags = TaggableManager()
 
+
     def __str__(self):
         return self.title
+    
+    @staticmethod
+    def best_items(id_category=None,count=4):
+        if id_category:
+            obj_category=CategoryMenu.objects.get(id=id_category)
+            result = Items.objects.filter(category_id=obj_category).annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+           
+            return result
+        else:
+            result = Items.objects.annotate(num_likes=Count("like")).order_by("-num_likes")[:count]
+           
+            return result
+
 
     def get_absolute_url(self):
         return reverse('cafe:detail_item', args=[self.id])
@@ -103,3 +120,13 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{user.id}"
+
+    
+    @staticmethod
+    def is_liked(userr,itemm):
+        try:
+            Like.objects.get(user=userr,items=itemm)
+            return True
+        except :
+            return False
+
