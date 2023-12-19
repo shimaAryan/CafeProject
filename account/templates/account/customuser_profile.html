@@ -20,6 +20,7 @@
                                 <div class="form-group col-md-12 mb-3 text-center">
                                     <p><span>Phone number:</span> <p>{{ Customuser.phonenumber }}</p></p>
                                 </div>
+                                <a href="{% url 'account:update_profile' user.id %}" style="color: #f3ab7c;">Edit Profile</a>
                             </div>
                         </div>
                     </form>
@@ -28,5 +29,6 @@
         </div>
       {% endif %}
     {% endfor %}
-</section>
+    {% include 'include/comment_update.html' %}
 {% endblock %}
+</section>

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'cafe.apps.CafeConfig',
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
+
     'taggit',
 
 ]

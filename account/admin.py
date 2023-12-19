@@ -89,7 +89,12 @@ admin.site.unregister(Group)
 
 
 class CustomGroupAdmin(GroupAdmin):
-    pass
+    def __init__(self, model, admin_site):
+        super().__init__(model, admin_site)
+        self.user = None
+
+    def has_permission(request):
+        return request.user.is_authenticated and request.user.is_admin
 
 
 # Now register the new UserAdmin...
