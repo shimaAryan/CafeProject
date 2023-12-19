@@ -1,5 +1,6 @@
 import json
 from json import JSONDecodeError
+from typing import Any
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpResponseRedirect
@@ -16,7 +17,7 @@ from django.db.models.functions import Greatest
 from .models import *
 from django.http import JsonResponse
 from taggit.models import Tag
-from django.template.loader import render_to_string
+
 
 user = get_user_model()
 
@@ -297,7 +298,7 @@ class DetailItemView(LoginRequiredMixin, CreateView, CommentListViewMixin):
             context["like_status"] = False
         context["likes_count"] = Like.objects.filter(items=item_obj.id, user=self.request.user).count()
 
-        Items.best_items()
+        
         return context
 
     def form_valid(self, form: BaseModelForm):
@@ -308,6 +309,15 @@ class DetailItemView(LoginRequiredMixin, CreateView, CommentListViewMixin):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
+class LikeStatus(View):
+        def get(self,request,pk):
+            item_obj=Items.objects.get(id=pk)
+            like_count=Like.objects.filter(items=item_obj).count()
+            
+            if Like.is_liked(self.request.user,item_obj):
+                return JsonResponse({"liked_status":True,"like_count":like_count})
+            else:
+                return JsonResponse({"liked_status":False,"like_count":like_count})
 
 class CreateLikeView(View):
 
@@ -317,9 +327,14 @@ class CreateLikeView(View):
         like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
         if like_obj[1] == True:
             like_obj[0].save()
-        messages.success(request, 'thanks!')
-        html_like = render_to_string("partial/like.html", {'item': like_obj})
-        return JsonResponse({"like_html": html_like})
+        like_count=Like.objects.filter(items=item_obj).count()
+       
+        # html_like=render_to_string  ("partial/like.html",{'item':like_obj})
+        return JsonResponse({"liked_status":True,"like_count":like_count})
+
+        # messages.success(request, 'thanks!')
+        # html_like = render_to_string("partial/like.html", {'item': like_obj})
+        # return JsonResponse({"like_html": html_like})
 
         # return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
 
@@ -328,10 +343,13 @@ class DeleteLikeView(View):
     def get(self, request, pk):
         item_obj = Items.objects.get(id=pk)
         print(request)
-        like_obj = Like.objects.get(items=item_obj, user=request.user)
-        like_obj.delete()
-        messages.success(request, 'oops !please like me again !')
-        return redirect(reverse('cafe:detail_item', kwargs={"pk": pk}))
+
+        like_obj=Like.objects.filter(items=item_obj,user=request.user).first()
+        if like_obj:
+            like_obj.delete()
+       
+        like_count=Like.objects.filter(items=item_obj).count()
+        return JsonResponse({"liked_status":False,"like_count":like_count})
 
     # def handle_no_permission(self):
     #      return render(request, 'unauthorized_access.html', {})
@@ -362,11 +380,30 @@ class IndexView(TemplateView):
 #     success_url = reverse_lazy('cafe:detail_item')
 
 #     def form_valid(self, form):
-#         print("yooohooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+#         print("list_categoryoooooooooooooooooooooooooooooooooooo")
 #         comment = form.save(commit=False)
 #         # You can perform additional operations on the comment object here if needed
 #         print("ss"*10,self)
 #         comment.save()
+#         return list_category
+    
+#     # def get_success_message(self, cleaned_data):
+#     #     return self.success_message
+    
+class BestItemsView(TemplateView):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context=super().get_context_data(**kwargs)
+        list_category=CategoryMenu.objects.all()
+        best_items={}
+        for category in list_category:
+            best_items[category]=Items.best_items(category.id)
+        context["best_items"]=best_items
+        context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
+        
+        # print("////////////////////////////////////////////////////////",context)
+        return context
+    template_name="best_items.html"
+       
 #         return super().form_valid(form)
 
 #     # def get_success_message(self, cleaned_data):

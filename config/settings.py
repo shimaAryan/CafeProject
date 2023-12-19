@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'cafe.apps.CafeConfig',
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
-
     'taggit',
 
 ]
@@ -78,7 +77,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# ROOT_URLCONF = 'config.urls'
+
 config = configparser.ConfigParser()
 config_file = os.path.join(BASE_DIR, 'database_config.ini')
 config.read(config_file)
