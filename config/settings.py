@@ -57,21 +57,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+config = configparser.ConfigParser()
+config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config.read(config_file)
+
+DATABASES = {
+    'default': {
+        'ENGINE': config.get('database', 'ENGINE'),
+        'NAME': config.get('database', 'NAME'),
+        'USER': config.get('database', 'USER'),
+        'PASSWORD': config.get('database', 'PASSWORD'),
+        'PORT': config.get('database', 'PORT'),
+    }
+}
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
