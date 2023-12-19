@@ -14,6 +14,8 @@ urlpatterns = [
     path('create_like/<int:pk>/', CreateLikeView.as_view(), name='create_like'),
     # path('delet_like', DeleteLikeView.as_view(), name='delet_like'),
     path('delet_like/<int:pk>/', DeleteLikeView.as_view(), name='delet_like'),
+    path('best_items/', BestItemsView.as_view(), name='best_items'),
+    path('json_check_like/<int:pk>/', LikeStatus.as_view(), name='check_like')
 
     
 

@@ -296,26 +296,3 @@
 
 })(jQuery);
 
-let base_url=window.location.origin
-let url_href=window.location.href
-var lastPart = url.split("/")
-let pk=lastPart.pop()
-if (pk===""){
-	pk=lastPart.pop()
-
-}
-console.log(pk)
-const unlike=document.getElementById("unlike")
-const like=document.getElementById("like")
-like.addEventListener("click",function(){
-	$.ajax({
-	
-		url: url+`cafe/create_like/${pk}/`,
-		type: 'GET',
-		dataType: 'json', // added data type
-		success: function(res) {
-			console.log(res);
-			alert(res);
-		}
-	});
-})

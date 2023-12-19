@@ -30,8 +30,21 @@
     <section class="ftco-section">
     	<div class="container">
     		<div class="row">
-        {%include "partial/like.html"%}
+        <div class="col-lg-6 mb-5 ftco-animate">
+    				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src={% static image.image%} class="img-fluid" alt="Colorlib Template"></a>
+                
+                {% comment %} {% if like_status%} {% endcomment %}
+            {% comment %} <a id="unlike" href={% url 'cafe:delet_like' item.id %}>
 
+             
+
+              </a> {% endcomment %}
+              <a id="like_area" href="#" data-like=like></a>
+              {% comment %} {% else %} {% endcomment %}
+                  {% comment %} <a id="like" href={% url 'cafe:create_like' item.id %}></a> {% endcomment %}
+            {% comment %} {%endif%} {% endcomment %}
+            <p id="like_count">{{likes_count}} likes</p>
+          </div>
     			{% comment %} <div class="col-lg-6 mb-5 ftco-animate">
     				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src={% static image.image%} class="img-fluid" alt="Colorlib Template"></a>
                 
@@ -74,31 +87,17 @@
 	                </div>
 		            </div>
 							</div>
-							<div class="w-100"></div>
-							<div class="input-group col-md-6 d-flex mb-3">
-	             	<span class="input-group-btn mr-2">
-	                	<button type="button" class="quantity-left-minus btn"  data-type="minus" data-field="">
-	                   <i class="icon-minus"></i>
-	                	</button>
-	            		</span>
-	             	<input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
-	             	<span class="input-group-btn ml-2">
-	                	<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-	                     <i class="icon-plus"></i>
-	                 </button>
-	             	</span>
-	          	</div>
-              {% comment %} .................................... {% endcomment %}
+							   
 
               <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="input-group d-flex mb-3">
+        <div style="display: grid !important;grid-template-columns: 40% 20% 40%;" class="input-group d-flex mb-3">
             <div class="input-group-prepend">
                 <button type="button" id="minusBtn" class="quantity-btn btn" data-type="minus" data-field="">
                     <i class="icon-minus"></i>
                 </button>
             </div>
-            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+            <input style="width:70px;" type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
             <div class="input-group-append">
                 <button type="button" id="plusBtn" class="quantity-btn btn" data-type="plus" data-field="">
                     <i class="icon-plus"></i>
@@ -107,10 +106,10 @@
         </div>
         
     </div>
-</div>
+    </div>
               {% comment %} ................................... {% endcomment %}
           	</div>
-          	<p><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
+          	<p style="margin-top:2rem;"><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
     			</div>
     		</div>
     	</div>
@@ -274,18 +273,18 @@ document.getElementById('add_to_cart').addEventListener('click', function() {
 {% comment %} for plus and mines key in page {% endcomment %}
 <script>
 let count = 1; // Initialize count
-document.getElementById('pplusBtn').addEventListener('click', function() {
+document.getElementById('plusBtn').addEventListener('click', function() {
     count++;
     
-    document.getElementById('pquantity').value = count;
+    document.getElementById('quantity').value = count;
     console.log(document.getElementById('quantity').value );
 });
 
-document.getElementById('pminusBtn').addEventListener('click', function() {
+document.getElementById('minusBtn').addEventListener('click', function() {
     if (count > 1) {
         count--;
         
-        document.getElementById('pquantity').value = count;
+        document.getElementById('quantity').value = count;
         console.log(document.getElementById('quantity').value);
     }
 });
