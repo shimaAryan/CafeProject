@@ -5,7 +5,7 @@ from .views import *
 app_name = 'cafe'
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('menu/', CategoryItems.as_view(), name='menu'),
     path('detail_item/<int:pk>/', DetailItemView.as_view(), name='detail_item'),
     path('cart/', CartView.as_view(), name='cart'),

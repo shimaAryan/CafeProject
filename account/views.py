@@ -190,7 +190,6 @@ class CustomerProfileUpdateView(LoginRequiredMixin, UpdateView):
         return user
 
 
-
 class StaffProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffUpdateForm
@@ -205,3 +204,6 @@ class StaffProfileUpdateView(LoginRequiredMixin, UpdateView):
         # Redirect to the 'Staff_update_profile' page with the updated user's ID
         return reverse('account:Staff_profile', kwargs={'user_id': self.request.user.id})
 
+
+class AboutUsView(TemplateView):
+    template_name = 'about.html'

@@ -1,9 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.contenttypes.models import ContentType
-
 from account.models import CustomUser, Staff
-from core.models import Comment, Image
+from core.models import Comment
 
 
 class UserRegisterForm(forms.ModelForm):

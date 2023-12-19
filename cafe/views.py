@@ -1,19 +1,16 @@
 import json
 from json import JSONDecodeError
-from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from psycopg2 import OperationalError
-from django.views.generic import ListView, View, DetailView, CreateView, TemplateView, DeleteView, FormView
+from django.views.generic import ListView, View, CreateView, TemplateView, FormView
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from core.models import Image, Comment
 from .forms import search_form, receipt_form, detail_view_form
-from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
 from .models import *
@@ -354,7 +351,7 @@ def index(request):
     return render(request, 'index.html')
 
 
-class HomeView(TemplateView):
+class IndexView(TemplateView):
     template_name = 'index.html'
 
 # class CreateCommentView(CreateView):
