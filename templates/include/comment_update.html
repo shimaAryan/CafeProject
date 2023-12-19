@@ -1,0 +1,20 @@
+<section class="ftco-section contact-section">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 justify-content-center">
+                <form class="contact-info ftco-animate" style="background-color: rgba(66, 49, 29, 0.6);" method="post" action="#">
+                    <h2 class="text-center text-white" style="background-color: rgba(23,20,10,0.8);">Suggestion and criticism</h2>
+                    {% csrf_token %}
+                    <div class="form-group m-4">
+                        <label for="content">{{ form.content.label_tag }}</label>
+                        {{ form.content }}
+                        <small class="form-text text-danger m-5">{{ form.content.errors }}</small>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block " style="background-color: rgb(23,20,10);border: 1px solid #000000;" >Add Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+

@@ -4,17 +4,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="" />
+||||||| 42bcec1
     <list default="true" id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/templates/account/staff_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/account/templates/account/staff_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/navigation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/navigation.html" afterDir="false" />
     </list>
+=======
+<<<<<<< HEAD
+    <list default="true" id="230e001d-1885-4718-aba5-ae84f6e419a7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cafe/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cafe/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cafe/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/templates/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cafe/templates/detail_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/templates/detail_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cafe/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/cafe/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+=======
+    <list default="true" id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/templates/account/staff_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/account/templates/account/staff_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/navigation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/navigation.html" afterDir="false" />
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
+    </list>
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/account/urls.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+=======
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -26,17 +62,40 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo">{
+<<<<<<< HEAD
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2ZUZd8rbsBafKOc0pGCBEWOe099" />
+=======
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2ZZT8KnunCNEjGeQzNZNmydw6j4" />
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/python/python-code/CafeProject/media/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+||||||| 42bcec1
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
@@ -44,16 +103,55 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "develop",
-    "last_opened_file_path": "D:/python/python-code/CafeProject",
+    "last_opened_file_path": "D:/python/python-code/CafeProject/media/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
+=======
+<<<<<<< HEAD
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Drive E/cafe_project&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration name="templates" type="Python.DjangoServer" factoryName="Django server">
+      <module name="templates" />
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "develop",
+    "last_opened_file_path": "D:/python/python-code/CafeProject/media/images",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
+  }
+}</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\python\python-code\CafeProject\media\images" />
+      <recent name="D:\python\python-code\CafeProject\static\images" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\python\python-code\CafeProject\account\templates\account" />
     </key>
@@ -61,11 +159,15 @@
   <component name="RunManager">
     <configuration name="CafeProject" type="Python.DjangoServer" factoryName="Django server">
       <module name="CafeProject" />
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+<<<<<<< HEAD
+=======
         <env name="DJANGO_SETTINGS_MODULE" value="config.settings" />
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
@@ -87,17 +189,53 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+<<<<<<< HEAD
+      <changelist id="230e001d-1885-4718-aba5-ae84f6e419a7" name="Changes" comment="" />
+      <created>1702478703028</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1702478703028</updated>
+      <workItem from="1702478704130" duration="70000" />
+      <workItem from="1702478849025" duration="1085000" />
+      <workItem from="1702482700413" duration="1268000" />
+      <workItem from="1702504682895" duration="151000" />
+      <workItem from="1702533868023" duration="92000" />
+=======
       <changelist id="9958e050-10a7-4aa5-b032-7cce76d11eb6" name="Changes" comment="" />
       <created>1702628442785</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1702628442785</updated>
       <workItem from="1702628444741" duration="20574000" />
-      <workItem from="1702702296502" duration="36130000" />
+      <workItem from="1702702296502" duration="42533000" />
+      <workItem from="1702814482412" duration="1592000" />
+      <workItem from="1702816551376" duration="23177000" />
+<<<<<<< HEAD
+      <workItem from="1702874551974" duration="317000" />
+||||||| 42bcec1
+=======
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
+>>>>>>> 1067469b09f0588db60d2e8737de9651d62c9dac
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+<<<<<<< HEAD
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/CafeProject$session.coverage" NAME="session Coverage Results" MODIFIED="1702317910655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="D:\Drive E\cafe_project\CafeProject" />
+=======
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="django-line">
+          <url>file://$PROJECT_DIR$/templates/partials/navigation.html</url>
+          <line>60</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+>>>>>>> 42bcec1fe62c4a98f89a4f1e9aaacb33c9e1dcc7
   </component>
 </project>

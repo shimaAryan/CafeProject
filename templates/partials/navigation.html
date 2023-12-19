@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
 {#            index.html#}
-	      <a class="navbar-brand" href="#">Coffee<small>Blend</small></a>
+	      <a class="navbar-brand" href="#">Coffee<small>BigBoSs</small></a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
@@ -50,13 +50,25 @@
                {% endif %}
                </div>
               </li>
-              {% if user.is_authenticated and user.is_customer == 'False' %}
-              <li class="nav-item"><a href="{% url 'account:Staff_profile' user.id  %}" class="nav-link">Profile</a></li>
+              {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+{#                   Join us.html#}
+               <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Members</a>
+               <div class="dropdown-menu" aria-labelledby="dropdown04">
+{#                   Collaborators' profiles.html#}
+               <a href="{% url 'account:Staff_profile' user.id  %}" class="dropdown-item">Collaborators' profiles</a>
+{#                   Customuser profile.html#}
+               	<a href="{% url 'account:user_profile' user.id  %}" class="dropdown-item">Your profile</a>
+               </div>
+              </li>
               {% endif %}
 {#                contact.html#}
 	          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
 {#                cart.html#}
-	          <li class="nav-item cart"><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
+	          <li class="nav-item cart "><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
+              {% if user.is_authenticated  %}
+                <li class="nav-item"><a href="#" class="nav-link" style="color:rgb(144,58,12); font-size: 17px">{{ user.firstname }} {{ user.lastname }}</a></li>
+              {% endif %}
 	        </ul>
 	      </div>
 		  </div>
