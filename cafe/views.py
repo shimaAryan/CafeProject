@@ -181,11 +181,19 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         })
         print("!!!!!!!!!", context)
         return context
+    def post(self, request, *args, **kwargs):
+        form = receipt_form.DeliveryTime(request.POST)
+        print("88555555", form)
+        data = form.cleaned_data.items()
+        print("88888888", data)
+        self.request.session['clean_data_delivery'] = data
+        print("fffffff",self.request.session['clean_data_delivery'])
 
 
-class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
+
+class PaymentView(LoginRequiredMixin, ContextMixin, View):
     template_name = "payment_done.html"
-
+    # model = Receipt
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user == "AnonymousUser":
@@ -223,8 +231,8 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             order_item.items.add(item_instance)
             order_item.save()
 
-        return super().get(request, *args, **kwargs)
-        # return render(request, self.template_name)
+        # return super().get(request, *args, **kwargs)
+        return render(request, self.template_name)
 
         # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
         # print(">>>>>>>>>>>>>>",  order_item_fields)
@@ -235,7 +243,22 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
         # new_item.save()
 
 
-        # return HttpResponse("done")
+class FilterCategory(ListView):
+    template_name = "cat_item.html"
+    context_object_name = 'cat_item'
+    model = Items
+    def get_queryset(self):
+        self.category_name = self.kwargs['cat_name']
+        queryset = Items.objects.filter(category_id__title=self.category_name)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cat_name'] = self.category_name
+        context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
+        print("ttttt",context)
+        return context
+
 
 
 class ItemByTag(ListView):
@@ -315,7 +338,7 @@ class DeleteCartItemView(View):
         return JsonResponse({'error': 'An error occurred while deleting the item from the cart.'}, status=400)
 
 
-class CategoryItems(ListView, ):
+class CategoryItems(ListView):
     model = CategoryMenu
     context_object_name = "categorys"
     template_name = 'menu1.html'
