@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import configparser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,14 +78,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+config = configparser.ConfigParser()
+config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config.read(config_file)
+
+config = configparser.ConfigParser()
+config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config.read(config_file)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cafe',
-        'USER': 'postgres',
-        'PASSWORD': 'shima1993',
-        'PORT': '5432',
-    }}
+        'ENGINE': config.get('database', 'ENGINE'),
+        'NAME': config.get('database', 'NAME'),
+        'USER': config.get('database', 'USER'),
+        'PASSWORD': config.get('database', 'PASSWORD'),
+        'PORT': config.get('database', 'PORT'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from account.models import CustomUser, Staff
+from core.models import Comment
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -73,3 +74,31 @@ class CustomAuthenticationForm(AuthenticationForm):
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password'}),
         help_text="forgot your "
                   "password", )
+
+
+class CommentToManagerForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+
+class UserProfileUpdateForm(forms.ModelForm):
+    """
+    Class for updating the User profile.
+    """
+
+    class Meta:
+        model = CustomUser
+        fields = ['firstname', 'lastname', 'email', 'phonenumber']
+
+
+class StaffUpdateForm(forms.ModelForm):
+    """
+    Class for updating the Staff profile.
+    """
+    class Meta:
+        model = Staff
+        fields = ('nationalcode', 'date_of_birth', 'experience', 'rezome', 'guarantee')
+
+
+
