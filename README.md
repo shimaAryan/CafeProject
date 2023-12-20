@@ -1,3 +1,5 @@
+# 🧿بر چشم بد لعنت🧿
+
 # ☕️ Cafe BigBosS
 
 Welcome to MyCafe, the Django-powered solution for managing your café online! From keeping track of your staff and items to processing orders, Cafe BigBosS handles it all with a touch of espresso. ☕️
@@ -25,7 +27,7 @@ To get started with Cafe, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://your-repository-link.git
+git clone https://github.com/shimaarian/CafeProject.git
 ```
 
 2. Install the required packages:

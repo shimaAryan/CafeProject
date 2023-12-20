@@ -5,7 +5,9 @@
 
 <section class="home-slider owl-carousel">
 
-      <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});" data-stellar-background-ratio="0.5">
+      <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});" data-stellar-background-ratio="0.5"> 
+      {% comment %} <div lass="slider-item" data-stellar-background-ratio="0.5">
+      <img src="{{picture.image.url}}" class="img" alt="Profile Staff picture"> {% endcomment %}
       	<div class="overlay"></div>
         <div class="container">
           <div class="row slider-text justify-content-center align-items-center">
@@ -31,14 +33,12 @@
     	<div class="container">
     		<div class="row">
         <div class="col-lg-6 mb-5 ftco-animate">
-    				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src={% static image.image%} class="img-fluid" alt="Colorlib Template"></a>
+    				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src="{{image.image.url }} "class="img-fluid" alt="Colorlib Template"></a>
                 
-                {% comment %} {% if like_status%} {% endcomment %}
-            {% comment %} <a id="unlike" href={% url 'cafe:delet_like' item.id %}>
-
+               
              
 
-              </a> {% endcomment %}
+              </a> 
               <a id="like_area" href="#" data-like=like></a>
               {% comment %} {% else %} {% endcomment %}
                   {% comment %} <a id="like" href={% url 'cafe:create_like' item.id %}></a> {% endcomment %}
@@ -109,11 +109,7 @@
     </div>
               {% comment %} ................................... {% endcomment %}
           	</div>
-<<<<<<< HEAD
           	<p style="margin-top:2rem;"><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
-=======
-          	<p><a href='{% url "cafe:cart" %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
->>>>>>> 52aa3a3c74f8e9f0c763cb60a21c2f30b72d773a
     			</div>
     		</div>
     	</div>
@@ -226,14 +222,16 @@
 const product = {
   id: {{item.id}},
   name: "{{item.title}}",
-  quantity: 1,
+ // quantity: document.getElementById('quantity').value,
   price: {{ item.price }},
   discount: {{ item.discount }},
   description: "{{ item.description}}",
 
 };
 
-document.getElementById('add_to_cart').addEventListener('click', function() {
+  document.getElementById('add_to_cart').addEventListener('click', function() {
+    product["quantity"]=document.getElementById('quantity').value
+
   sessionStorage.setItem('order', JSON.stringify(product));
 
     const baseUrl = window.location.origin

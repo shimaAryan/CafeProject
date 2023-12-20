@@ -60,7 +60,7 @@ $(document).ready(function(){
             },
             error:function(res){
 
-                console.log("erroe",res,res.responseText);
+                console.log("erroe",res);
                 
                 
             }

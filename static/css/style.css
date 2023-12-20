@@ -8459,7 +8459,7 @@ h1, h2, h3, h4, h5,
 
 .form-control {
   height: 58px !important;
-  background: #000000;
+  background: black !important;
   color: rgba(255, 255, 255, 0.9) !important;
   font-size: 18px;
   border-radius: 0px;

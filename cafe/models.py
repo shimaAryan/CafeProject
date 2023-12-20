@@ -92,7 +92,8 @@ class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='receipt_order')
     delivery_time = models.TimeField(default=dt.time(00, 00))
-    delivery_date = models.CharField(max_length=50)
+    delivery_date = models.CharField(max_length=30)
+
 
 
     class Meta:

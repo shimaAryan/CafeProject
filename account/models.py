@@ -1,6 +1,5 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites import requests
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -8,10 +7,9 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
-import requests
+# import requests
 
 
-# Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self, phonenumber, email, password=None, **extra_fields):
         """
@@ -40,20 +38,10 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    # @staticmethod
-    # def get_city():
-    #     url = "https://github.com/dr5hn/countries-states-cities-database"
-    #     response = requests.get(url)
-    #     print('1' * 50, type(response))
-    #     data = response.json()
-    #     print('1'*50,data)
-    #     # If 'geonames' is directly under the root
-    #     city_data = data.get('geonames', [])
-    #     print('2' * 50, city_data)
-    #     city_choices = [(city['geonameId'], city['name']) for city in city_data]
-
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """handle fields of CustomUser model """
+
     phonenumber = models.CharField(max_length=50, validators=[RegexValidator(
         regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
         message="Invalid phone number format. Example: +989123456789 or 09123456789", ),
@@ -163,6 +151,7 @@ class Staff(models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
+    choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")]
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff')
     nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
                                     verbose_name="National Code", unique=True)
@@ -170,8 +159,7 @@ class Staff(models.Model, ValidatorMixin):
                                      default=timezone.now)
     experience = models.IntegerField(null=True, default=None)
     rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
-    guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
-                                 default='check', null=True, max_length=20)
+    guarantee = models.CharField(choices=choices, default='check', null=True, max_length=20)
 
     def __str__(self):
         return f"{self.user.firstname} {self.user.lastname}"

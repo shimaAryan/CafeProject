@@ -47,19 +47,18 @@ class ContextMixin():
                 quantity = item.get('quantity', 0)
                 price = item.get('price', 0)
                 discount = item.get('discount', 0)
-                item_total = quantity * price - discount
+                item_total = int(quantity) * price - discount
                 item['item_total'] = item_total
                 context['discount_total'] += discount
                 context['subtotal'] += item_total
                 context['delivery_cost'] = item_total * 2
             context['total'] = context['subtotal'] + context['delivery_cost']
-        # else:
-        #     return HttpResponse("you dont have any order items in your cart ")
+        
         except OrderItem.DoesNotExist:
             context['error'] = "Order Items does not exist"
         except Order.DoesNotExist:
             context['error'] = "Order does not exist"
-
+        
         return context
 
     @staticmethod
@@ -105,7 +104,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
 
     def get(self, request, *args, **kwargs):
-        print("request data=================", self.request)
+        
         session_order = request.session.get('order', [])
 
         self.context = self.get_context(session_order) if session_order else {
@@ -120,19 +119,41 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     @staticmethod
     def post(request, *args, **kwargs):
         try:
+
             new_order = json.loads(request.body)
             print("********",new_order)
             session_order = request.session.get('order', [])
-            if new_order not in session_order:
+            list_id=[item.get("id") for item in session_order]
+           
+            is_exist=False
+        
+            for item in session_order:
+                    if item['id'] ==  new_order['id']:
+                        is_exist=True
+                        
+                        item['quantity'] =int(item['quantity']) +int(new_order['quantity'])
+                        break
+            if not is_exist:
+                        
                 session_order.append(new_order)
-                request.session['order'] = session_order
-                request.session.modified = True
+
+            
+
+            
+            
+               
+            request.session['order'] = session_order
+            request.session.modified = True
+            
+                 
             return JsonResponse({'message': 'Order has been added successfully'})
+            
+        
         except JSONDecodeError as e:
             return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
+    
 
 # def update_quantity(session_order, new_order)
 #     for item in session_order:
@@ -289,47 +310,6 @@ class ItemByTag(ListView):
         return context
 
 
-# class ItemSearchView(ListView):
-#     model = Items
-#     template_name = 'checkout.html'
-#     context_object_name = 'items'
-#     form_class = search_form.SearchForm
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         search_query = self.request.GET.get('search', None)
-#         if search_query:
-#             queryset = queryset.annotate(similarity=Greatest(
-#                 TrigramSimilarity("title", search_query),
-#                 TrigramSimilarity("description", search_query)))
-#             queryset = queryset.filter(similarity__gt=0.1).order_by('-similarity')
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['search_form'] = self.get_form()
-#         print("kkkkkkkkkkk",context)
-#         return context
-
-# def get_form(self):
-#     form = self.form_class()
-#     if 'search' in self.request.GET:
-#         form = self.form_class(self.request.GET)
-#     return form
-
-
-# class CreateItem(LoginRequiredMixin,FormView):
-#     form_class = create_post.CreateItem
-#     template_name = "item_create.html"
-#     success_url = reverse_lazy("cafe:menu")
-#
-#     def get_context_data(self, **kwargs):
-#         user = Items.objects.select_related(Order)
-#     def form_valid(self, form):
-#         super().form_valid(self, form)
-#         new_item = form.save(commit=False)
-#         post.author = request.user
-#         new_item.save()
-#         form.save_m2m()
 
 class DeleteCartItemView(View):
     template_name = "cart.html"
