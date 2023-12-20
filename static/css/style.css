@@ -8459,7 +8459,7 @@ h1, h2, h3, h4, h5,
 
 .form-control {
   height: 58px !important;
-  background: #000000!important;
+  background: #000000;
   color: rgba(255, 255, 255, 0.9) !important;
   font-size: 18px;
   border-radius: 0px;
@@ -8471,6 +8471,7 @@ h1, h2, h3, h4, h5,
   padding-left: 0; }
   .form-control:focus, .form-control:active {
     border-color: #c49b63; }
+
 
 textarea.form-control {
   height: inherit !important; }
