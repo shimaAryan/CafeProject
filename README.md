@@ -25,7 +25,7 @@ To get started with Cafe, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://your-repository-link.git
+git clone https://github.com/shimaarian/CafeProject.git
 ```
 
 2. Install the required packages:
