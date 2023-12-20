@@ -121,6 +121,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     def post(request, *args, **kwargs):
         try:
             new_order = json.loads(request.body)
+            print("********",new_order)
             session_order = request.session.get('order', [])
             if new_order not in session_order:
                 session_order.append(new_order)
@@ -133,6 +134,13 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
             return JsonResponse({'error': str(e)}, status=500)
 
 
+# def update_quantity(session_order, new_order)
+#     for item in session_order:
+#         if item['id'] ==  new_order['id']:
+#             item['quantity'] += new_order['quantity']
+#             break
+#         else:
+#             session_order.append(new_order)
 # ------------------------------------------------------------------------------------
 
 class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
@@ -148,7 +156,8 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         if self.request.user == "AnonymousUser":
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
-        self.user_id = request.user.id
+
+        self.user_id = self.request.user.id
         order, created = Order.objects.get_or_create(user_id=self.user_id)
         order.status = "payment"
         order.save()
@@ -156,6 +165,8 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
 
     def form_valid(self, form):
         print("im hereeeeeeee")
+        cd = form.cleaned_data.items()
+        print("55555", cd)
         user_info = form.save(commit=False)
         user_info.save()
         messages.success(self.request, self.success_message, 'success')
@@ -179,39 +190,22 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
             "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
             'delivery_form': receipt_form.DeliveryTime
         })
-        print("!!!!!!!!!", context)
+        # print("!!!!!!!!!", context)
         return context
-    def post(self, request, *args, **kwargs):
-        form = receipt_form.DeliveryTime(request.POST)
-        print("88555555", form)
-        data = form.cleaned_data.items()
-        print("88888888", data)
-        self.request.session['clean_data_delivery'] = data
-        print("fffffff",self.request.session['clean_data_delivery'])
 
 
-
-class PaymentView(LoginRequiredMixin, ContextMixin, View):
+class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
     template_name = "payment_done.html"
-    # model = Receipt
+    model = Receipt
+    form_class = receipt_form.DeliveryTime
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user == "AnonymousUser":
+        if self.request.user.is_anonymous:
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
         self.user_id = request.user.id
         self.order_instance = get_object_or_404(Order, user_id=self.user_id)
         return super().dispatch(request, *args, **kwargs)
-
-    # def form_valid(self, form):
-    #     print("^^^^^^^^^^^^")
-    #     delivery_time = form.save(commit=False)  # Saving the form data for DeliveryTime
-    #     receipt = Receipt(order=self.order_instance, delivery_time=delivery_time)  # Creating a Receipt object
-    #     receipt.save()  # Saving the Receipt object to the database
-    #     self.order_instance.status = "paid"  # Updating the order status
-    #     self.order_instance.save()  # Saving the updated order status
-    #     messages.success(self.request, "Payment successful")  # Notifying the user about the successful payment
-    #     return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         session_order = request.session.get('order', [])
@@ -232,7 +226,22 @@ class PaymentView(LoginRequiredMixin, ContextMixin, View):
             order_item.save()
 
         # return super().get(request, *args, **kwargs)
+        return render(request, self.template_name, {'form': self.form_class})
+
+    def post(self, request, *args, **kwargs):
+        delivery_time_form = receipt_form.DeliveryTime(request.POST)
+        if delivery_time_form.is_valid():
+            cd = delivery_time_form.cleaned_data.items()
+
+            delivery_time = delivery_time_form.save(commit=False)
+            order_item = Order(order=self.order_instance)
+            delivery_time.save()
         return render(request, self.template_name)
+
+
+
+
+
 
         # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
         # print(">>>>>>>>>>>>>>",  order_item_fields)
@@ -241,7 +250,6 @@ class PaymentView(LoginRequiredMixin, ContextMixin, View):
 
         # print("newwwwww",new_item)
         # new_item.save()
-
 
 class FilterCategory(ListView):
     template_name = "cat_item.html"
@@ -381,9 +389,9 @@ class DetailItemView(CreateView, CommentListViewMixin):
         context = super().get_context_data(**kwargs)
         item_obj = Items.objects.get(id=self.kwargs["pk"])
 
-        context["item"] = item_obj
-        context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
-                                             content_type=ContentType.objects.get_for_model(Items))
+        # context["item"] = item_obj
+        # context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
+        #                                      content_type=ContentType.objects.get_for_model(Items))
         if Like.is_liked(self.request.user, item_obj):
             context["like_status"] = "True"
         else:

@@ -74,7 +74,7 @@ class DeliveryTime(forms.ModelForm):
         ("fri", "Friday"),
     )
     delivery_date = forms.CharField(label="pick the day",
-                                    widget=forms.Select(choices=DAY_SELECTION, attrs={'class': 'form-control'}))
+                                    widget=forms.Select(choices=DAY_SELECTION, attrs={'class': 'form-control', "style":"background-color: transparent !important;"}))
     delivery_time = forms.TimeField(label="pick the time",
                                     widget=forms.Select(choices=HOUR_CHOICES, attrs={'class': 'form-control'}))
 

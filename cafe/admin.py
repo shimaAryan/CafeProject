@@ -13,7 +13,7 @@ class ItemsAdmin(admin.ModelAdmin):
 class CategoryMenuAdmin(admin.ModelAdmin):
     list_display = ['title']
 
-
+@admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['order_time']
 
