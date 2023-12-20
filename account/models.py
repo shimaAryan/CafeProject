@@ -151,6 +151,7 @@ class Staff(models.Model, ValidatorMixin):
     """
    Models for managing information of Staff in coffee .
     """
+    choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")]
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff')
     nationalcode = models.CharField(max_length=50, validators=[ValidatorMixin.nationalcode_validator],
                                     verbose_name="National Code", unique=True)
@@ -158,8 +159,7 @@ class Staff(models.Model, ValidatorMixin):
                                      default=timezone.now)
     experience = models.IntegerField(null=True, default=None)
     rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
-    guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
-                                 default='check', null=True, max_length=20)
+    guarantee = models.CharField(choices=choices, default='check', null=True, max_length=20)
 
     def __str__(self):
         return f"{self.user.firstname} {self.user.lastname}"
