@@ -24,7 +24,7 @@ user = get_user_model()
 
 class ContextMixin():
     # def get_context(self, user, session_data):
-    def get_context(self, session_data,user=None):
+    def get_context(self, session_data, user=None):
         context = {}
 
         # if not user or not user.is_authenticated:
