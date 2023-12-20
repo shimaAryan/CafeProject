@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 
+
 # Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self, phonenumber, email, password=None, **extra_fields):
@@ -193,3 +194,5 @@ class LoginRecord(models.Model):
     last_time = models.DateTimeField(auto_now=True)
     login_count = models.PositiveIntegerField(default=0)
     order_count = models.PositiveIntegerField(default=0)
+
+
