@@ -9,14 +9,12 @@ class UserRegisterForm(forms.ModelForm):
     Class for Create and handle the User sign up form.in fact this form is create
     for handling Customer.
     """
+    choices = [("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"), ]
     password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(
         attrs={"class": "form-control", "placeholder": "Confirm your password",
                "style": "background: transparent;", }))
 
-    how_know_us = forms.CharField(widget=forms.Select(choices=[("Ch_Tel", "Chanel Telegram"),
-                                                               ("Ins", "Instagram"),
-                                                               ("Web", "Web Site"),
-                                                               ]))
+    how_know_us = forms.CharField(widget=forms.Select(choices=choices))
 
     class Meta:
         model = CustomUser
@@ -81,13 +79,14 @@ class CustomAuthenticationForm(AuthenticationForm):
         label='phone number or Email Address')
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password',
-               "style": "background: transparent;"}),help_text="forgot your" "password", )
+               "style": "background: transparent;"}), help_text="forgot your" "password", )
 
 
 class CommentToManagerForm(forms.ModelForm):
     """
     Class for handel the user comment to Manager.
     """
+
     class Meta:
         model = Comment
         fields = ('content',)
