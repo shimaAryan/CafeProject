@@ -45,8 +45,8 @@
 						      <tr class="text-center">
 
                                     {% for item in item_data %}
-
-                                    <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>
+{% comment %} ...................................................... {% endcomment %}
+                                    <td class="product-remove"><a href="#" id="delete_item"><span class="icon-close"  id="item-delete"></span></a></td>
 
 								  {% for picture in images %}
 						                {% if picture.object_id == item.id %}
@@ -180,6 +180,7 @@
 
     $(document).ready(function() {
     $('#item-delete').click(function () {
+	consol.log("helooooo")
         var button = $(this);
         $.ajax({
             type: "POST",
