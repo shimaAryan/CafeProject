@@ -1,0 +1,24 @@
+[
+    {
+        "model": "account.CustomUser",
+        "pk": 1,
+        "fileds": {
+            "phonenumber": "09983429034",
+            "email": "arigatooo@gmail.com",
+            "firstname": "Jacki",
+            "lastname": "Chan",
+            "password": "hellooworld123"
+        }
+    },
+    {
+        "model": "account.CustomUser",
+        "pk": 2,
+        "fileds": {
+            "phonenumber": "03948293041",
+            "email": "mamad@yahoo.com",
+            "firstname": "mamad",
+            "lastname": "senpai",
+            "password": "iminlovewithdjango2023"
+        }
+    }
+]
