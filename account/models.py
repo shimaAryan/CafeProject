@@ -8,7 +8,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
-import requests
+# import requests
 
 
 # Create your models here.

@@ -114,10 +114,13 @@
 					
 
 					 {% for picture in images %}
-					
+					 {% comment %} <h1>{{picture.image}}</h1>
+					<h5>{{item.id}}</h5> {% endcomment %}
 						{% if picture.object_id == item.id %}
 						
-							<div class="img" style="background-image: url({% static picture.image %});"></div>
+							
+								<img src="{{picture.image.url}}" class="img" alt="Profile Staff picture">
+
 																	     
 						{% endif %}
 					{% endfor %} 

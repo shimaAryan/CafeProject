@@ -12,13 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 import configparser
-<<<<<<< HEAD
 config = configparser.ConfigParser()
-config.read('./database.ini')
-=======
->>>>>>> 90d113ff845098ae4ca9446e76e53bc985a4ee3a
+BASE_DIR = Path(__file__).resolve().parent.parent
+config_file_path = os.path.join(BASE_DIR,'database.ini')
+config.read(config_file_path)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -83,18 +82,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-config = configparser.ConfigParser()
-config_file = os.path.join(BASE_DIR, 'database_config.ini')
-config.read(config_file)
 
-config = configparser.ConfigParser()
-config_file = os.path.join(BASE_DIR, 'database_config.ini')
-config.read(config_file)
+
+
 
 DATABASES = {
     'default': {
-          'ENGINE': config.get('database', 'ENGINE'),
+        'ENGINE': config.get('database', 'ENGINE'),
         'NAME': config.get('database', 'NAME'),
+        
         # 'USER': config.get('database', 'USER'),
         # 'PASSWORD': config.get('database', 'PASSWORD'),
         # 'PORT': config.get('database', 'PORT'),

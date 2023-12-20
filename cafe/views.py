@@ -47,19 +47,18 @@ class ContextMixin():
                 quantity = item.get('quantity', 0)
                 price = item.get('price', 0)
                 discount = item.get('discount', 0)
-                item_total = quantity * price - discount
+                item_total = int(quantity) * price - discount
                 item['item_total'] = item_total
                 context['discount_total'] += discount
                 context['subtotal'] += item_total
                 context['delivery_cost'] = item_total * 2
             context['total'] = context['subtotal'] + context['delivery_cost']
-        # else:
-        #     return HttpResponse("you dont have any order items in your cart ")
+        
         except OrderItem.DoesNotExist:
             context['error'] = "Order Items does not exist"
         except Order.DoesNotExist:
             context['error'] = "Order does not exist"
-
+        
         return context
 
     @staticmethod
@@ -105,7 +104,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
 
     def get(self, request, *args, **kwargs):
-        print("request data=================", self.request)
+        
         session_order = request.session.get('order', [])
 
         self.context = self.get_context(session_order) if session_order else {
@@ -120,18 +119,40 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     @staticmethod
     def post(request, *args, **kwargs):
         try:
+
             new_order = json.loads(request.body)
             session_order = request.session.get('order', [])
-            if new_order not in session_order:
+            list_id=[item.get("id") for item in session_order]
+           
+            is_exist=False
+        
+            for item in session_order:
+                    if item['id'] ==  new_order['id']:
+                        is_exist=True
+                        
+                        item['quantity'] =int(item['quantity']) +int(new_order['quantity'])
+                        break
+            if not is_exist:
+                        
                 session_order.append(new_order)
-                request.session['order'] = session_order
-                request.session.modified = True
+
+            
+
+            
+            
+               
+            request.session['order'] = session_order
+            request.session.modified = True
+            
+                 
             return JsonResponse({'message': 'Order has been added successfully'})
+            
+        
         except JSONDecodeError as e:
             return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
+    
 
 # ------------------------------------------------------------------------------------
 
