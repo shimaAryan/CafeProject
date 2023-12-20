@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {%  block title %}Home{% endblock %}
-  {% block content %}
+{% block content %}
     <section class="home-slider ">
       <div class="slider-item" style="background-image: url({% static 'images/bg_1.jpg' %});">
       	<div class="overlay"></div>
@@ -184,7 +184,7 @@
 	          	<span class="subheading">Discover</span>
 	            <h2 class="mb-4">Our Menu</h2>
 	            <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-	            <p><a href="#" class="btn btn-primary btn-outline-primary px-4 py-3">View Full Menu</a></p>
+	            <p><a href="{% url 'cafe:menu' %}" class="btn btn-primary btn-outline-primary px-4 py-3">View Full Menu</a></p>
 	          </div>
     			</div>
     			<div class="col-md-6">
@@ -325,28 +325,28 @@
     	<div class="container-wrap">
     		<div class="row no-gutters">
 					<div class="col-md-3 ftco-animate">
-					#	<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-1.jpg' %});">
+						<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-1.jpg' %});">
 							<div class="icon mb-4 d-flex align-items-center justify-content-center">
     						<span class="icon-search"></span>
     					</div>
 						</a>
 					</div>
 					<div class="col-md-3 ftco-animate">
-					#	<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-2.jpg' %});">
+						<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-2.jpg' %});">
 							<div class="icon mb-4 d-flex align-items-center justify-content-center">
     						<span class="icon-search"></span>
     					</div>
 						</a>
 					</div>
 					<div class="col-md-3 ftco-animate">
-					#	<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-3.jpg' %});">
+						<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-3.jpg' %});">
 							<div class="icon mb-4 d-flex align-items-center justify-content-center">
     						<span class="icon-search"></span>
     					</div>
 						</a>
 					</div>
 					<div class="col-md-3 ftco-animate">
-					#	<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-4.jpg' %});">
+						<a href="#" class="gallery img d-flex align-items-center" style="background-image: url({% static 'images/gallery-4.jpg' %});">
 							<div class="icon mb-4 d-flex align-items-center justify-content-center">
     						<span class="icon-search"></span>
     					</div>
@@ -595,7 +595,7 @@
         <div class="row d-flex">
           <div class="col-md-4 d-flex ftco-animate">
           	<div class="blog-entry align-self-stretch">
-{#              <a href="{% url 'cafe:detail_item' id=1 %}" class="block-20" style="background-image: url({% static 'images/image_1.jpg' %});">#}
+          <a href="{% url 'cafe:menu' %}" class="block-20" style="background-image: url({% static 'images/image_1.jpg' %});">
               </a>
               <div class="text py-4 d-block">
               	<div class="meta">
@@ -610,7 +610,7 @@
           </div>
           <div class="col-md-4 d-flex ftco-animate">
           	<div class="blog-entry align-self-stretch">
-              <a href="{% include 'blog-single.html' %}" class="block-20" style="background-image: url({% static 'images/image_2.jpg' %});">
+              <a href="" class="block-20" style="background-image: url({% static 'images/image_2.jpg' %});">
               </a>
               <div class="text py-4 d-block">
               	<div class="meta">
@@ -625,7 +625,7 @@
           </div>
           <div class="col-md-4 d-flex ftco-animate">
           	<div class="blog-entry align-self-stretch">
-              <a href="{% include 'blog-single.html' %}" class="block-20" style="background-image: url({% static 'images/image_3.jpg' %});">
+              <a href="" class="block-20" style="background-image: url({% static 'images/image_3.jpg' %});">
               </a>
               <div class="text py-4 d-block">
               	<div class="meta">

@@ -80,12 +80,8 @@ class UserLoginView(auth_view.LoginView):
         return redirect(reverse('account:User_login'))
 
 
-class IndexView(TemplateView):
-    template_name = 'index.html'
-
-
 class UserLogoutView(auth_view.LogoutView):
-    next_page = reverse_lazy('account:index')
+    next_page = reverse_lazy('cafe:index')
 
 
 class UserPasswordResetView(auth_view.PasswordResetView):
@@ -190,7 +186,6 @@ class CustomerProfileUpdateView(LoginRequiredMixin, UpdateView):
         return user
 
 
-
 class StaffProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffUpdateForm
@@ -205,3 +200,6 @@ class StaffProfileUpdateView(LoginRequiredMixin, UpdateView):
         # Redirect to the 'Staff_update_profile' page with the updated user's ID
         return reverse('account:Staff_profile', kwargs={'user_id': self.request.user.id})
 
+
+class AboutUsView(TemplateView):
+    template_name = 'about.html'

@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites import requests
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -7,6 +8,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
+import requests
 
 
 # Create your models here.
@@ -38,6 +40,18 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    # @staticmethod
+    # def get_city():
+    #     url = "https://github.com/dr5hn/countries-states-cities-database"
+    #     response = requests.get(url)
+    #     print('1' * 50, type(response))
+    #     data = response.json()
+    #     print('1'*50,data)
+    #     # If 'geonames' is directly under the root
+    #     city_data = data.get('geonames', [])
+    #     print('2' * 50, city_data)
+    #     city_choices = [(city['geonameId'], city['name']) for city in city_data]
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     phonenumber = models.CharField(max_length=50, validators=[RegexValidator(
@@ -51,9 +65,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                 help_text="Create the default nickname using the format firstname_lastname@cofe")
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
-    how_know_us = models.CharField(max_length=30,
-                                   choices=[("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"),
-                                            ("Fr", "Friends"), ("Other", "Other items")], default="other", null=True)
+    user_city = models.CharField(max_length=40, null=True, blank=True, default='null')
+    user_address = models.CharField(max_length=100, null=True, blank=True, default='null')
+    user_postcode = models.CharField(max_length=100, null=True, blank=True, default='null')
+    how_know_us = models.CharField(max_length=30, default="other", null=True)
     is_customer = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -155,8 +170,6 @@ class Staff(models.Model, ValidatorMixin):
                                      default=timezone.now)
     experience = models.IntegerField(null=True, default=None)
     rezome = models.FileField(upload_to='files/', blank=True, null=True, default=None)
-    # profile_image = models.ImageField(upload_to='images/', blank=True, null=True, storage=FileSystemStorage(),
-    #                                   default=None)
     guarantee = models.CharField(choices=[("Ch", "Check"), ("Prn", "Promissory note"), ("rep", "Representative")],
                                  default='check', null=True, max_length=20)
 
@@ -175,6 +188,7 @@ class Staff(models.Model, ValidatorMixin):
             models_app = app_config.get_models()
             group, created = Group.objects.get_or_create(name="staff")
             for model in models_app:
+
                 content_type = ContentType.objects.get_for_model(model)
                 model_permission = Permission.objects.filter(content_type=content_type)
                 for perm in model_permission:
