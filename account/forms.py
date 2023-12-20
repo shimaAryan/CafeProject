@@ -10,7 +10,9 @@ class UserRegisterForm(forms.ModelForm):
     for handling Customer.
     """
     password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(
-        attrs={"class": "form-control", 'placeholder': 'Confirm your password'}))
+        attrs={"class": "form-control", "placeholder": "Confirm your password",
+               "style": "background: transparent;", }))
+
     how_know_us = forms.CharField(widget=forms.Select(choices=[("Ch_Tel", "Chanel Telegram"),
                                                                ("Ins", "Instagram"),
                                                                ("Web", "Web Site"),
@@ -20,11 +22,16 @@ class UserRegisterForm(forms.ModelForm):
         model = CustomUser
         fields = ["phonenumber", "email", "firstname", "lastname", "password", "how_know_us"]
         widgets = {
-            'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
-            'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}),
-            'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}),
+            'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number',
+                                                  "style": "background: transparent;"}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password',
+                                                   "style": "background: transparent;"}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address',
+                                             "style": "background: transparent;"}),
+            'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name',
+                                                "style": "background: transparent;"}),
+            'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name',
+                                               "style": "background: transparent;"}),
         }
 
     def clean_password_confirm(self):
@@ -41,7 +48,8 @@ class StaffSignUpForm(forms.ModelForm):
     """
     phonenumber = forms.CharField(
         label='Phone Number',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}), )
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number',
+                                      "style": "background: transparent;"}), )
     profile_image = forms.ImageField(required=True)
 
     class Meta:
@@ -49,9 +57,10 @@ class StaffSignUpForm(forms.ModelForm):
         fields = ('nationalcode', 'date_of_birth', 'experience', 'rezome', 'guarantee')
 
     widgets = {
-        'nationalcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your national code'}),
+        'nationalcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your national code',
+                                               "style": "background: transparent;"}),
         'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth',
-                                                'type': 'date'}),
+                                                'type': 'date', "style": "background: transparent;"}),
     }
 
     def __init__(self, *args, **kwargs):
@@ -67,13 +76,12 @@ class CustomAuthenticationForm(AuthenticationForm):
     """
     username = forms.CharField(widget=forms.TextInput(
         attrs={"class": "form-control", "autocomplete": "off",
-               'placeholder': 'Enter your phone number or email address'}),
+               'placeholder': 'Enter your phone number or email address', "style": "background: transparent;"}),
         help_text="Please enter a valid phone number of email address.",
         label='phone number or Email Address')
     password = forms.CharField(widget=forms.PasswordInput(
-        attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password'}),
-        help_text="forgot your "
-                  "password", )
+        attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password',
+               "style": "background: transparent;"}),help_text="forgot your" "password", )
 
 
 class CommentToManagerForm(forms.ModelForm):
@@ -96,9 +104,7 @@ class StaffUpdateForm(forms.ModelForm):
     """
     Class for updating the Staff profile.
     """
+
     class Meta:
         model = Staff
         fields = ('nationalcode', 'date_of_birth', 'experience', 'rezome', 'guarantee')
-
-
-

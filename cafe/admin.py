@@ -24,7 +24,7 @@ class OrderAdmin(admin.ModelAdmin):
 #     list_filter = ['order_time']
 #
 #
-#     def order_count_by_season_chart(self, obj):
+#     def(self, obj):
 #         order_counts_by_season = (
 #             Order.objects
 #             .filter(user=obj.user)

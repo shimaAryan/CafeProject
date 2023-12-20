@@ -80,12 +80,8 @@ class UserLoginView(auth_view.LoginView):
         return redirect(reverse('account:User_login'))
 
 
-class IndexView(TemplateView):
-    template_name = 'index.html'
-
-
 class UserLogoutView(auth_view.LogoutView):
-    next_page = reverse_lazy('account:index')
+    next_page = reverse_lazy('cafe:index')
 
 
 class UserPasswordResetView(auth_view.PasswordResetView):
