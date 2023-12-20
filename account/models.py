@@ -176,6 +176,7 @@ class Staff(models.Model, ValidatorMixin):
             models_app = app_config.get_models()
             group, created = Group.objects.get_or_create(name="staff")
             for model in models_app:
+
                 content_type = ContentType.objects.get_for_model(model)
                 model_permission = Permission.objects.filter(content_type=content_type)
                 for perm in model_permission:
@@ -184,7 +185,6 @@ class Staff(models.Model, ValidatorMixin):
                     else:
                         if 'view' in perm.codename:
                             group.permissions.add(perm)
-
 
 class LoginRecord(models.Model):
     """

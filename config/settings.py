@@ -82,6 +82,10 @@ config = configparser.ConfigParser()
 config_file = os.path.join(BASE_DIR, 'database_config.ini')
 config.read(config_file)
 
+config = configparser.ConfigParser()
+config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config.read(config_file)
+
 DATABASES = {
     'default': {
         'ENGINE': config.get('database', 'ENGINE'),
