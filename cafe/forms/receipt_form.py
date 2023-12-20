@@ -3,7 +3,6 @@ from django import forms
 from cafe.models import Receipt
 import datetime as dt
 import requests
-
 user = get_user_model()
 
 
@@ -42,7 +41,6 @@ class PersonalInfo(forms.ModelForm):
             'Content-Type': 'application/json'
         }
         response = requests.post(url, json=data, headers=headers)
-        # Check if the request was successful (status code 200)
         if response.status_code == 200:
             cities_data = response.json()
             cities_choices = [(city[1:], city[1:]) for city in cities_data['data']]

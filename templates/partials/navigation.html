@@ -1,18 +1,12 @@
+    <!--  nav -->
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-	    <div class="container">
-
+	    <div class="container m-2">
 	      <a class="navbar-brand" href="{% url 'cafe:index' %}">Coffee<small>BigBoSs</small></a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
-
-
-
-
-
-
 {#                index.html#}
                 <li class="nav-item active" ><a href="{% url 'cafe:index' %}" class="nav-link">Home</a></li>
 {#                menu.html#}
@@ -73,12 +67,14 @@
 {#                contact.html#}
 	          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
 {#                cart.html#}
-	          <li class="nav-item cart "><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
-              {% if user.is_authenticated  %}
-                <li class="nav-item"> <button class="btn btn-dark m-4"style="background-color: rgba(44,44,44,0.7);width: 200px;" ><a href="{% url 'account:user_profile' user.id  %}">{{ user.firstname }} {{ user.lastname }}</a></button></li>
-              {% endif %}
+              <li class="nav-item cart "><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center p-1"><small>1</small></span></a></li>
 	        </ul>
 	      </div>
 		  </div>
+          <ul class="navbar-nav ml-auto">
+              {% if user.is_authenticated  %}
+                <li class="nav-item"> <button class="btn btn-dark m-4"style="background-color: rgba(44,44,44,0.7);width: 200px;" ><a href="{% url 'account:user_profile' user.id  %}">{{ user.firstname }} {{ user.lastname }}</a></button></li>
+              {% endif %}
+          </ul>
 	  </nav>
     <!-- END nav -->
