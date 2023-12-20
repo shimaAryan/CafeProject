@@ -199,47 +199,6 @@ class ItemByTag(ListView):
         return context
 
 
-# class ItemSearchView(ListView):
-#     model = Items
-#     template_name = 'checkout.html'
-#     context_object_name = 'items'
-#     form_class = search_form.SearchForm
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         search_query = self.request.GET.get('search', None)
-#         if search_query:
-#             queryset = queryset.annotate(similarity=Greatest(
-#                 TrigramSimilarity("title", search_query),
-#                 TrigramSimilarity("description", search_query)))
-#             queryset = queryset.filter(similarity__gt=0.1).order_by('-similarity')
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['search_form'] = self.get_form()
-#         print("kkkkkkkkkkk",context)
-#         return context
-
-# def get_form(self):
-#     form = self.form_class()
-#     if 'search' in self.request.GET:
-#         form = self.form_class(self.request.GET)
-#     return form
-
-
-# class CreateItem(LoginRequiredMixin,FormView):
-#     form_class = create_post.CreateItem
-#     template_name = "item_create.html"
-#     success_url = reverse_lazy("cafe:menu")
-#
-#     def get_context_data(self, **kwargs):
-#         user = Items.objects.select_related(Order)
-#     def form_valid(self, form):
-#         super().form_valid(self, form)
-#         new_item = form.save(commit=False)
-#         post.author = request.user
-#         new_item.save()
-#         form.save_m2m()
 
 class DeleteCartItemView(View):
     template_name = "cart.html"
