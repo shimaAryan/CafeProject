@@ -9,8 +9,6 @@ from account.models import CustomUser
 user = get_user_model()
 
 
-
-
 class ServingTime(models.Model):
     time = models.CharField(max_length=7)
 
@@ -34,12 +32,11 @@ class CategoryMenu(models.Model):
 class Items(models.Model):
     category_id = models.ForeignKey(CategoryMenu, on_delete=models.CASCADE, related_name="items")
     title = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=7, decimal_places=4, default=0)
+    price = models.PositiveIntegerField(default=0)
     description = models.TextField(max_length=255)
     status = models.BooleanField()
     discount = models.PositiveIntegerField(default=0)
-    number_items = models.PositiveIntegerField(default=1)
-    # like_count = models.PositiveIntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=1)
     like = models.ManyToManyField(user, through='Like', related_name='liked_item')
     tags = TaggableManager()
 
@@ -66,13 +63,14 @@ class Items(models.Model):
 
 
 class Order(models.Model):
-    class OrderStatus(models.TextChoices):
-        ORDER = "ORDER", "order"
-        PAYMENT = "PAYMENT", "payment"
-        CANCELED = "CANCELED", "Canceled"
+    # class OrderStatus(models.TextChoices):
+    #     ORDER = "ORDER", "order"
+    #     PAYMENT = "PAYMENT", "payment"
+    #     CANCELED = "CANCELED", "Canceled"
 
     user = models.OneToOneField(user, on_delete=models.CASCADE, related_name="user_cart")
-    status = models.CharField(max_length=10, choices=OrderStatus.choices, default=OrderStatus.ORDER)
+    # status = models.CharField(max_length=10, choices=OrderStatus.choices, default=OrderStatus.ORDER)
+    status = models.CharField(max_length=10, default="order")
     order_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -89,9 +87,8 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     DoesNotExist = None
-    number_items = models.PositiveIntegerField(default=1, blank=True)
-    delivery_cost = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True, default=0)
-    delivery_time = models.TimeField(null=True, blank=True, default=dt.time(00, 00))
+    quantity = models.PositiveIntegerField(default=1, blank=True)
+    delivery_cost = models.PositiveIntegerField(null=True, blank=True, default=0)
     items = models.ManyToManyField(Items, related_name="item_order")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order")
 
@@ -102,6 +99,9 @@ class OrderItem(models.Model):
 class Receipt(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='receipt_order')
+    delivery_time = models.TimeField(default=dt.time(00, 00))
+    delivery_date = models.CharField()
+
 
     class Meta:
         ordering = ['-time']
@@ -125,7 +125,7 @@ class Like(models.Model):
     @staticmethod
     def is_liked(userr,itemm):
         try:
-            Like.objects.get(user=userr,items=itemm)
+            Like.objects.get(user=userr, items=itemm)
             return True
         except :
             return False

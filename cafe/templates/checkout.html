@@ -24,7 +24,7 @@
       <div class="container">
         <div class="row">
           <div class="col-xl-8 ftco-animate">
-						<form action="{% url cafe:cart-receipt user_id}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post" novalidate>
+						<form action="{% url 'cafe:cart-receipt' 'payment' %}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post" novalidate>
 							<h3 class="mb-4 billing-heading">Billing Details</h3>
 	          	<div class="row align-items-end">
 	          		<div class="col-md-6">
@@ -33,7 +33,6 @@
 
 	                	<label >Firt Name</label>
 						{{ form.firstname }}
-<!--	                  <input type="text" class="form-control" placeholder="" value={{ form.firstname }}>-->
 	                </div>
 	              </div>
 	              <div class="col-md-6">
@@ -50,14 +49,6 @@
 		            		<div class="select-wrap">
 		                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
 								{{form.user_city}}
-<!--		                  <select name="" id="" class="form-control">-->
-<!--		                  	<option value="">France</option>-->
-<!--		                    <option value="">Italy</option>-->
-<!--		                    <option value="">Philippines</option>-->
-<!--		                    <option value="">South Korea</option>-->
-<!--		                    <option value="">Hongkong</option>-->
-<!--		                    <option value="">Japan</option>-->
-<!--		                  </select>-->
 		                </div>
 		            	</div>
 		            </div>
@@ -68,23 +59,11 @@
 							{{form.user_address}}
 	                </div>
 		            </div>
-<!--		            <div class="col-md-6">-->
-<!--		            	<div class="form-group">-->
-<!--	                  <input type="text" class="form-control" placeholder="Appartment, suite, unit etc: (optional)">-->
-<!--	                </div>-->
-<!--		            </div>-->
-<!--		            <div class="w-100"></div>-->
-<!--		            <div class="col-md-6">-->
-<!--		            	<div class="form-group">-->
-<!--	                	<label for="towncity">Town / City</label>-->
-<!--	                  <input type="text" class="form-control" placeholder="">-->
-<!--	                </div>-->
-<!--		            </div>-->
 		            <div class="col-md-6">
 		            	<div class="form-group">
 		            		<label >Postcode / ZIP *</label>
 							{{form.user_postcode}}
-							<div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
+							<div style="font-size: 10px">{{ form.user_postcode.errors }}</div>
 	                </div>
 		            </div>
 		            <div class="w-100"></div>
@@ -92,7 +71,7 @@
 	                <div class="form-group">
 	                	<label >Phone</label>
 						{{form.phonenumber}}
-						<div style="font-size: 10px">{{ form.user_postcode.errors }}</div>
+						<div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
 	                </div>
 	              </div>
 	              <div class="col-md-6">
@@ -107,86 +86,76 @@
 
                 <div class="col-md-12">
                 	<div class="form-group mt-4">
-					<p class="btn btn-primary py-3 px-4">accept information</p>
-<!--										<div class="radio">-->
-<!--										  <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>-->
-<!--										  <label><input type="radio" name="optradio"> Ship to different address</label>-->
-<!--										</div>-->
+					<button class="btn btn-primary py-3 px-4 btn-block" type="submit">accept information</button>
 									</div>
                 </div>
 	            </div>
 	          </form><!-- END -->
-
-
 
 	          <div class="row mt-5 pt-3 d-flex">
 	          	<div class="col-md-6 d-flex">
 	          		<div class="cart-detail cart-total ftco-bg-dark p-3 p-md-4">
 	          			<h3 class="billing-heading mb-4">Cart Total</h3>
 	          			<p class="d-flex">
+
 		    						<span>Subtotal</span>
-		    						<span>${{subtotal}}</span>
+		    						<span>${{session_data.subtotal}}</span>
 		    					</p>
 		    					<p class="d-flex">
 		    						<span>Delivery</span>
-		    						<span>${{delivery_cost}}</span>
+		    						<span>${{session_data.delivery_cost}}</span>
 		    					</p>
 		    					<p class="d-flex">
 		    						<span>Discount</span>
 
-		    						<span>{{discount_total}}%</span>
+		    						<span>{{session_data.discount_total}}%</span>
 
 		    					</p>
 		    					<hr>
 		    					<p class="d-flex total-price">
 		    						<span>Total</span>
-		    						<span>${{total}}</span>
+		    						<span>${{session_data.total}}</span>
 		    					</p>
+
 								</div>
 	          	</div>
 	          	<div class="col-md-6">
 	          		<div class="cart-detail ftco-bg-dark p-3 p-md-4">
-	          			<h3 class="billing-heading mb-4">Payment Method</h3>
+						<form action="{% url 'cafe:cart-receipt' 'payment' %}"  method="post" >
+	          			<h3 class="billing-heading mb-4">Delivery Time</h3>
+
 									<div class="form-group">
 										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Direct Bank Tranfer</label>
+											{{delivery_form.delivery_date.label_tag}}
+											<div class="select-wrap">
+												{{delivery_form.delivery_date}}
 											</div>
 										</div>
 									</div>
 									<div class="form-group">
 										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Check Payment</label>
+												{{delivery_form.delivery_time.label_tag}}
+												<div class="select-wrap">
+												{{delivery_form.delivery_time}}
 											</div>
 										</div>
 									</div>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="radio">
-											   <label><input type="radio" name="optradio" class="mr-2"> Paypal</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-md-12">
-											<div class="checkbox">
-											   <label><input type="checkbox" value="" class="mr-2"> I have read and accept the terms and conditions</label>
-											</div>
-										</div>
-									</div>
-									<p><a href="#"class="btn btn-primary py-3 px-4">Place an order</a></p>
+
+									<p><a href="{% url 'cafe:payment_paid' 'paid' %}" class="btn btn-primary py-3 px-4" type="submit">Place an order</a></p>
+							</form>
 								</div>
+
 	          	</div>
 	          </div>
+
           </div> <!-- .col-md-8 -->
 
 
 
 
-          <div class="col-xl-4 sidebar ftco-animate">
+          <div class="col-xl-4 sidebar ftco-animate fadeInUp ftco-animated">
 			  <div class="sidebar-box">
-              <form action="{% url 'cafe:cart-receipt' order.user_id %}" class="search-form" method="get">
+              <form class="search-form" action="{% url 'cafe:cart-receipt' 'payment' %}" method="get" >
                 <div class="form-group">
                 	<div class="icon">
 	                  <span class="icon-search"></span>
@@ -197,18 +166,16 @@
 
               </form>
             </div>
-			{% if search.items %}
+			  {% if search.items %}
 			<h2 class="search-form">Search Results</h2>
 			<ul>
 			  {% for item in search.items %}
 				<li>
 				  <a>{{ item.title }}</a>
-				  <p>{{ item.description|truncatewords:10 }}</p>
+				  <p>{{ item.description | truncatewords:10 }}</p>
 				</li>
 			  {% endfor %}
 			</ul>
-		  {% else %}
-			<p>No items found.</p>
 		  {% endif %}
             <div class="sidebar-box ftco-animate">
               <div class="categories">
@@ -218,12 +185,6 @@
 				  <li><a href="{% url 'cafe:menu' %}" target="_blank">{{ item.title }} <span>({{item.item_count}})</span></a></li>
 				  {% endfor %}
 					  </ul>
-<!--                <li><a href="#">Tour <span>(12)</span></a></li>-->
-<!--                <li><a href="#">Hotel <span>(22)</span></a></li>-->
-<!--                <li><a href="#">Coffee <span>(37)</span></a></li>-->
-<!--                <li><a href="#">Drinks <span>(42)</span></a></li>-->
-<!--                <li><a href="#">Foods <span>(14)</span></a></li>-->
-<!--                <li><a href="#">Travel <span>(140)</span></a></li>-->
               </div>
             </div>
 

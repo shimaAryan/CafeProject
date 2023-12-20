@@ -24,56 +24,52 @@ from django.template.loader import render_to_string
 user = get_user_model()
 
 
-class ContextMixin(LoginRequiredMixin):
-    def get_context(self, user, session_data):
+class ContextMixin():
+    # def get_context(self, user, session_data):
+    def get_context(self, session_data,user=None):
         context = {}
-        if not user or not user.is_authenticated:
-            messages.error(user, "You must have an account and be logged in", "danger")
-            return redirect("account:User_login")
-        else:
-            try:
-                order, created = Order.objects.get_or_create(user=user)
 
-                # order_items = OrderItem.objects.filter(order=order)
+        # if not user or not user.is_authenticated:
+        #     messages.error(user, "You must have an account and be logged in", "danger")
+        #     return redirect("account:User_login")
+        # else:
+        try:
+            # order, created = Order.objects.get_or_create(user=user)
+            # if order.status == "order":
+            context = {
+                'item_data': session_data,
+                # 'user_id': user.id,
+                'item_total': 0,
+                'subtotal': 0,
+                'total': 0,
+                'discount_total': 0,
+                'delivery_cost': 0,
+            }
+            for item in session_data:
+                quantity = item.get('quantity', 0)
+                price = item.get('price', 0)
+                discount = item.get('discount', 0)
+                item_total = quantity * price - discount
+                item['item_total'] = item_total
+                context['discount_total'] += discount
+                context['subtotal'] += item_total
+                context['delivery_cost'] = item_total * 2
+            context['total'] = context['subtotal'] + context['delivery_cost']
+        # else:
+        #     return HttpResponse("you dont have any order items in your cart ")
+        except OrderItem.DoesNotExist:
+            context['error'] = "Order Items does not exist"
+        except Order.DoesNotExist:
+            context['error'] = "Order does not exist"
 
-                if order.status == "ORDER":
-                    context = {
-                        'item_data': session_data,
-                        'order': order,
-                        'user_id': user.id,
-                        'item_total': 0,
-                        'subtotal': 0,
-                        'total': 0,
-                        'discount_total': 0,
-                        'delivery_cost': 0,
-                    }
-
-                    for item in session_data:
-                        quantity = item.get('quantity', 0)
-                        price = item.get('price', 0)
-                        discount = item.get('discount', 0)
-                        item_total = quantity * price - discount
-                        item['item_total'] = item_total
-                        context['discount_total'] += discount
-                        context['subtotal'] += item_total
-                        context['delivery_cost'] = item_total * 2
-
-                    context['total'] = context['subtotal'] + context['delivery_cost']
-                else:
-                    return HttpResponse("you dont have any order items in your cart ")
-
-            except OrderItem.DoesNotExist:
-                context['error'] = "Order Items does not exist"
-            except Order.DoesNotExist:
-                context['error'] = "Order does not exist"
-        # print("*_" * 30, context)
         return context
 
     @staticmethod
     def item_search(request):
-        items = Items.objects.all()
+        items = Items.objects.none()
         form = search_form.SearchForm()
         if "search" in request.GET:
+            items = Items.objects.all()
             form = search_form.SearchForm(request.GET)
             if form.is_valid():
                 try:
@@ -89,6 +85,7 @@ class ContextMixin(LoginRequiredMixin):
         context = {
             "search_form": form,
             "items": items
+
         }
         return context
 
@@ -108,22 +105,22 @@ class SimilarityItemMixin:
 
 class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
-    context = {}
-    def get(self, request, *args, **kwargs):
 
+    def get(self, request, *args, **kwargs):
+        print("request data=================", self.request)
         session_order = request.session.get('order', [])
+
+        self.context = self.get_context(session_order) if session_order else {
+            'error': "Order does not exist"}
         item_ids = [item['id'] for item in session_order]
         if item_ids:
             self.similarity_item = self.get_similar_data(item_ids[0])
             self.context['similarity_item'] = self.similarity_item
 
-        context = self.get_context(request.user, session_order) if session_order else {
-            'error': "Order does not exist"}
+        return render(request, self.template_name, self.context)
 
-
-        return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request, *args, **kwargs):
         try:
             new_order = json.loads(request.body)
             session_order = request.session.get('order', [])
@@ -140,58 +137,118 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
 
 # ------------------------------------------------------------------------------------
 
-class ReceiptView(ContextMixin, FormView):
+class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
     template_name = 'checkout.html'
     form_class = receipt_form.PersonalInfo
-    success_url = reverse_lazy("cafe:cart")
+    context_object_name = "receipt"
     success_message = "Your information has been successfully registered"
 
+    def get_success_url(self):
+        return reverse("cafe:cart-receipt", kwargs={'status': "payment"})
+
     def dispatch(self, request, *args, **kwargs):
-        user_id = kwargs.get("user_id")
-        self.user1 = get_object_or_404(user, id=user_id)
-        if not self.user1 == request.user:
+        if self.request.user == "AnonymousUser":
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
+        self.user_id = request.user.id
+        order, created = Order.objects.get_or_create(user_id=self.user_id)
+        order.status = "payment"
+        order.save()
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        payment = form.save(commit=False)
-        for field_name, field_value in form.cleaned_data.items():
-            self.request.session[field_name] = field_value
-
+        print("im hereeeeeeee")
+        user_info = form.save(commit=False)
+        user_info.save()
         messages.success(self.request, self.success_message, 'success')
         return super().form_valid(form)
 
-    def get(self, request, **kwargs):
-        context = self.get_context(self.user1, self.request.session.get('order', []))
-        search = self.item_search(request)
-        category_item_counts = CategoryMenu.objects.annotate(item_count=Count('items'))
-        print("888", category_item_counts)
+    def form_invalid(self, form):
+        print("im noww here")
+        messages.error(self.request, "Invalid form data", 'danger')
+        context = self.get_context_data(form=form, form_errors=form.errors)
+        print("------", context)
+        return self.render_to_response(context)
 
-        all_tag = Tag.objects.values_list('name', flat=True).distinct()
-
-        if not context:
-            raise Http404("No such order found")
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        session_order = self.request.session.get('order', [])
         context.update({
-            'all_tag': all_tag,
-            "search": search,
-            "form": self.form_class,
-            "category_item_counts": category_item_counts,
+            'session_data': self.get_context(session_order) if session_order else
+            {'error': "Order does not exist"},
+            'all_tag': Tag.objects.values_list('name', flat=True).distinct(),
+            "search": self.item_search(self.request),
+            "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
+            'delivery_form': receipt_form.DeliveryTime
         })
         print("!!!!!!!!!", context)
-        return render(request, self.template_name, context)
+        return context
+
+
+class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
+    template_name = "payment_done.html"
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user == "AnonymousUser":
+            messages.error(request, "You must be logged in", "danger")
+            return redirect("account:User_login")
+        self.user_id = request.user.id
+        self.order_instance = get_object_or_404(Order, user_id=self.user_id)
+        return super().dispatch(request, *args, **kwargs)
+
+    # def form_valid(self, form):
+    #     print("^^^^^^^^^^^^")
+    #     delivery_time = form.save(commit=False)  # Saving the form data for DeliveryTime
+    #     receipt = Receipt(order=self.order_instance, delivery_time=delivery_time)  # Creating a Receipt object
+    #     receipt.save()  # Saving the Receipt object to the database
+    #     self.order_instance.status = "paid"  # Updating the order status
+    #     self.order_instance.save()  # Saving the updated order status
+    #     messages.success(self.request, "Payment successful")  # Notifying the user about the successful payment
+    #     return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        session_order = request.session.get('order', [])
+        context = self.get_context(session_order) if session_order else {
+            'error': "Order does not exist"}
+
+        OrderItem.objects.filter(order=self.order_instance).delete()
+
+        for item in session_order:
+            order_item = OrderItem(order=self.order_instance)
+            order_item.quantity = item.get("quantity", 1)
+            order_item.delivery_cost = item.get("delivery_cost", 0)
+            order_item.save()
+
+            item_id = item.get('id', [])
+            item_instance = Items.objects.get(id=item_id)
+            order_item.items.add(item_instance)
+            order_item.save()
+
+        return super().get(request, *args, **kwargs)
+        # return render(request, self.template_name)
+
+        # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
+        # print(">>>>>>>>>>>>>>",  order_item_fields)
+        # session_item = {key: value for key, value in request.session.items() if key in order_item_fields}
+        # new_item =OrderItem(**session_item)
+
+        # print("newwwwww",new_item)
+        # new_item.save()
+
+
+        # return HttpResponse("done")
 
 
 class ItemByTag(ListView):
     template_name = "tag_items.html"
     model = Items
 
-    def get_context_data(self, *, tag_slug=None, **kwargs):
-        super().get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         tag = None
         select_item = Items.objects.all()
-        if tag_slug:
+        if tag_slug := self.kwargs.get('tag_slug'):
             tag = get_object_or_404(Tag, slug=tag_slug)
             select_item = Items.objects.filter(tags__in=[tag])
 
@@ -199,6 +256,7 @@ class ItemByTag(ListView):
             'select_item': select_item,
             'tags': tag,
         }
+        print("----------", context)
         return context
 
 
@@ -259,7 +317,7 @@ class DeleteCartItemView(View):
         return JsonResponse({'error': 'An error occurred while deleting the item from the cart.'}, status=400)
 
 
-class CategoryItems(ListView):
+class CategoryItems(ListView, ):
     model = CategoryMenu
     context_object_name = "categorys"
     template_name = 'menu1.html'
@@ -267,9 +325,16 @@ class CategoryItems(ListView):
     def get_queryset(self):
         return self.model.objects.prefetch_related("items").all()
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, category_id=None, **kwargs):
+        print("request data=================", self.request.user.id)
         context = super().get_context_data(**kwargs)
+        category_id = self.request.GET.get('category_id')
+        items_category = None
 
+        if category_id:
+            items_category = Items.objects.filter(category_id=category_id)
+        print("'''''''''''''''", context)
+        context['items_category'] = items_category
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
 
         return context
@@ -281,7 +346,7 @@ class CommentListViewMixin(ListView):
     paginate_by = 4  # Set the number of comments per page
 
 
-class DetailItemView(LoginRequiredMixin, CreateView, CommentListViewMixin):
+class DetailItemView(CreateView, CommentListViewMixin):
     model = Comment
     context_object_name = "comment"
     template_name = "detail_item.html"
@@ -302,7 +367,7 @@ class DetailItemView(LoginRequiredMixin, CreateView, CommentListViewMixin):
             context["like_status"] = "True"
         else:
             context["like_status"] = False
-        context["likes_count"] = Like.objects.filter(items=item_obj.id, user=self.request.user).count()
+        # context["likes_count"] = Like.objects.filter(items=item_obj.id, user=self.request.user).count()
 
         Items.best_items()
         return context
@@ -311,7 +376,7 @@ class DetailItemView(LoginRequiredMixin, CreateView, CommentListViewMixin):
         self.object = form.save(commit=False)
         self.object.content_type = ContentType.objects.get_for_model(Items)
         self.object.object_id = self.kwargs["pk"]
-        self.object.user = self.request.user
+        # self.object.user = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
