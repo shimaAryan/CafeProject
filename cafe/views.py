@@ -186,10 +186,9 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         cd = form.cleaned_data
         user_info = form.save(commit=False)
 
-        # Try to get the existing user based on some unique criteria
         try:
             existing_user = user.objects.get(phonenumber=user_info.phonenumber)
-            # If the user exists, update their information
+
             for field, value in user_info.__dict__.items():
                 print(field)
                 print(value)
@@ -197,9 +196,8 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
             existing_user.save()
             messages.success(self.request, self.success_message, 'success')
         except user.DoesNotExist:
-            # If the user doesn't exist, create a new one
-            user_info.save()
-            messages.success(self.request, "New user information has been successfully registered", 'success')
+            # user_info.save()
+            messages.error(self.request, "New user information has been successfully registered", 'danger')
 
         return super().form_valid(form)
 
@@ -275,22 +273,11 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
         return render(request, self.template_name)
 
 
-
-
-
-
-        # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
-        # print(">>>>>>>>>>>>>>",  order_item_fields)
-        # session_item = {key: value for key, value in request.session.items() if key in order_item_fields}
-        # new_item =OrderItem(**session_item)
-
-        # print("newwwwww",new_item)
-        # new_item.save()
-
 class FilterCategory(ListView):
     template_name = "cat_item.html"
     context_object_name = 'cat_item'
     model = Items
+
     def get_queryset(self):
         self.category_name = self.kwargs['cat_name']
         queryset = Items.objects.filter(category_id__title=self.category_name)
@@ -302,7 +289,6 @@ class FilterCategory(ListView):
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
         print("ttttt",context)
         return context
-
 
 
 class ItemByTag(ListView):
@@ -323,7 +309,6 @@ class ItemByTag(ListView):
         }
         print("----------", context)
         return context
-
 
 
 class DeleteCartItemView(View):
@@ -403,6 +388,7 @@ class DetailItemView(CreateView, CommentListViewMixin):
         # self.object.user = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
 
 class LikeStatus(View):
         def get(self,request,pk):
