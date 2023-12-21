@@ -12,7 +12,7 @@ class UserRegisterForm(forms.ModelForm):
     choices = [("Ch_Tel", "Chanel Telegram"), ("Ins", "Instagram"), ("Web", "Web Site"), ]
     password_confirm = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(
         attrs={"class": "form-control", "placeholder": "Confirm your password",
-               "style": "background: transparent;", }))
+               "style": "background: transparent !important;", }))
 
     how_know_us = forms.CharField(widget=forms.Select(choices=choices))
 
@@ -21,15 +21,15 @@ class UserRegisterForm(forms.ModelForm):
         fields = ["phonenumber", "email", "firstname", "lastname", "password", "how_know_us"]
         widgets = {
             'phonenumber': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number',
-                                                  "style": "background: transparent;"}),
+                                                  "style": "background: transparent !important;"}),
             'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password',
-                                                   "style": "background: transparent;"}),
+                                                   "style": "background: transparent !important;"}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address',
-                                             "style": "background: transparent;"}),
+                                             "style": "background: transparent !important;"}),
             'firstname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name',
-                                                "style": "background: transparent;"}),
+                                                "style": "background: transparent !important;"}),
             'lastname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name',
-                                               "style": "background: transparent;"}),
+                                               "style": "background: transparent !important;"}),
         }
 
     def clean_password_confirm(self):
@@ -47,7 +47,7 @@ class StaffSignUpForm(forms.ModelForm):
     phonenumber = forms.CharField(
         label='Phone Number',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number',
-                                      "style": "background: transparent;"}), )
+                                      "style": "background: transparent !important;"}), )
     profile_image = forms.ImageField(required=True)
 
     class Meta:
@@ -56,9 +56,9 @@ class StaffSignUpForm(forms.ModelForm):
 
     widgets = {
         'nationalcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your national code',
-                                               "style": "background: transparent;"}),
+                                               "style": "background: transparent !important;"}),
         'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter your date of birth',
-                                                'type': 'date', "style": "background: transparent;"}),
+                                                'type': 'date', "style": "background: transparent !important;"}),
     }
 
     def __init__(self, *args, **kwargs):
@@ -74,12 +74,13 @@ class CustomAuthenticationForm(AuthenticationForm):
     """
     username = forms.CharField(widget=forms.TextInput(
         attrs={"class": "form-control", "autocomplete": "off",
-               'placeholder': 'Enter your phone number or email address', "style": "background: transparent;"}),
+               'placeholder': 'Enter your phone number or email address',
+               "style": "background: transparent !important;"}),
         help_text="Please enter a valid phone number of email address.",
         label='phone number or Email Address')
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password',
-               "style": "background: transparent;"}), help_text="forgot your" "password", )
+               "style": "background: transparent !important;"}), help_text="forgot your" "password", )
 
 
 class CommentToManagerForm(forms.ModelForm):
@@ -110,3 +111,4 @@ class StaffUpdateForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = ('nationalcode', 'date_of_birth', 'experience', 'rezome', 'guarantee')
+
