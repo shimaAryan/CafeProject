@@ -130,9 +130,9 @@
                         {% comment %} <input type="text" name="content" class="form-control " placeholder="write your comment"> {% endcomment %}
                       </div>
                       <div  class="col-2">
-                        <input id="add_to_cart" class=" btn btn-primary py-3 px-5" type="submit" value="send comment"> 
+                        <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment"> 
                       </div>
-                      {% comment %} <div>{{commentt.all.count()}}</div> {% endcomment %}
+                      
                   </div>
       </form><!-- END -->
   </div>
@@ -236,7 +236,7 @@ const product = {
 
     const baseUrl = window.location.origin
     const csrfToken = getCsrfTokenFromCookies();
-    debugger
+    
   fetch(`${baseUrl}/cart/`, {
     method: 'POST',
     headers: {
