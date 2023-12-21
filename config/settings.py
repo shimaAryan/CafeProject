@@ -83,19 +83,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-
-
+config = configparser.ConfigParser()
+config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config.read(config_file)
 
 DATABASES = {
     'default': {
         'ENGINE': config.get('database', 'ENGINE'),
         'NAME': config.get('database', 'NAME'),
-        
-        # 'USER': config.get('database', 'USER'),
-        # 'PASSWORD': config.get('database', 'PASSWORD'),
-        # 'PORT': config.get('database', 'PORT'),
-    }}
-
+        'USER': config.get('database', 'USER'),
+        'PASSWORD': config.get('database', 'PASSWORD'),
+        'PORT': config.get('database', 'PORT'),
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

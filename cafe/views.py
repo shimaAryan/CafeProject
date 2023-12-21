@@ -414,24 +414,44 @@ class LikeStatus(View):
             else:
                 return JsonResponse({"liked_status":False,"like_count":like_count})
 
-class CreateLikeView(View):
+class CreateLikeView(LoginRequiredMixin,View):
+    
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+
+            messages.error(request, "You must be logged in to like", "danger")
+            print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            
+            
+           
+
+            return redirect("account:User_login")
+
+        else:
+            item_obj = Items.objects.get(id=kwargs['pk'])
+            like_count=Like.objects.filter(items=item_obj).count()
+            # return JsonResponse({"liked_status":True,"like_count":like_count})
+       
+            return super().dispatch(request, *args, **kwargs)
+    
+
+
+    
 
     def get(self, request, pk):
-        item_obj = Items.objects.get(id=pk)
-        print(request)
-        like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
-        if like_obj[1] == True:
-            like_obj[0].save()
-        like_count=Like.objects.filter(items=item_obj).count()
        
-        # html_like=render_to_string  ("partial/like.html",{'item':like_obj})
-        return JsonResponse({"liked_status":True,"like_count":like_count})
+            try:
+                like_obj = Like.objects.get_or_create(items=self.item_obj, user=request.user)
+                if like_obj[1] == True:
+                    like_obj[0].save()
+                    return JsonResponse({"liked_status":True,"like_count":self.like_count})
 
-        # messages.success(request, 'thanks!')
-        # html_like = render_to_string("partial/like.html", {'item': like_obj})
-        # return JsonResponse({"like_html": html_like})
+            except:
+        
+                return JsonResponse({"liked_status":True,"like_count":self.like_count})
 
-        # return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
+       
 
 
 class DeleteLikeView(View):

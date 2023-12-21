@@ -130,8 +130,10 @@
                         {% comment %} <input type="text" name="content" class="form-control " placeholder="write your comment"> {% endcomment %}
                       </div>
                       <div  class="col-2">
+
                         <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment">
                       </div>
+
                   </div>
       </form><!-- END -->
   </div>
@@ -144,8 +146,7 @@
  <div class="col-11  ">
     <div class="row justify-content-center ">
 {% for com in object_list%}
-  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; 
-         ">
+  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; ">
         
    
                   <h3 class="mb-4 billing-heading" >{{com.user.firstname}} {{com.user.lastname}}</h3>
@@ -172,7 +173,7 @@
 <div class="justify-content-center row">
   <div class="pagination d-flex ">
       <span class="step-links ">
-        <div class="">
+        <div >
             <div class="col-2">
               {% if page_obj.has_previous %}
                   
@@ -196,6 +197,8 @@
       </span>
   </div>
 </div>
+ </div>
+ </div>
     </section>
 
 
@@ -235,7 +238,7 @@ console.log(product);
 
     const baseUrl = window.location.origin
     const csrfToken = getCsrfTokenFromCookies();
-    debugger
+    
   fetch(`${baseUrl}/cart/`, {
     method: 'POST',
     headers: {
