@@ -6,6 +6,7 @@ __pycache__/
 */migrations/*
 # C extensions
 *.so
+config/database_config.ini
 
 # Distribution / packaging
 .Python
