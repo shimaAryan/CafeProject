@@ -121,13 +121,14 @@
 	          	</div>
 	          	<div class="col-md-6">
 	          		<div class="cart-detail ftco-bg-dark p-3 p-md-4">
-						<form action="{% url 'cafe:cart-receipt' 'payment' %}"  method="post" >
+						<form action="{% url 'cafe:payment_paid' 'paid' %}"  method="post" >
+							{% csrf_token %}
 	          			<h3 class="billing-heading mb-4">Delivery Time</h3>
 
 									<div class="form-group">
 										<div class="col-md-12">
 											{{delivery_form.delivery_date.label_tag}}
-											<div class="select-wrap">
+											<div class="select-wrap billing-form">
 												{{delivery_form.delivery_date}}
 											</div>
 										</div>
@@ -141,7 +142,7 @@
 										</div>
 									</div>
 
-									<p><a href="{% url 'cafe:payment_paid' 'paid' %}" class="btn btn-primary py-3 px-4" type="submit">Place an order</a></p>
+									<button type="submit" class="btn btn-primary py-3 px-4">Place an order</button>
 							</form>
 								</div>
 

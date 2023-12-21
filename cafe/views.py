@@ -47,19 +47,18 @@ class ContextMixin():
                 quantity = item.get('quantity', 0)
                 price = item.get('price', 0)
                 discount = item.get('discount', 0)
-                item_total = quantity * price - discount
+                item_total = int(quantity) * price - discount
                 item['item_total'] = item_total
                 context['discount_total'] += discount
                 context['subtotal'] += item_total
                 context['delivery_cost'] = item_total * 2
             context['total'] = context['subtotal'] + context['delivery_cost']
-        # else:
-        #     return HttpResponse("you dont have any order items in your cart ")
+        
         except OrderItem.DoesNotExist:
             context['error'] = "Order Items does not exist"
         except Order.DoesNotExist:
             context['error'] = "Order does not exist"
-
+        
         return context
 
     @staticmethod
@@ -105,7 +104,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
 
     def get(self, request, *args, **kwargs):
-        print("request data=================", self.request)
+        
         session_order = request.session.get('order', [])
 
         self.context = self.get_context(session_order) if session_order else {
@@ -120,19 +119,49 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     @staticmethod
     def post(request, *args, **kwargs):
         try:
+
             new_order = json.loads(request.body)
+            print("********",new_order)
             session_order = request.session.get('order', [])
-            if new_order not in session_order:
+            list_id=[item.get("id") for item in session_order]
+           
+            is_exist=False
+        
+            for item in session_order:
+                    if item['id'] ==  new_order['id']:
+                        is_exist=True
+                        
+                        item['quantity'] =int(item['quantity']) +int(new_order['quantity'])
+                        break
+            if not is_exist:
+                        
                 session_order.append(new_order)
-                request.session['order'] = session_order
-                request.session.modified = True
+
+            
+
+            
+            
+               
+            request.session['order'] = session_order
+            request.session.modified = True
+            
+                 
             return JsonResponse({'message': 'Order has been added successfully'})
+            
+        
         except JSONDecodeError as e:
             return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+    
 
-
+# def update_quantity(session_order, new_order)
+#     for item in session_order:
+#         if item['id'] ==  new_order['id']:
+#             item['quantity'] += new_order['quantity']
+#             break
+#         else:
+#             session_order.append(new_order)
 # ------------------------------------------------------------------------------------
 
 class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
@@ -148,7 +177,8 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         if self.request.user == "AnonymousUser":
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
-        self.user_id = request.user.id
+
+        self.user_id = self.request.user.id
         order, created = Order.objects.get_or_create(user_id=self.user_id)
         order.status = "payment"
         order.save()
@@ -156,6 +186,8 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
 
     def form_valid(self, form):
         print("im hereeeeeeee")
+        cd = form.cleaned_data.items()
+        print("55555", cd)
         user_info = form.save(commit=False)
         user_info.save()
         messages.success(self.request, self.success_message, 'success')
@@ -179,39 +211,22 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
             "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
             'delivery_form': receipt_form.DeliveryTime
         })
-        print("!!!!!!!!!", context)
+        # print("!!!!!!!!!", context)
         return context
-    def post(self, request, *args, **kwargs):
-        form = receipt_form.DeliveryTime(request.POST)
-        print("88555555", form)
-        data = form.cleaned_data.items()
-        print("88888888", data)
-        self.request.session['clean_data_delivery'] = data
-        print("fffffff",self.request.session['clean_data_delivery'])
 
 
-
-class PaymentView(LoginRequiredMixin, ContextMixin, View):
+class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
     template_name = "payment_done.html"
-    # model = Receipt
+    model = Receipt
+    form_class = receipt_form.DeliveryTime
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user == "AnonymousUser":
+        if self.request.user.is_anonymous:
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
         self.user_id = request.user.id
         self.order_instance = get_object_or_404(Order, user_id=self.user_id)
         return super().dispatch(request, *args, **kwargs)
-
-    # def form_valid(self, form):
-    #     print("^^^^^^^^^^^^")
-    #     delivery_time = form.save(commit=False)  # Saving the form data for DeliveryTime
-    #     receipt = Receipt(order=self.order_instance, delivery_time=delivery_time)  # Creating a Receipt object
-    #     receipt.save()  # Saving the Receipt object to the database
-    #     self.order_instance.status = "paid"  # Updating the order status
-    #     self.order_instance.save()  # Saving the updated order status
-    #     messages.success(self.request, "Payment successful")  # Notifying the user about the successful payment
-    #     return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         session_order = request.session.get('order', [])
@@ -232,7 +247,22 @@ class PaymentView(LoginRequiredMixin, ContextMixin, View):
             order_item.save()
 
         # return super().get(request, *args, **kwargs)
+        return render(request, self.template_name, {'form': self.form_class})
+
+    def post(self, request, *args, **kwargs):
+        delivery_time_form = receipt_form.DeliveryTime(request.POST)
+        if delivery_time_form.is_valid():
+            cd = delivery_time_form.cleaned_data.items()
+
+            delivery_time = delivery_time_form.save(commit=False)
+            order_item = Order(order=self.order_instance)
+            delivery_time.save()
         return render(request, self.template_name)
+
+
+
+
+
 
         # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
         # print(">>>>>>>>>>>>>>",  order_item_fields)
@@ -241,7 +271,6 @@ class PaymentView(LoginRequiredMixin, ContextMixin, View):
 
         # print("newwwwww",new_item)
         # new_item.save()
-
 
 class FilterCategory(ListView):
     template_name = "cat_item.html"
@@ -281,47 +310,6 @@ class ItemByTag(ListView):
         return context
 
 
-# class ItemSearchView(ListView):
-#     model = Items
-#     template_name = 'checkout.html'
-#     context_object_name = 'items'
-#     form_class = search_form.SearchForm
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         search_query = self.request.GET.get('search', None)
-#         if search_query:
-#             queryset = queryset.annotate(similarity=Greatest(
-#                 TrigramSimilarity("title", search_query),
-#                 TrigramSimilarity("description", search_query)))
-#             queryset = queryset.filter(similarity__gt=0.1).order_by('-similarity')
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['search_form'] = self.get_form()
-#         print("kkkkkkkkkkk",context)
-#         return context
-
-# def get_form(self):
-#     form = self.form_class()
-#     if 'search' in self.request.GET:
-#         form = self.form_class(self.request.GET)
-#     return form
-
-
-# class CreateItem(LoginRequiredMixin,FormView):
-#     form_class = create_post.CreateItem
-#     template_name = "item_create.html"
-#     success_url = reverse_lazy("cafe:menu")
-#
-#     def get_context_data(self, **kwargs):
-#         user = Items.objects.select_related(Order)
-#     def form_valid(self, form):
-#         super().form_valid(self, form)
-#         new_item = form.save(commit=False)
-#         post.author = request.user
-#         new_item.save()
-#         form.save_m2m()
 
 class DeleteCartItemView(View):
     template_name = "cart.html"
@@ -381,9 +369,9 @@ class DetailItemView(CreateView, CommentListViewMixin):
         context = super().get_context_data(**kwargs)
         item_obj = Items.objects.get(id=self.kwargs["pk"])
 
-        context["item"] = item_obj
-        context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
-                                             content_type=ContentType.objects.get_for_model(Items))
+        # context["item"] = item_obj
+        # context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
+        #                                      content_type=ContentType.objects.get_for_model(Items))
         if Like.is_liked(self.request.user, item_obj):
             context["like_status"] = "True"
         else:
@@ -411,24 +399,44 @@ class LikeStatus(View):
             else:
                 return JsonResponse({"liked_status":False,"like_count":like_count})
 
-class CreateLikeView(View):
+class CreateLikeView(LoginRequiredMixin,View):
+    
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+
+            messages.error(request, "You must be logged in to like", "danger")
+            print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            
+            
+           
+
+            return redirect("account:User_login")
+
+        else:
+            item_obj = Items.objects.get(id=kwargs['pk'])
+            like_count=Like.objects.filter(items=item_obj).count()
+            # return JsonResponse({"liked_status":True,"like_count":like_count})
+       
+            return super().dispatch(request, *args, **kwargs)
+    
+
+
+    
 
     def get(self, request, pk):
-        item_obj = Items.objects.get(id=pk)
-        print(request)
-        like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
-        if like_obj[1] == True:
-            like_obj[0].save()
-        like_count=Like.objects.filter(items=item_obj).count()
        
-        # html_like=render_to_string  ("partial/like.html",{'item':like_obj})
-        return JsonResponse({"liked_status":True,"like_count":like_count})
+            try:
+                like_obj = Like.objects.get_or_create(items=self.item_obj, user=request.user)
+                if like_obj[1] == True:
+                    like_obj[0].save()
+                    return JsonResponse({"liked_status":True,"like_count":self.like_count})
 
-        # messages.success(request, 'thanks!')
-        # html_like = render_to_string("partial/like.html", {'item': like_obj})
-        # return JsonResponse({"like_html": html_like})
+            except:
+        
+                return JsonResponse({"liked_status":True,"like_count":self.like_count})
 
-        # return redirect(reverse('cafe:detail_item', kwargs={"pk":pk}))
+       
 
 
 class DeleteLikeView(View):
