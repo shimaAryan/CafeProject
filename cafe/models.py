@@ -10,7 +10,7 @@ user = get_user_model()
 
 
 class ServingTime(models.Model):
-    time = models.CharField(max_length=7)
+    time = models.CharField(max_length=20)
 
     def __str__(self):
         return self.time
@@ -59,13 +59,8 @@ class Items(models.Model):
 
 
 class Order(models.Model):
-    # class OrderStatus(models.TextChoices):
-    #     ORDER = "ORDER", "order"
-    #     PAYMENT = "PAYMENT", "payment"
-    #     CANCELED = "CANCELED", "Canceled"
 
     user = models.OneToOneField(user, on_delete=models.CASCADE, related_name="user_cart")
-    # status = models.CharField(max_length=10, choices=OrderStatus.choices, default=OrderStatus.ORDER)
     status = models.CharField(max_length=10, default="order")
     order_time = models.DateTimeField(auto_now_add=True)
 
@@ -98,6 +93,7 @@ class Receipt(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='receipt_order')
     delivery_time = models.TimeField(default=dt.time(00, 00))
     delivery_date = models.CharField(max_length=30)
+
 
 
     class Meta:

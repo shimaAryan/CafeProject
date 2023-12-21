@@ -44,19 +44,26 @@
                             {% if item_data %}
 						      <tr class="text-center">
 
+<<<<<<< HEAD
+<!--                                    {% for item in item_data %}-->
+
+<!--                                    <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>-->
+=======
                                     {% for item in item_data %}
-{% comment %} ...................................................... {% endcomment %}
+
                                     <td class="product-remove"><a href="#" id="delete_item"><span class="icon-close"  id="item-delete"></span></a></td>
 
-								  {% for picture in images %}
-						                {% if picture.object_id == item.id %}
-										 <td class="image-prod"><div class="img" style="background-image:url({% static 'picture.image' %});"></div></td>
-						                {% endif %}
-					                     {% endfor %}
+
+<!--								  {% for picture in images %}-->
+<!--						                {% if picture.object_id == item.id %}-->
+<!--										 <td class="image-prod"><div class="img" style="background-image:url({% static 'picture.image' %});"></div></td>-->
+
+<!--						                {% endif %}-->
+<!--					                     {% endfor %}-->
 
                                     <td class="product-name">
 						        	<h3>{{ item.name }}</h3>
-						        	<p>{{ item.description | truncatewords:20 | linebreaks }}</p>
+						        	<p>{{ item.description | truncatechars:20 | linebreaks }}</p>
                                     </td>
                                     <td class="price">${{ item.price }}</td>
                                     <td class="quantity">
@@ -133,8 +140,8 @@
     					<a href="#" class="img" style="background-image: url({% static 'images/menu-1.jpg' %});"></a>
     					<div class="text text-center pt-4">
     						<h3><a href="{% url 'cafe:detail_item' item.id %}">{{item.title}}</a></h3>
-    						<p>{{item.description | truncatewords:20}}</p>
-    						<p class="price"><span>{{item.price}}</span></p>
+    						<p>{{item.description | truncatechars:20}}</p>
+    						<p class="price"><span>${{item.price}}</span></p>
     						<p><a href="{% url 'cafe:detail_item' item.id %}" class="btn btn-primary btn-outline-primary">See Detail</a></p>
     					</div>
 
