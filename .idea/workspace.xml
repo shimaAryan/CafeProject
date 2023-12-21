@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5c1be7d7-718d-4610-a053-78e741e959ef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/templates/account/customuser_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/account/templates/account/customuser_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/images/moein_XrXGms3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/admin.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +58,7 @@
       <updated>1703143831615</updated>
       <workItem from="1703143840111" duration="5279000" />
       <workItem from="1703167793394" duration="229000" />
-      <workItem from="1703168772947" duration="1267000" />
+      <workItem from="1703168772947" duration="3120000" />
     </task>
     <servers />
   </component>
