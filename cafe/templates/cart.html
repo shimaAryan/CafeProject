@@ -41,25 +41,18 @@
 						      </tr>
 						    </thead>
 						    <tbody>
-                            {% if item_data %}
+		{% if item_data %}
 						      <tr class="text-center">
 
-<<<<<<< HEAD
-<!--                                    {% for item in item_data %}-->
 
-<!--                                    <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>-->
-=======
+
+
+                              <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>-->
+
                                     {% for item in item_data %}
 
                                     <td class="product-remove"><a href="#" id="delete_item"><span class="icon-close"  id="item-delete"></span></a></td>
 
-
-<!--								  {% for picture in images %}-->
-<!--						                {% if picture.object_id == item.id %}-->
-<!--										 <td class="image-prod"><div class="img" style="background-image:url({% static 'picture.image' %});"></div></td>-->
-
-<!--						                {% endif %}-->
-<!--					                     {% endfor %}-->
 
                                     <td class="product-name">
 						        	<h3>{{ item.name }}</h3>
@@ -108,7 +101,7 @@
     				</div>
 
                     {% else %}
-                        <p>Your cart is empty.</p>
+					<p>Your cart is empty.</p>
 
                     {% endif %}
 
@@ -160,59 +153,59 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
+<!--<script>-->
 
-	function deleteItemFromCart(itemId) {
-    $.ajax({
-        type: 'POST',
-        url: '/delete-item-from-cart/',
-        data: {
-            'item_id': itemId,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        dataType: 'json',
-        success: function(response) {
-            // Handle success response
-            console.log(response.message);
-            // Update the cart display or perform any other action as needed
-        },
-        error: function(xhr, errmsg, err) {
-            // Handle error response
-            console.log(xhr.status + ": " + xhr.responseText);
-        }
-    });
-}
+<!--	function deleteItemFromCart(itemId) {-->
+<!--    $.ajax({-->
+<!--        type: 'POST',-->
+<!--        url: '/delete-item-from-cart/',-->
+<!--        data: {-->
+<!--            'item_id': itemId,-->
+<!--            csrfmiddlewaretoken: '{{ csrf_token }}'-->
+<!--        },-->
+<!--        dataType: 'json',-->
+<!--        success: function(response) {-->
+<!--            // Handle success response-->
+<!--            console.log(response.message);-->
+<!--            // Update the cart display or perform any other action as needed-->
+<!--        },-->
+<!--        error: function(xhr, errmsg, err) {-->
+<!--            // Handle error response-->
+<!--            console.log(xhr.status + ": " + xhr.responseText);-->
+<!--        }-->
+<!--    });-->
+<!--}-->
 
 
 
-    $(document).ready(function() {
-    $('#item-delete').click(function () {
-	consol.log("helooooo")
-        var button = $(this);
-        $.ajax({
-            type: "POST",
-            url: '{% url 'cafe:delete_item_from_cart' %}',
-            data: {
-                'item_id': {{ item.id }},
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            dataType: 'json',
-            success: function (data) {
-                if (data.message) {
-                    button.text('Item removed from cart');
-                    button.removeClass('icon-close');
-                    console.log(data.message);
-                } else {
-                    console.log('Item could not be removed from the cart.');
-                }
-            },
-            error: function (error) {
-                console.log('Error in sending AJAX request: ' + error);
-            }
-        });
-    });
-});
-</script>
+<!--    $(document).ready(function() {-->
+<!--    $('#item-delete').click(function () {-->
+<!--	consol.log("helooooo")-->
+<!--        var button = $(this);-->
+<!--        $.ajax({-->
+<!--            type: "POST",-->
+<!--            url: '{% url 'cafe:delete_item_from_cart' %}',-->
+<!--            data: {-->
+<!--                'item_id': `${item.id }`,-->
+<!--                'csrfmiddlewaretoken': '{{ csrf_token }}'-->
+<!--            },-->
+<!--            dataType: 'json',-->
+<!--            success: function (data) {-->
+<!--                if (data.message) {-->
+<!--                    button.text('Item removed from cart');-->
+<!--                    button.removeClass('icon-close');-->
+<!--                    console.log(data.message);-->
+<!--                } else {-->
+<!--                    console.log('Item could not be removed from the cart.');-->
+<!--                }-->
+<!--            },-->
+<!--            error: function (error) {-->
+<!--                console.log('Error in sending AJAX request: ' + error);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
 
 
 {% endblock %}

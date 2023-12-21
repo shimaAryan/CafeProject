@@ -107,7 +107,7 @@
         
     </div>
     </div>
-              {% comment %} ................................... {% endcomment %}
+
           	</div>
           	<p style="margin-top:2rem;"><a href='{% url "cafe:cart"  %}' id="add_to_cart" class=" btn btn-primary py-3 px-5">Add to Cart</a></p>
     			</div>
@@ -130,9 +130,8 @@
                         {% comment %} <input type="text" name="content" class="form-control " placeholder="write your comment"> {% endcomment %}
                       </div>
                       <div  class="col-2">
-                        <input id="add_to_cart" class=" btn btn-primary py-3 px-5" type="submit" value="send comment"> 
+                        <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment">
                       </div>
-                      {% comment %} <div>{{commentt.all.count()}}</div> {% endcomment %}
                   </div>
       </form><!-- END -->
   </div>
@@ -220,18 +219,18 @@
   return csrfToken;
 }
 const product = {
-  id: {{item.id}},
-  name: "{{item.title}}",
+  id: `${item.id}`,
+  name: `${item.title}`,
  // quantity: document.getElementById('quantity').value,
-  price: {{ item.price }},
-  discount: {{ item.discount }},
-  description: "{{ item.description}}",
+  price: `${item.price }`,
+  discount: `${ item.discount }`,
+  description: `${ item.description}`,
 
 };
 
   document.getElementById('add_to_cart').addEventListener('click', function() {
     product["quantity"]=document.getElementById('quantity').value
-
+console.log(product);
   sessionStorage.setItem('order', JSON.stringify(product));
 
     const baseUrl = window.location.origin

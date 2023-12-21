@@ -23,8 +23,7 @@ user = get_user_model()
 
 
 class ContextMixin():
-    # def get_context(self, user, session_data):
-    def get_context(self, session_data, user=None):
+    def get_context(self, session_data):
         context = {}
 
         # if not user or not user.is_authenticated:
@@ -130,39 +129,20 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
             for item in session_order:
                     if item['id'] ==  new_order['id']:
                         is_exist=True
-                        
+
                         item['quantity'] =int(item['quantity']) +int(new_order['quantity'])
                         break
             if not is_exist:
                         
                 session_order.append(new_order)
-
-            
-
-            
-            
-               
             request.session['order'] = session_order
             request.session.modified = True
-            
-                 
             return JsonResponse({'message': 'Order has been added successfully'})
-            
-        
         except JSONDecodeError as e:
             return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
-
-# def update_quantity(session_order, new_order)
-#     for item in session_order:
-#         if item['id'] ==  new_order['id']:
-#             item['quantity'] += new_order['quantity']
-#             break
-#         else:
-#             session_order.append(new_order)
-# ------------------------------------------------------------------------------------
 
 class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
     template_name = 'checkout.html'
@@ -174,7 +154,7 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         return reverse("cafe:cart-receipt", kwargs={'status': "payment"})
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user == "AnonymousUser":
+        if not request.user.is_authenticated:
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
 
@@ -184,21 +164,55 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
         order.save()
         return super().dispatch(request, *args, **kwargs)
 
+    # def form_valid(self, form):
+    #     cd = form.cleaned_data
+    #     print("!!!!!!!!", cd)
+    #     user_info = form.save(commit=False)
+    #     print("!!!!!!!!", user_info)
+    #     user_obj, created = user.objects.get_or_create(phonenumber=user_info.phonenumber, defaults=user_info)
+    #
+    #     if not created:
+    #         for field, value in user_info.__dict__.items():
+    #             setattr(user_obj, field, value)
+    #         user_obj.save()
+    #         messages.success(self.request, self.success_message, 'success')
+    #     else:
+    #         user_obj.save()
+    #         messages.info(self.request, "A new user was created.")
+    #
+    #     return super().form_valid(form)
+
     def form_valid(self, form):
-        print("im hereeeeeeee")
-        cd = form.cleaned_data.items()
-        print("55555", cd)
+        cd = form.cleaned_data
         user_info = form.save(commit=False)
-        user_info.save()
-        messages.success(self.request, self.success_message, 'success')
+
+        # Try to get the existing user based on some unique criteria
+        try:
+            existing_user = user.objects.get(phonenumber=user_info.phonenumber)
+            # If the user exists, update their information
+            for field, value in user_info.__dict__.items():
+                print(field)
+                print(value)
+                setattr(existing_user, field, value)
+            existing_user.save()
+            messages.success(self.request, self.success_message, 'success')
+        except user.DoesNotExist:
+            # If the user doesn't exist, create a new one
+            user_info.save()
+            messages.success(self.request, "New user information has been successfully registered", 'success')
+
         return super().form_valid(form)
 
-    def form_invalid(self, form):
-        print("im noww here")
-        messages.error(self.request, "Invalid form data", 'danger')
-        context = self.get_context_data(form=form, form_errors=form.errors)
-        print("------", context)
-        return self.render_to_response(context)
+
+
+
+
+    # def form_invalid(self, form):
+    #     print("im noww here")
+    #     messages.error(self.request, "Invalid form data", 'danger')
+    #     context = self.get_context_data(form=form, form_errors=form.errors)
+    #     print("------", context)
+    #     return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -211,7 +225,6 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
             "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
             'delivery_form': receipt_form.DeliveryTime
         })
-        # print("!!!!!!!!!", context)
         return context
 
 
@@ -221,7 +234,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
     form_class = receipt_form.DeliveryTime
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_anonymous:
+        if not request.user.is_authenticated:
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
         self.user_id = request.user.id
@@ -246,8 +259,9 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             order_item.items.add(item_instance)
             order_item.save()
 
-        # return super().get(request, *args, **kwargs)
-        return render(request, self.template_name, {'form': self.form_class})
+        del request.session['order']
+
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         delivery_time_form = receipt_form.DeliveryTime(request.POST)
@@ -257,6 +271,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             delivery_time = delivery_time_form.save(commit=False)
             order_item = Order(order=self.order_instance)
             delivery_time.save()
+            order_item.status = "paid"
         return render(request, self.template_name)
 
 
