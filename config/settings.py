@@ -84,16 +84,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 config = configparser.ConfigParser()
-config_file = os.path.join(BASE_DIR, 'database_config.ini')
+config_file = os.path.join(BASE_DIR, 'database.ini')
 config.read(config_file)
 
 DATABASES = {
     'default': {
         'ENGINE': config.get('database', 'ENGINE'),
         'NAME': config.get('database', 'NAME'),
-        'USER': config.get('database', 'USER'),
-        'PASSWORD': config.get('database', 'PASSWORD'),
-        'PORT': config.get('database', 'PORT'),
+        # 'USER': config.get('database', 'USER'),
+        # 'PASSWORD': config.get('database', 'PASSWORD'),
+        # 'PORT': config.get('database', 'PORT'),
     }
 }
 # Password validation
