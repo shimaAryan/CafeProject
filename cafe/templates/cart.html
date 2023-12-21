@@ -41,17 +41,15 @@
 						      </tr>
 						    </thead>
 						    <tbody>
-                            {% if item_data %}
+		{% if item_data %}
 						      <tr class="text-center">
 
 
+                              <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>-->
 
                                     {% for item in item_data %}
 
                                     <td class="product-remove"><span class="icon-close"  id="delete_item" value={{item.id}}></span></td>
-
-
-
 
                                     <td class="product-name">
 						        	<h3>{{ item.name }}</h3>
@@ -100,7 +98,7 @@
     				</div>
 
                     {% else %}
-                        <p>Your cart is empty.</p>
+					<p>Your cart is empty.</p>
 
                     {% endif %}
 

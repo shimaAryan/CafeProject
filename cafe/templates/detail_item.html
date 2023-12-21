@@ -77,7 +77,7 @@
         
     </div>
     </div>
-              {% comment %} ................................... {% endcomment %}
+
           	</div>
           	<p id="add_to_cart" style="margin-top:2rem;" class=" btn btn-primary py-3 px-5">Add to Cart</p>
             
@@ -101,9 +101,10 @@
                         
                       </div>
                       <div  class="col-2">
-                        <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment"> 
+
+                        <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment">
                       </div>
-                      
+
                   </div>
       </form><!-- END -->
   </div>
@@ -116,8 +117,7 @@
  <div class="col-11  ">
     <div class="row justify-content-center ">
 {% for com in object_list%}
-  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; 
-         ">
+  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; ">
         
    
                   <h3 class="mb-4 billing-heading" >{{com.user.firstname}} {{com.user.lastname}}</h3>
@@ -144,7 +144,7 @@
 <div class="justify-content-center row">
   <div class="pagination d-flex ">
       <span class="step-links ">
-        <div class="">
+        <div >
             <div class="col-2">
               {% if page_obj.has_previous %}
                   
@@ -168,6 +168,8 @@
       </span>
   </div>
 </div>
+ </div>
+ </div>
     </section>
 
 
@@ -193,17 +195,17 @@
 }
 const product = {
   id: {{item.id}},
-  name: "{{item.title}}",
+  name: '{{item.title}}',
  // quantity: document.getElementById('quantity').value,
-  price: {{ item.price }},
+  price: {{item.price }},
   discount: {{ item.discount }},
-  description: "{{ item.description}}",
+  description: '{{ item.description}}',
 
 };
 
   document.getElementById('add_to_cart').addEventListener('click', function() {
     product["quantity"]=document.getElementById('quantity').value
-
+console.log(product);
   sessionStorage.setItem('order', JSON.stringify(product));
 
     const baseUrl = window.location.origin

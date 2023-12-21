@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect, Http404, HttpR
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from psycopg2 import OperationalError
-from django.views.generic import ListView, View, CreateView, TemplateView, FormView
+from django.views.generic import ListView, View, CreateView, TemplateView, FormView, UpdateView
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from core.models import Image, Comment
@@ -18,22 +18,17 @@ from .models import *
 from django.http import JsonResponse
 from taggit.models import Tag
 
+from account.models import CustomUser
 
 user = get_user_model()
 
 
 class ContextMixin():
-    # def get_context(self, user, session_data):
-    def get_context(self, session_data, user=None):
+    def get_context(self, session_data):
         context = {}
 
-        # if not user or not user.is_authenticated:
-        #     messages.error(user, "You must have an account and be logged in", "danger")
-        #     return redirect("account:User_login")
-        # else:
         try:
-            # order, created = Order.objects.get_or_create(user=user)
-            # if order.status == "order":
+
             context = {
                 'item_data': session_data,
                 # 'user_id': user.id,
@@ -53,12 +48,12 @@ class ContextMixin():
                 context['subtotal'] += item_total
                 context['delivery_cost'] = item_total * 2
             context['total'] = context['subtotal'] + context['delivery_cost']
-        
+
         except OrderItem.DoesNotExist:
             context['error'] = "Order Items does not exist"
         except Order.DoesNotExist:
             context['error'] = "Order does not exist"
-        
+
         return context
 
     @staticmethod
@@ -104,7 +99,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
     template_name = "cart.html"
 
     def get(self, request, *args, **kwargs):
-        
+
         session_order = request.session.get('order', [])
 
         self.context = self.get_context(session_order) if session_order else {
@@ -121,84 +116,37 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
         try:
 
             new_order = json.loads(request.body)
-            print("********",new_order)
             session_order = request.session.get('order', [])
-            list_id=[item.get("id") for item in session_order]
-           
-            is_exist=False
-        
+            list_id = [item.get("id") for item in session_order]
+
+            is_exist = False
+
             for item in session_order:
-                    if item['id'] ==  new_order['id']:
-                        is_exist=True
-                        
-                        item['quantity'] =int(item['quantity']) +int(new_order['quantity'])
-                        break
+                if item['id'] == new_order['id']:
+                    is_exist = True
+
+                    item['quantity'] = int(item['quantity']) + int(new_order['quantity'])
+                    break
             if not is_exist:
-                        
                 session_order.append(new_order)
-
-            
-
-            
-            
-               
             request.session['order'] = session_order
             request.session.modified = True
-            
-                 
             return JsonResponse({'message': 'Order has been added successfully'})
-            
-        
         except JSONDecodeError as e:
             return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-    
 
-# def update_quantity(session_order, new_order)
-#     for item in session_order:
-#         if item['id'] ==  new_order['id']:
-#             item['quantity'] += new_order['quantity']
-#             break
-#         else:
-#             session_order.append(new_order)
-# ------------------------------------------------------------------------------------
 
-class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
+class ReceiptView(LoginRequiredMixin, UpdateView, ContextMixin):
+    model = CustomUser
     template_name = 'checkout.html'
     form_class = receipt_form.PersonalInfo
-    context_object_name = "receipt"
+    success_url = reverse_lazy("cafe:cart-receipt", args={"status": "payment"})
     success_message = "Your information has been successfully registered"
 
-    def get_success_url(self):
-        return reverse("cafe:cart-receipt", kwargs={'status': "payment"})
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user == "AnonymousUser":
-            messages.error(request, "You must be logged in", "danger")
-            return redirect("account:User_login")
-
-        self.user_id = self.request.user.id
-        order, created = Order.objects.get_or_create(user_id=self.user_id)
-        order.status = "payment"
-        order.save()
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        print("im hereeeeeeee")
-        cd = form.cleaned_data.items()
-        print("55555", cd)
-        user_info = form.save(commit=False)
-        user_info.save()
-        messages.success(self.request, self.success_message, 'success')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        print("im noww here")
-        messages.error(self.request, "Invalid form data", 'danger')
-        context = self.get_context_data(form=form, form_errors=form.errors)
-        print("------", context)
-        return self.render_to_response(context)
+    def get_object(self, query_set=None):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -211,7 +159,6 @@ class ReceiptView(LoginRequiredMixin, ContextMixin, FormView):
             "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
             'delivery_form': receipt_form.DeliveryTime
         })
-        # print("!!!!!!!!!", context)
         return context
 
 
@@ -221,7 +168,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
     form_class = receipt_form.DeliveryTime
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_anonymous:
+        if not request.user.is_authenticated:
             messages.error(request, "You must be logged in", "danger")
             return redirect("account:User_login")
         self.user_id = request.user.id
@@ -246,8 +193,9 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             order_item.items.add(item_instance)
             order_item.save()
 
-        # return super().get(request, *args, **kwargs)
-        return render(request, self.template_name, {'form': self.form_class})
+        del request.session['order']
+
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         delivery_time_form = receipt_form.DeliveryTime(request.POST)
@@ -257,6 +205,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             delivery_time = delivery_time_form.save(commit=False)
             order_item = Order(order=self.order_instance)
             delivery_time.save()
+            order_item.status = "paid"
         return render(request, self.template_name)
 
 
@@ -270,6 +219,7 @@ class FilterCategory(ListView):
     template_name = "cat_item.html"
     context_object_name = 'cat_item'
     model = Items
+
     def get_queryset(self):
         self.category_name = self.kwargs['cat_name']
         queryset = Items.objects.filter(category_id__title=self.category_name)
@@ -279,9 +229,8 @@ class FilterCategory(ListView):
         context = super().get_context_data(**kwargs)
         context['cat_name'] = self.category_name
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
-        print("ttttt",context)
+        print("ttttt", context)
         return context
-
 
 
 class ItemByTag(ListView):
@@ -300,9 +249,7 @@ class ItemByTag(ListView):
             'select_item': select_item,
             'tags': tag,
         }
-        print("----------", context)
         return context
-
 
 
 class DeleteCartItemView(View):
@@ -350,14 +297,12 @@ class CategoryItems(ListView):
         return self.model.objects.prefetch_related("items").all()
 
     def get_context_data(self, *, category_id=None, **kwargs):
-        print("request data=================", self.request.user.id)
         context = super().get_context_data(**kwargs)
         category_id = self.request.GET.get('category_id')
         items_category = None
 
         if category_id:
             items_category = Items.objects.filter(category_id=category_id)
-        print("'''''''''''''''", context)
         context['items_category'] = items_category
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
 
@@ -393,7 +338,7 @@ class DetailItemView(CreateView, CommentListViewMixin):
             context["like_status"] = False
         context["likes_count"] = Like.objects.filter(items=item_obj.id).count()
 
-        print("lllllllllllllllllllllllllllllllllllllllllllll",context)
+        print("lllllllllllllllllllllllllllllllllllllllllllll", context)
         return context
 
     def form_valid(self, form: BaseModelForm):
@@ -404,15 +349,6 @@ class DetailItemView(CreateView, CommentListViewMixin):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-class LikeStatus(View):
-        def get(self,request,pk):
-            item_obj=Items.objects.get(id=pk)
-            like_count=Like.objects.filter(items=item_obj).count()
-            
-            if Like.is_liked(self.request.user,item_obj):
-                return JsonResponse({"liked_status":True,"like_count":like_count})
-            else:
-                return JsonResponse({"liked_status":False,"like_count":like_count})
 
 class CreateLikeView(View):
     
@@ -448,14 +384,15 @@ class DeleteLikeView(View):
         item_obj = Items.objects.get(id=pk)
         # print(request)
 
-        like_obj=Like.objects.filter(items=item_obj,user=request.user).first()
+        like_obj = Like.objects.filter(items=item_obj, user=request.user).first()
         if like_obj:
             like_obj.delete()
-       
-        like_count=Like.objects.filter(items=item_obj).count()
-        return JsonResponse({"liked_status":False,"like_count":like_count})
+
+        like_count = Like.objects.filter(items=item_obj).count()
+        return JsonResponse({"liked_status": False, "like_count": like_count})
 
     
+
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -464,19 +401,17 @@ class IndexView(TemplateView):
     
 class BestItemsView(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context=super().get_context_data(**kwargs)
-        list_category=CategoryMenu.objects.all()
-        best_items={}
+        context = super().get_context_data(**kwargs)
+        list_category = CategoryMenu.objects.all()
+        best_items = {}
         for category in list_category:
-            best_items[category]=Items.best_items(category.id)
-        context["best_items"]=best_items
+            best_items[category] = Items.best_items(category.id)
+        context["best_items"] = best_items
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
-        
+
         # print("////////////////////////////////////////////////////////",context)
         return context
-    template_name="best_items.html"
-       
-#         return super().form_valid(form)
 
-#     # def get_success_message(self, cleaned_data):
-#     #     return self.success_message
+    template_name = "best_items.html"
+
+
