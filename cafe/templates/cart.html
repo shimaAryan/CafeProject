@@ -48,7 +48,7 @@
 
                                     {% for item in item_data %}
 
-                                    <td class="product-remove"><a href="#" id="delete_item"><span class="icon-close"  id="item-delete"></span></a></td>
+                                    <td class="product-remove"><span class="icon-close"  id="delete_item" value={{item.id}}></span></td>
 
 
 
@@ -60,7 +60,7 @@
                                     <td class="price">${{ item.price }}</td>
                                     <td class="quantity">
 						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value={{ item.quantity }} min="1" max="100">
+					             	<input id="quantity" type="text" name="quantity" class="quantity form-control input-number" value={{ item.quantity }} min="1" max="100">
 					          	</div>
 					          </td>
                                     <td class="discount">{{ item.discount }}%</td>
@@ -154,46 +154,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 
-	function deleteItemFromCart(itemId) {
-    $.ajax({
-        type: 'POST',
-        url: '/delete-item-from-cart/',
-        data: {
-            'item_id': itemId,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        dataType: 'json',
-        success: function(response) {
-            // Handle success response
-            console.log(response.message);
-            // Update the cart display or perform any other action as needed
-        },
-        error: function(xhr, errmsg, err) {
-            // Handle error response
-            console.log(xhr.status + ": " + xhr.responseText);
-        }
-    });
-}
-
-
-
-    $(document).ready(function() {
-    $('#item-delete').click(function () {
-	consol.log("helooooo")
+$(document).ready(function() {
+    $('.icon-close').on('click', function(){
+        console.log("hello");
+        var item_id = $(this).attr('value');
         var button = $(this);
         $.ajax({
             type: "POST",
-            url: '{% url 'cafe:delete_item_from_cart' %}',
+            url: '/delete-item-from-cart/',
             data: {
-                'item_id': {{ item.id }},
+                'item_id': item_id,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             dataType: 'json',
             success: function (data) {
                 if (data.message) {
-                    button.text('Item removed from cart');
+                    
                     button.removeClass('icon-close');
-                    console.log(data.message);
+                    window.location.href=`/cart/`;
+					
+					
+					
                 } else {
                     console.log('Item could not be removed from the cart.');
                 }
@@ -204,6 +185,10 @@
         });
     });
 });
+ 
+
+
+   
 </script>
 
 

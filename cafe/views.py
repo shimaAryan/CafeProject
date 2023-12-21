@@ -113,7 +113,7 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
         if item_ids:
             self.similarity_item = self.get_similar_data(item_ids[0])
             self.context['similarity_item'] = self.similarity_item
-
+        print("///////////////////////////////////////////////",self.context)
         return render(request, self.template_name, self.context)
 
     @staticmethod
@@ -315,15 +315,36 @@ class DeleteCartItemView(View):
     template_name = "cart.html"
 
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
+        # if request.is_ajax():
             item_id = request.POST.get('item_id')
+            is_exist=False
             session_order_item = self.request.session.get('order', [])
-            order_item_ids = [item['id'] for item in session_order_item]
-            if item_id in order_item_ids:
-                del session_order_item['item_data'][item_id]
-                request.session.modified = True
-                return JsonResponse({'message': 'Item deleted from the cart.'})
-        return JsonResponse({'error': 'An error occurred while deleting the item from the cart.'}, status=400)
+            print(session_order_item)
+            for item in session_order_item:
+                    print(item_id),item['id']
+                    if int(item['id']) == int(item_id):
+                        is_exist=True
+                        print("iffffffffffffffffffffff")
+                        if int(item['quantity'])>1:
+                            item['quantity'] =int(item['quantity']) -1
+                            self.request.session.modified = True
+                        else:
+                            print(self.request.session["order"])
+                            del self.request.session["order"]["item_data"][item["id"]]
+                            request.session.modified = True
+                            # print(request.session)
+        
+
+                        
+                        break
+            print("///////////////////////////////////////////////////",self.request.session.get('order', []))
+            
+            if not is_exist:
+                        
+                return JsonResponse({'message': 'Item does not exist in cart.',"quantity":item['quantity']})
+            return JsonResponse({'message': 'Item removed successfully.',"quantity":item['quantity']})
+                
+            
 
 
 class CategoryItems(ListView):
@@ -399,54 +420,39 @@ class LikeStatus(View):
             else:
                 return JsonResponse({"liked_status":False,"like_count":like_count})
 
-class CreateLikeView(LoginRequiredMixin,View):
+class CreateLikeView(View):
     
     
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-
-            messages.error(request, "You must be logged in to like", "danger")
-            print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
-            
-            
-           
-
-            # return redirect("account:User_login")
-            return JsonResponse({"liked_status":True,"like_count":like_count})
-
-        else:
-            item_obj = Items.objects.get(id=kwargs['pk'])
-            like_count=Like.objects.filter(items=item_obj).count()
-            # return JsonResponse({"liked_status":True,"like_count":like_count})
-       
-            return super().dispatch(request, *args, **kwargs)
     
-
-
     
 
     def get(self, request, pk):
             print("pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
-            try:
-                item_obj = Items.objects.get(id=pk)
-                like_count=Like.objects.filter(items=item_obj).count()
+            if not request.user.is_authenticated:
+                  
+                 return JsonResponse({"detail":"not_autenticate"},status=401)
+            
+            item_obj = Items.objects.get(id=pk)
+            like_count=Like.objects.filter(items=item_obj).count()
 
-                like_obj = Like.objects.get_or_create(items=self.item_obj, user=request.user)
-                if like_obj[1] == True:
+            like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
+            if like_obj[1] == True:
                     like_obj[0].save()
                     return JsonResponse({"liked_status":True,"like_count":like_count})
-
-            except:
-        
-                return JsonResponse({"liked_status":True,"like_count":like_count})
 
        
 
 
 class DeleteLikeView(View):
+    
     def get(self, request, pk):
+        if not  request.user.is_authenticated:
+            item_obj = Items.objects.get(id=pk)
+            like_count=Like.objects.filter(items=item_obj).count()
+            return JsonResponse({"detail":"login_error"},status=401)
+        
         item_obj = Items.objects.get(id=pk)
-        print(request)
+        # print(request)
 
         like_obj=Like.objects.filter(items=item_obj,user=request.user).first()
         if like_obj:

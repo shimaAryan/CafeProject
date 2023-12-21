@@ -39,6 +39,7 @@ $(document).ready(function(){
             e.preventDefault()
 
         //    let like_s=area.dataset
+
        
           if(like_statuss) {
             $.ajax({
@@ -76,6 +77,7 @@ $(document).ready(function(){
             
             processData: false,
             contentType: false,
+
             success: function(res) {
                 console.log(res);
                
@@ -86,6 +88,9 @@ $(document).ready(function(){
 
             },
             error:function(res){
+                if (res.status=="401"){
+                    window.location.href=`/account/login/`
+                }
 
                 console.log("erroe",res,res.responseText);
                
