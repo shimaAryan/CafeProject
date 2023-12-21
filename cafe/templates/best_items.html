@@ -26,7 +26,7 @@
                                 {% for image in images %}
                                 {% comment %} <h1>{{item.id }}    {{image.object_id}}</h1> {% endcomment %}
                                     {% if image.object_id == item.id %}
-                                        <a href="#" class="menu-img img mb-4" style="background-image: url('{% static image.image %}');"></a>
+                                        <a href="#" class="menu-img img mb-4" ><img src="{{image.image.url }} "class="img-fluid menu-img img mb-4" alt="Colorlib Template"></a>
                                     {% endif %}
                                 {% endfor %}
                                     <div class="text">

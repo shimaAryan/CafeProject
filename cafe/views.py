@@ -369,16 +369,16 @@ class DetailItemView(CreateView, CommentListViewMixin):
         context = super().get_context_data(**kwargs)
         item_obj = Items.objects.get(id=self.kwargs["pk"])
 
-        # context["item"] = item_obj
-        # context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
-        #                                      content_type=ContentType.objects.get_for_model(Items))
+        context["item"] = item_obj
+        context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'),
+                                             content_type=ContentType.objects.get_for_model(Items))
         if Like.is_liked(self.request.user, item_obj):
             context["like_status"] = "True"
         else:
             context["like_status"] = False
-        # context["likes_count"] = Like.objects.filter(items=item_obj.id, user=self.request.user).count()
+        context["likes_count"] = Like.objects.filter(items=item_obj.id).count()
 
-        
+        print("lllllllllllllllllllllllllllllllllllllllllllll",context)
         return context
 
     def form_valid(self, form: BaseModelForm):
@@ -412,7 +412,8 @@ class CreateLikeView(LoginRequiredMixin,View):
             
            
 
-            return redirect("account:User_login")
+            # return redirect("account:User_login")
+            return JsonResponse({"liked_status":True,"like_count":like_count})
 
         else:
             item_obj = Items.objects.get(id=kwargs['pk'])
@@ -426,16 +427,19 @@ class CreateLikeView(LoginRequiredMixin,View):
     
 
     def get(self, request, pk):
-       
+            print("pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
             try:
+                item_obj = Items.objects.get(id=pk)
+                like_count=Like.objects.filter(items=item_obj).count()
+
                 like_obj = Like.objects.get_or_create(items=self.item_obj, user=request.user)
                 if like_obj[1] == True:
                     like_obj[0].save()
-                    return JsonResponse({"liked_status":True,"like_count":self.like_count})
+                    return JsonResponse({"liked_status":True,"like_count":like_count})
 
             except:
         
-                return JsonResponse({"liked_status":True,"like_count":self.like_count})
+                return JsonResponse({"liked_status":True,"like_count":like_count})
 
        
 
