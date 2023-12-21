@@ -264,13 +264,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
 
 
 
-        # order_item_fields = [field.name for field in OrderItem._meta.get_fields()]
-        # print(">>>>>>>>>>>>>>",  order_item_fields)
-        # session_item = {key: value for key, value in request.session.items() if key in order_item_fields}
-        # new_item =OrderItem(**session_item)
-
-        # print("newwwwww",new_item)
-        # new_item.save()
+        
 
 class FilterCategory(ListView):
     template_name = "cat_item.html"
@@ -461,39 +455,12 @@ class DeleteLikeView(View):
         like_count=Like.objects.filter(items=item_obj).count()
         return JsonResponse({"liked_status":False,"like_count":like_count})
 
-    # def handle_no_permission(self):
-    #      return render(request, 'unauthorized_access.html', {})
-
-    # def get_object(self, queryset=None):
-    #     idd = self.kwargs.get('pk')
-
-    #     return Items.objects.get(id=idd)
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["image"] = Image.objects.get(object_id=self.kwargs.get('pk'))
-    #     return context
+    
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-# class CreateCommentView(CreateView):
-#     model = Comment
-#     fields = ['content']
-#     template_name = "detail_item.html"
-#     success_message = "Your comment was sent successfully"
-#     success_url = reverse_lazy('cafe:detail_item')
 
-#     def form_valid(self, form):
-#         print("list_categoryoooooooooooooooooooooooooooooooooooo")
-#         comment = form.save(commit=False)
-#         # You can perform additional operations on the comment object here if needed
-#         print("ss"*10,self)
-#         comment.save()
-#         return list_category
-    
-#     # def get_success_message(self, cleaned_data):
-#     #     return self.success_message
     
 class BestItemsView(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
