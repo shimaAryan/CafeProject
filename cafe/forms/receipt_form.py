@@ -3,6 +3,7 @@ from django import forms
 from cafe.models import Receipt
 import datetime as dt
 import requests
+
 user = get_user_model()
 
 
