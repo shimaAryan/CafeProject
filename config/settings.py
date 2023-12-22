@@ -151,13 +151,13 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 LOGIN_URL = 'account:User_login'
 # google account
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "saharmahmoodi01@gmail.com"
-EMAIL_PORT = 587
-EMAIL_HOST_PASSWORD = "bxlmbhlfbnnktgvk"
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "Group3 Coffee Project"
+EMAIL_BACKEND = config.get('email_data', 'EMAIL_BACKEND')
+EMAIL_HOST = config.get('email_data', 'EMAIL_HOST')
+EMAIL_HOST_USER = config.get('email_data', 'EMAIL_HOST_USER')
+EMAIL_PORT = config.get('email_data', 'EMAIL_PORT')
+EMAIL_HOST_PASSWORD = config.get('email_data', 'EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config.get('email_data', 'EMAIL_USE_TLS')
+DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
 
 
 
