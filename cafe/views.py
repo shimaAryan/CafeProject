@@ -18,8 +18,6 @@ from .models import *
 from django.http import JsonResponse
 from taggit.models import Tag
 
-from account.models import CustomUser
-
 user = get_user_model()
 
 
@@ -31,7 +29,6 @@ class ContextMixin():
 
             context = {
                 'item_data': session_data,
-                # 'user_id': user.id,
                 'item_total': 0,
                 'subtotal': 0,
                 'total': 0,
@@ -48,6 +45,7 @@ class ContextMixin():
                 context['subtotal'] += item_total
                 context['delivery_cost'] = item_total * 2
             context['total'] = context['subtotal'] + context['delivery_cost']
+
 
         except OrderItem.DoesNotExist:
             context['error'] = "Order Items does not exist"
@@ -105,10 +103,11 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
         self.context = self.get_context(session_order) if session_order else {
             'error': "Order does not exist"}
         item_ids = [item['id'] for item in session_order]
+
+        self.context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
         if item_ids:
             self.similarity_item = self.get_similar_data(item_ids[0])
             self.context['similarity_item'] = self.similarity_item
-        print("///////////////////////////////////////////////",self.context)
         return render(request, self.template_name, self.context)
 
     @staticmethod
@@ -139,11 +138,25 @@ class CartView(ContextMixin, SimilarityItemMixin, View):
 
 
 class ReceiptView(LoginRequiredMixin, UpdateView, ContextMixin):
-    model = CustomUser
+    model = user
     template_name = 'checkout.html'
     form_class = receipt_form.PersonalInfo
     success_url = reverse_lazy("cafe:cart-receipt", args={"status": "payment"})
     success_message = "Your information has been successfully registered"
+
+    # def get_success_url(self):
+    #     return reverse("cafe:cart-receipt", kwargs={'status': "payment"})
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in", "danger")
+            return redirect("account:User_login")
+
+        self.user_id = self.request.user.id
+        order, created = Order.objects.get_or_create(user_id=self.user_id)
+        order.status = "payment"
+        order.save()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, query_set=None):
         return self.request.user
@@ -159,6 +172,7 @@ class ReceiptView(LoginRequiredMixin, UpdateView, ContextMixin):
             "category_item_counts": CategoryMenu.objects.annotate(item_count=Count('items')),
             'delivery_form': receipt_form.DeliveryTime
         })
+
         return context
 
 
@@ -176,6 +190,7 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+
         session_order = request.session.get('order', [])
         context = self.get_context(session_order) if session_order else {
             'error': "Order does not exist"}
@@ -193,7 +208,9 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             order_item.items.add(item_instance)
             order_item.save()
 
-        del request.session['order']
+        # del self.request.session['order']
+        sessionStorage.clear()
+
 
         return super().get(request, *args, **kwargs)
 
@@ -203,17 +220,12 @@ class PaymentView(LoginRequiredMixin, ContextMixin, CreateView):
             cd = delivery_time_form.cleaned_data.items()
 
             delivery_time = delivery_time_form.save(commit=False)
-            order_item = Order(order=self.order_instance)
-            delivery_time.save()
-            order_item.status = "paid"
-        return render(request, self.template_name)
+            order_item = Order.objects.create(status="paid")
+            order_item.delivery_times.add(delivery_time)
+            return render(request, self.template_name)
+        return redirect(request, "cafe:payment_paid' 'paid")
 
 
-
-
-
-
-        
 
 class FilterCategory(ListView):
     template_name = "cat_item.html"
@@ -229,7 +241,6 @@ class FilterCategory(ListView):
         context = super().get_context_data(**kwargs)
         context['cat_name'] = self.category_name
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
-        print("ttttt", context)
         return context
 
 
@@ -246,6 +257,7 @@ class ItemByTag(ListView):
             select_item = Items.objects.filter(tags__in=[tag])
 
         context = {
+            'images' : Image.objects.filter(content_type=ContentType.objects.get_for_model(Items)),
             'select_item': select_item,
             'tags': tag,
         }
@@ -256,36 +268,27 @@ class DeleteCartItemView(View):
     template_name = "cart.html"
 
     def post(self, request, *args, **kwargs):
-        # if request.is_ajax():
-            item_id = request.POST.get('item_id')
-            is_exist=False
-            session_order_item = self.request.session.get('order', [])
-            print(session_order_item)
-            for item in session_order_item:
-                    print(item_id),item['id']
-                    if int(item['id']) == int(item_id):
-                        is_exist=True
-                        print("iffffffffffffffffffffff")
-                        if int(item['quantity'])>1:
-                            item['quantity'] =int(item['quantity']) -1
-                            self.request.session.modified = True
-                        else:
-                            print(self.request.session["order"])
-                            del self.request.session["order"]["item_data"][item["id"]]
-                            request.session.modified = True
-                            # print(request.session)
-        
+        item_id = request.POST.get('item_id')
+        is_exist = False
+        session_order_item = self.request.session.get('order', [])
+        print(session_order_item)
+        for item in session_order_item:
+            print(item_id), item['id']
+            if int(item['id']) == int(item_id):
+                is_exist = True
+                if int(item['quantity']) > 1:
+                    item['quantity'] = int(item['quantity']) - 1
+                    self.request.session.modified = True
+                else:
+                    print(self.request.session["order"])
+                    del self.request.session["order"]["item_data"][item["id"]]
+                    request.session.modified = True
 
-                        
-                        break
-            print("///////////////////////////////////////////////////",self.request.session.get('order', []))
-            
-            if not is_exist:
-                        
-                return JsonResponse({'message': 'Item does not exist in cart.',"quantity":item['quantity']})
-            return JsonResponse({'message': 'Item removed successfully.',"quantity":item['quantity']})
-                
-            
+                break
+
+        if not is_exist:
+            return JsonResponse({'message': 'Item does not exist in cart.', "quantity": item['quantity']})
+        return JsonResponse({'message': 'Item removed successfully.', "quantity": item['quantity']})
 
 
 class CategoryItems(ListView):
@@ -311,8 +314,8 @@ class CategoryItems(ListView):
 
 class CommentListViewMixin(ListView):
     model = Comment
-    context_object_name = 'commenttt'  # Set the context variable name for the comment list in the template
-    paginate_by = 4  # Set the number of comments per page
+    context_object_name = 'commenttt'
+    paginate_by = 4
 
 
 class DetailItemView(CreateView, CommentListViewMixin):
@@ -338,7 +341,6 @@ class DetailItemView(CreateView, CommentListViewMixin):
             context["like_status"] = False
         context["likes_count"] = Like.objects.filter(items=item_obj.id).count()
 
-        print("lllllllllllllllllllllllllllllllllllllllllllll", context)
         return context
 
     def form_valid(self, form: BaseModelForm):
@@ -351,36 +353,38 @@ class DetailItemView(CreateView, CommentListViewMixin):
 
 
 class CreateLikeView(View):
-    
-    
-    
-    
-
     def get(self, request, pk):
-            print("pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
-            if not request.user.is_authenticated:
-                  
-                 return JsonResponse({"detail":"not_autenticate"},status=401)
-            
-            item_obj = Items.objects.get(id=pk)
-            like_count=Like.objects.filter(items=item_obj).count()
+        if not request.user.is_authenticated:
+            return JsonResponse({"detail": "not_autenticate"}, status=401)
 
-            like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
-            if like_obj[1] == True:
-                    like_obj[0].save()
-                    return JsonResponse({"liked_status":True,"like_count":like_count})
+        item_obj = Items.objects.get(id=pk)
+        like_count = Like.objects.filter(items=item_obj).count()
 
-       
+        like_obj = Like.objects.get_or_create(items=item_obj, user=request.user)
+        if like_obj[1] == True:
+            like_obj[0].save()
+            return JsonResponse({"liked_status": True, "like_count": like_count})
+
+
+class LikeStatus(View):
+    def get(self, request, pk):
+        item_obj = Items.objects.get(id=pk)
+        like_count = Like.objects.filter(items=item_obj).count()
+
+        if Like.is_liked(self.request.user, item_obj):
+            return JsonResponse({"liked_status": True, "like_count": like_count})
+        else:
+            return JsonResponse({"liked_status": False, "like_count": like_count})
 
 
 class DeleteLikeView(View):
-    
+
     def get(self, request, pk):
-        if not  request.user.is_authenticated:
+        if not request.user.is_authenticated:
             item_obj = Items.objects.get(id=pk)
-            like_count=Like.objects.filter(items=item_obj).count()
-            return JsonResponse({"detail":"login_error"},status=401)
-        
+            like_count = Like.objects.filter(items=item_obj).count()
+            return JsonResponse({"detail": "login_error"}, status=401)
+
         item_obj = Items.objects.get(id=pk)
         # print(request)
 
@@ -391,14 +395,11 @@ class DeleteLikeView(View):
         like_count = Like.objects.filter(items=item_obj).count()
         return JsonResponse({"liked_status": False, "like_count": like_count})
 
-    
-
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
 
-    
 class BestItemsView(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -409,9 +410,6 @@ class BestItemsView(TemplateView):
         context["best_items"] = best_items
         context["images"] = Image.objects.filter(content_type=ContentType.objects.get_for_model(Items))
 
-        # print("////////////////////////////////////////////////////////",context)
         return context
 
     template_name = "best_items.html"
-
-

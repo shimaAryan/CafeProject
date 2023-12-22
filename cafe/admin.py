@@ -1,12 +1,12 @@
 from django.contrib import admin
-from django.db.models.functions import TruncMonth
-
+from core.models import Image
 from .models import *
 
 
 @admin.register(Items)
 class ItemsAdmin(admin.ModelAdmin):
     list_display = ['title']
+
 
 
 @admin.register(CategoryMenu)

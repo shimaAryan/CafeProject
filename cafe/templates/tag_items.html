@@ -51,7 +51,12 @@
 <!--		              	<div class="row">-->
 		              		<div class="col-md-8">
 						        		<div class="menu-entry">
-						    					<a href="#" class="img" style="background-image: url({% static 'images/menu-1.jpg' %});"></a>
+						    					{% for image in images %}
+                                    {% if image.object_id == item.id %}
+
+									 <td class="image-prod"><div class="menu-img img mb-4" ><img src="{{image.image.url}}" class="img" alt="item picture"></div></td>
+                                    {% endif %}
+                                {% endfor %}
 						    					<div class="text text-center pt-4">
 						    						<h3><a href="{% url 'cafe:detail_item' item.id %}">{{item.title}}</a></h3>
 						    						<p>{{item.description |truncatechars:40 | linebreaks}}</p>

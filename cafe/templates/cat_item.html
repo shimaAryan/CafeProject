@@ -12,22 +12,22 @@
         		<h3 class="mb-5 heading-pricing ftco-animate">{{cat_name.title}}</h3>
                 {% for item in cat_item %}
         		<div class="pricing-entry d-flex ftco-animate">
+							{% for image in images %}
+                                    {% if image.object_id == item.id %}
 
-					 {% for picture in images %}
-						{% if picture.object_id == item.id %}
-							<div class="img" style="background-image: url({% static picture.image %});"></div>
-
-						{% endif %}
-					{% endfor %}
+									 <td class="image-prod"><div class="img" ><img src="{{image.image.url}}" class="img" alt="item picture"></div></td>
+                                    {% endif %}
+                                {% endfor %}
 
 
         			<div class="desc pl-3">
 	        			<div class="d-flex text align-items-center">
+
 	        				<a href="{% url 'cafe:detail_item' item.id %}"><h3><span>{{item.title}}</span></h3></a>
-	        				<span class="price">{{item.price}}</span>
+	        				<span class="price">${{item.price}}</span>
 	        			</div>
 	        			<div class="d-block">
-	        				<p>{{item.description|truncatechars:30}}</p>
+	        				<p>{{item.description|truncatechars:80}}</p>
 	        			</div>
         			</div>
 

@@ -45,7 +45,7 @@
     			
     			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
     				<h3>{{item.title}}</h3>
-    				<p class="price"><span>{{item.price}}</span></p>
+    				<p class="price"><span>${{item.price}}</span></p>
     				<p>{{item.description}}</p>
     				
 						<div class="row mt-4">
@@ -67,7 +67,7 @@
                     <i class="icon-minus"></i>
                 </button>
             </div>
-            <input style="width:70px;" type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+            <input style="width:70px; align-items: self-start;" type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
             <div class="input-group-append">
                 <button type="button" id="plusBtn" class="quantity-btn btn" data-type="plus" data-field="">
                     <i class="icon-plus"></i>

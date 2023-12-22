@@ -15,11 +15,16 @@
                                         style="border-radius: 1rem 0 0 1rem; margin: 0 auto;" />
                                 </div>
                             </div>
-                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center" ;">
                                  <h1 class="h1 fw-bold mb-0">Your order has been successfully placed  </h1>
+
                             </div>
-                            <button type="submit" class="btn btn-primary py-3 px-4"><a href="{% 'cafe:cart' %}">Back To Cart</a></button>
+
                         </div>
+
+                        <button type="submit" class="btn  btn-lg btn-block"
+                                style="background-color: #765E41 !important; border: none !important; color:#291304 !important; font-size: large !important;">
+                            <a href="{% url 'cafe:cart' %}">Back To Cart</a></button>
                     </div>
                 </div>
             </div>

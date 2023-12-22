@@ -172,8 +172,7 @@
 			<ul>
 			  {% for item in search.items %}
 				<li>
-				  <a>{{ item.title }}</a>
-				  <p>{{ item.description | truncatechars:10 }}</p>
+				  <a href="{% url 'cafe:detail_item' item.id %}">{{ item.title }}</a>
 				</li>
 			  {% endfor %}
 			</ul>

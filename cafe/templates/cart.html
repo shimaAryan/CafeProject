@@ -43,17 +43,20 @@
 						    <tbody>
 		{% if item_data %}
 						      <tr class="text-center">
-
-
-                              <td class="product-remove"><a href="#"><span class="icon-close"  id="item-delete"></span></a></td>-->
-
                                     {% for item in item_data %}
 
                                     <td class="product-remove"><span class="icon-close"  id="delete_item" value={{item.id}}></span></td>
 
+								  {% for image in images %}
+                                    {% if image.object_id == item.id %}
+
+									 <td class="image-prod"><div class="img" ><img src="{{image.image.url}}" class="img" alt="item picture"></div></td>
+                                    {% endif %}
+                                {% endfor %}
+
                                     <td class="product-name">
 						        	<h3>{{ item.name }}</h3>
-						        	<p>{{ item.description | truncatechars:20 | linebreaks }}</p>
+						        	<p>{{ item.description | truncatechars:40 | linebreaks }}</p>
                                     </td>
                                     <td class="price">${{ item.price }}</td>
                                     <td class="quantity">
