@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% load static %}
+{%  block title %}{% endblock %}
+{%  block content %}
+
+    <section class="home-slider owl-carousel">
+
+      <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});" data-stellar-background-ratio="0.5">
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row slider-text justify-content-center align-items-center">
+
+            <div class="col-md-7 col-sm-12 text-center ftco-animate">
+            	<h1 class="mb-3 mt-5 bread">Checkout</h1>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'cafe:index' %}">Home</a></span> <span>Checout</span></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8 ftco-animate">
+						<form action="{% url 'cafe:cart-receipt' 'payment' %}" class="billing-form ftco-bg-dark p-3 p-md-5" method="post" novalidate>
+							<h3 class="mb-4 billing-heading">Billing Details</h3>
+	          	<div class="row align-items-end">
+	          		<div class="col-md-6">
+	                <div class="form-group">
+                        {% csrf_token %}
+
+	                	<label >Firt Name</label>
+						{{ form.firstname }}
+	                </div>
+	              </div>
+	              <div class="col-md-6">
+	                <div class="form-group">
+	                	<label >Last Name</label>
+						{{form.lastname}}
+
+	                </div>
+                </div>
+                <div class="w-100"></div>
+		            <div class="col-md-12">
+		            	<div class="form-group">
+		            		<label >City</label>
+		            		<div class="select-wrap">
+		                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+								{{form.user_city}}
+		                </div>
+		            	</div>
+		            </div>
+		            <div class="w-100"></div>
+		            <div class="col-md-6">
+		            	<div class="form-group">
+	                	<label >Address</label>
+							{{form.user_address}}
+	                </div>
+		            </div>
+		            <div class="col-md-6">
+		            	<div class="form-group">
+		            		<label >Postcode / ZIP *</label>
+							{{form.user_postcode}}
+							<div style="font-size: 10px">{{ form.user_postcode.errors }}</div>
+	                </div>
+		            </div>
+		            <div class="w-100"></div>
+		            <div class="col-md-6">
+	                <div class="form-group">
+	                	<label >Phone</label>
+						{{form.phonenumber}}
+						<div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
+	                </div>
+	              </div>
+	              <div class="col-md-6">
+	                <div class="form-group">
+	                	<label >Email Address</label>
+						{{form.email}}
+						<div style="font-size: 10px">{{ form.email.errors }}</div>
+	                </div>
+
+                </div>
+                <div class="w-100"></div>
+
+                <div class="col-md-12">
+                	<div class="form-group mt-4">
+					<button class="btn btn-primary py-3 px-4 btn-block" type="submit">accept information</button>
+									</div>
+                </div>
+	            </div>
+	          </form><!-- END -->
+
+	          <div class="row mt-5 pt-3 d-flex">
+	          	<div class="col-md-6 d-flex">
+	          		<div class="cart-detail cart-total ftco-bg-dark p-3 p-md-4">
+	          			<h3 class="billing-heading mb-4">Cart Total</h3>
+	          			<p class="d-flex">
+
+		    						<span>Subtotal</span>
+		    						<span>${{session_data.subtotal}}</span>
+		    					</p>
+		    					<p class="d-flex">
+		    						<span>Delivery</span>
+		    						<span>${{session_data.delivery_cost}}</span>
+		    					</p>
+		    					<p class="d-flex">
+		    						<span>Discount</span>
+
+		    						<span>{{session_data.discount_total}}%</span>
+
+		    					</p>
+		    					<hr>
+		    					<p class="d-flex total-price">
+		    						<span>Total</span>
+		    						<span>${{session_data.total}}</span>
+		    					</p>
+
+								</div>
+	          	</div>
+	          	<div class="col-md-6">
+	          		<div class="cart-detail ftco-bg-dark p-3 p-md-4">
+						<form action="{% url 'cafe:payment_paid' 'paid' %}"  method="post" >
+							{% csrf_token %}
+	          			<h3 class="billing-heading mb-4">Delivery Time</h3>
+
+									<div class="form-group">
+										<div class="col-md-12">
+											{{delivery_form.delivery_date.label_tag}}
+											<div class="select-wrap billing-form">
+												{{delivery_form.delivery_date}}
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-12">
+												{{delivery_form.delivery_time.label_tag}}
+												<div class="select-wrap">
+												{{delivery_form.delivery_time}}
+											</div>
+										</div>
+									</div>
+
+									<button type="submit" class="btn btn-primary py-3 px-4">Place an order</button>
+							</form>
+								</div>
+
+	          	</div>
+	          </div>
+
+          </div> <!-- .col-md-8 -->
+
+
+
+
+          <div class="col-xl-4 sidebar ftco-animate fadeInUp ftco-animated">
+			  <div class="sidebar-box">
+              <form class="search-form" action="{% url 'cafe:cart-receipt' 'payment' %}" method="get" >
+                <div class="form-group">
+                	<div class="icon">
+	                  <span class="icon-search"></span>
+
+                  </div>
+					{{search.search_form.as_p}}
+                </div>
+
+              </form>
+            </div>
+			  {% if search.items %}
+			<h2 class="search-form">Search Results</h2>
+			<ul>
+			  {% for item in search.items %}
+				<li>
+				  <a href="{% url 'cafe:detail_item' item.id %}">{{ item.title }}</a>
+				</li>
+			  {% endfor %}
+			</ul>
+		  {% endif %}
+            <div class="sidebar-box ftco-animate">
+              <div class="categories">
+                <h3>Categories</h3>
+				  <ul>
+				    {% for item in category_item_counts %}
+				  <li><a href="{% url 'cafe:cat_item' item.title %}" target="_blank">{{ item.title }} <span>({{item.item_count}})</span></a></li>
+				  {% endfor %}
+					  </ul>
+              </div>
+            </div>
+
+            <div class="sidebar-box ftco-animate">
+              <h3>Recent Blog</h3>
+              <div class="block-21 mb-4 d-flex">
+                <a class="blog-img mr-4" style="background-image: url({% static 'images/image_1.jpg' %});"></a>
+                <div class="text">
+                  <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                  <div class="meta">
+                    <div><a href="#"><span class="icon-calendar"></span> July 12, 2018</a></div>
+                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="block-21 mb-4 d-flex">
+                <a class="blog-img mr-4" style="background-image: url({% static 'images/image_2.jpg' %});"></a>
+                <div class="text">
+                  <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                  <div class="meta">
+                    <div><a href="#"><span class="icon-calendar"></span> July 12, 2018</a></div>
+                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="block-21 mb-4 d-flex">
+                <a class="blog-img mr-4" style="background-image: url({% static 'images/image_3.jpg' %});"></a>
+                <div class="text">
+                  <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>
+                  <div class="meta">
+                    <div><a href="#"><span class="icon-calendar"></span> July 12, 2018</a></div>
+                    <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                    <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-box ftco-animate">
+              <h3>Tag Cloud</h3>
+              <div class="tagcloud">
+				   {% for tag in all_tag %}
+        			<a href="{% url 'cafe:items_by_tag' tag_slug=tag %}" target="_blank">
+            			{{ tag }}
+       				 </a>
+				  {% if not forloop.last %}{% endif %}
+   				 {% endfor %}
+
+
+
+
+
+
+<!--                <a href="#" class="tag-cloud-link">dish</a>-->
+<!--                <a href="#" class="tag-cloud-link">menu</a>-->
+<!--                <a href="#" class="tag-cloud-link">food</a>-->
+<!--                <a href="#" class="tag-cloud-link">sweet</a>-->
+<!--                <a href="#" class="tag-cloud-link">tasty</a>-->
+<!--                <a href="#" class="tag-cloud-link">delicious</a>-->
+<!--                <a href="#" class="tag-cloud-link">desserts</a>-->
+<!--                <a href="#" class="tag-cloud-link">drinks</a>-->
+              </div>
+            </div>
+
+            <div class="sidebar-box ftco-animate">
+              <h3>Paragraph</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus voluptate quod mollitia delectus aut, sunt placeat nam vero culpa sapiente consectetur similique, inventore eos fugit cupiditate numquam!</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section> <!-- .section -->
+
+  <script>
+		$(document).ready(function(){
+
+		var quantitiy=0;
+		   $('.quantity-right-plus').click(function(e){
+		        
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		            
+		            $('#quantity').val(quantity + 1);
+
+		          
+		            // Increment
+		        
+		    });
+
+		     $('.quantity-left-minus').click(function(e){
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		      
+		            // Increment
+		            if(quantity>0){
+		            $('#quantity').val(quantity - 1);
+		            }
+		    });
+		    
+		});
+	</script>
+{% endblock %}

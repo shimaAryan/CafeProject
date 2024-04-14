@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<section class="home-slider owl-carousel">
+
+      <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});" data-stellar-background-ratio="0.5"> 
+      
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row slider-text justify-content-center align-items-center">
+
+            <div class="col-md-7 col-sm-12 text-center ftco-animate">
+            {% if messages %}
+                <ul class="messages">
+                  {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }} btn btn-primary py-3 px-5"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            	<h1 class="mb-3 mt-5 bread">Product Detail</h1>
+	            <p class="breadcrumbs"><span class="mr-2"><a href="#">Home</a></span> <span>Product Detail</span></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section">
+    	<div class="container">
+    		<div class="row">
+        <div class="col-lg-6 mb-5 ftco-animate">
+    				<a href="{% static 'images/menu-2.jpg' %}" class="image-popup"><img src="{{image.image.url }} "class="img-fluid" alt="Colorlib Template"></a>
+                
+               
+             
+
+              </a> 
+              <a id="like_area" href="#" data-like=like></a>
+             
+            <p id="like_count">{{likes_count}} likes</p>
+          </div>
+    			
+    			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
+    				<h3>{{item.title}}</h3>
+    				<p class="price"><span>${{item.price}}</span></p>
+    				<p>{{item.description}}</p>
+    				
+						<div class="row mt-4">
+							<div class="col-md-6">
+								<div class="form-group d-flex">
+		              <div class="select-wrap">
+	                  
+	                  
+	                </div>
+		            </div>
+							</div>
+							   
+
+              <div class="row justify-content-center">
+    <div class="col-md-6">
+        <div style="display: grid !important;grid-template-columns: 40% 20% 40%;" class="input-group d-flex mb-3">
+            <div class="input-group-prepend">
+                <button type="button" id="minusBtn" class="quantity-btn btn" data-type="minus" data-field="">
+                    <i class="icon-minus"></i>
+                </button>
+            </div>
+            <input style="width:70px; align-items: self-start;" type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+            <div class="input-group-append">
+                <button type="button" id="plusBtn" class="quantity-btn btn" data-type="plus" data-field="">
+                    <i class="icon-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+    </div>
+
+          	</div>
+          	<p id="add_to_cart" style="margin-top:2rem;" class=" btn btn-primary py-3 px-5">Add to Cart</p>
+            
+    			</div>
+    		</div>
+    	</div>
+
+
+
+
+
+<div class="row justify-content-center">
+  <div class="col-10 ">
+  
+    <form method="post" action="#" id="comment_form" class="billing-form ftco-bg-dark p-3 p-md-5">
+                  {% csrf_token %}
+                  <h3 class="mb-4 billing-heading" >comment :</h3>
+                  <div class="row align-items-end">
+                      <div  class="col-8">
+                     {{form.content}}
+                        
+                      </div>
+                      <div  class="col-2">
+
+                        <input id="comment" class=" btn btn-primary py-3 px-5" type="submit" value="send comment">
+                      </div>
+
+                  </div>
+      </form><!-- END -->
+  </div>
+</div>
+
+
+
+
+<div class="row justify-content-center ">
+ <div class="col-11  ">
+    <div class="row justify-content-center ">
+{% for com in object_list%}
+  <div class="col-2 billing-form ftco-bg-dark p-3 p-md-5" style="margin-right: 8px; margin-bottom: 60px;margin-top:60px; max-height: 200px; ">
+        
+   
+                  <h3 class="mb-4 billing-heading" >{{com.user.firstname}} {{com.user.lastname}}</h3>
+                  <div class="row align-items-end">
+                      <div  class="col-8" style="white-space: nowrap;">
+                     {{com.content}}
+                       
+                      </div>
+                      
+                      
+                  </div>
+                  <div  class="col-2">
+                        <p>like</p> 
+                      </div>
+      
+  </div>
+{%endfor %}
+<div>
+ </div>
+</div>
+
+
+
+<div class="justify-content-center row">
+  <div class="pagination d-flex ">
+      <span class="step-links ">
+        <div >
+            <div class="col-2">
+              {% if page_obj.has_previous %}
+                  
+                  <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary py-3 px-5  " >pervious</a>
+                  
+              {% endif %}
+            </div>
+            <div class="col-8">
+              <span class="current mb-4 billing-heading  text-center">
+                  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+              </span>
+            </div>
+            <div class="col-2">
+              {% if page_obj.has_next %}
+              
+                  <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary py-3 px-5  ">next</a>
+                
+              {% endif %}
+          </div>
+        </div>
+      </span>
+  </div>
+</div>
+ </div>
+ </div>
+    </section>
+
+
+
+
+
+<script>
+
+ const csrftoken = '{{ csrf_token }}';
+ function getCsrfTokenFromCookies() {
+  let csrfToken = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith('csrftoken=')) {
+        csrfToken = decodeURIComponent(cookie.substring('csrftoken='.length));
+        break;
+      }
+    }
+  }
+  return csrfToken;
+}
+const product = {
+  id: {{item.id}},
+  name: '{{item.title}}',
+ // quantity: document.getElementById('quantity').value,
+  price: {{item.price }},
+  discount: {{ item.discount }},
+  description: '{{ item.description}}',
+
+};
+
+  document.getElementById('add_to_cart').addEventListener('click', function() {
+    product["quantity"]=document.getElementById('quantity').value
+console.log(product);
+  sessionStorage.setItem('order', JSON.stringify(product));
+
+    const baseUrl = window.location.origin
+    const csrfToken = getCsrfTokenFromCookies();
+    
+  fetch(`${baseUrl}/cart/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
+    },
+    body: sessionStorage.getItem('order')
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Data saved:', data);
+    sessionStorage.setItem("data",data);
+    window.location.href=`/cart/`
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    sessionStorage.setItem("Error",error);
+  });
+})
+ </script>
+
+
+
+
+
+
+
+
+
+{% comment %} for plus and mines key in page {% endcomment %}
+<script>
+let count = 1; // Initialize count
+document.getElementById('plusBtn').addEventListener('click', function() {
+    count++;
+    
+    document.getElementById('quantity').value = count;
+    console.log(document.getElementById('quantity').value );
+});
+
+document.getElementById('minusBtn').addEventListener('click', function() {
+    if (count > 1) {
+        count--;
+        
+        document.getElementById('quantity').value = count;
+        console.log(document.getElementById('quantity').value);
+    }
+});
+
+// end......
+
+//like unlike ajax
+
+
+
+
+</script>
+
+
+
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/detail_item.js' %}"></script>
+{% endblock %}

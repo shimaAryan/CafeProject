@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}cart{% endblock %}
+{% block content %}
+{% comment %} best_items={id:[queryset]} {% endcomment %}
+{% comment %} <h1>{{best_items}}</h1> {% endcomment %}
+
+
+
+
+
+
+{% comment %} <div class="row"> {% endcomment %}
+    {% for cat, queryset  in best_items.items %}
+    <div class="d-flex justify-content-center " style="margin-top: 100px;
+    margin-bottom: 100px">
+        <h2>{{cat.title}}</h2>
+    </div>
+<div class="row justify-content-center align-items-cente">
+
+        
+                {% for item in queryset %}
+                    
+                        <div class="col-md-3 text-center">
+                            <div class="menu-wrap">
+                                {% for image in images %}
+                                {% comment %} <h1>{{item.id }}    {{image.object_id}}</h1> {% endcomment %}
+                                    {% if image.object_id == item.id %}
+                                        <a href="#" class="menu-img img mb-4" ><img src="{{image.image.url }} "class="img-fluid menu-img img mb-4" alt="Colorlib Template"></a>
+                                    {% endif %}
+                                {% endfor %}
+                                    <div class="text">
+                                        <h3><a href="#">{{item.title}}</a></h3>
+                                        <p>{{item.description}}</p>
+                                        <p class="price"><span>{{item.price}}</span></p>
+                                        <p class="price"><span>{{item.like.all.count}}</span></p>
+                                        <p><a href={% url 'cafe:detail_item' item.id %} class="btn btn-primary btn-outline-primary">see more</a></p>
+                                    </div>
+                            </div>
+                        </div>
+                    
+                {% endfor %}
+</div>
+    {% endfor %}
+{% comment %} </div> {% endcomment %}
+
+{% endblock %}

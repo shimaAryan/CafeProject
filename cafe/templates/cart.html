@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}cart{% endblock %}
+{% block content %}
+
+    <section class="home-slider owl-carousel">
+
+      <div class="slider-item" style="background-image: url({% static 'images/bg_3.jpg' %});" data-stellar-background-ratio="0.5">
+      	<div class="overlay"></div>
+        <div class="container">
+          <div class="row slider-text justify-content-center align-items-center">
+
+            <div class="col-md-7 col-sm-12 text-center ftco-animate">
+            	<h1 class="mb-3 mt-5 bread">Cart</h1>
+
+	       <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'cafe:index' %}">Home</a></span> <span>Cart</span></p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+		<section class="ftco-section ftco-cart">
+
+			<div class="container">
+				<div class="row">
+    			<div class="col-md-12 ftco-animate">
+    				<div class="cart-list">
+
+	    				<table class="table">
+						    <thead class="thead-primary">
+						      <tr class="text-center">
+						        <th>&nbsp;</th>
+						        <th>&nbsp;</th>
+						        <th>Product</th>
+						        <th>Price</th>
+						        <th>Quantity</th>
+						        <th>discount</th>
+						        <th>Total</th>
+						      </tr>
+						    </thead>
+						    <tbody>
+		{% if item_data %}
+						      <tr class="text-center">
+                                    {% for item in item_data %}
+
+                                    <td class="product-remove"><span class="icon-close"  id="delete_item" value={{item.id}}></span></td>
+
+								  {% for image in images %}
+                                    {% if image.object_id == item.id %}
+
+									 <td class="image-prod"><div class="img" ><img src="{{image.image.url}}" class="img" alt="item picture"></div></td>
+                                    {% endif %}
+                                {% endfor %}
+
+                                    <td class="product-name">
+						        	<h3>{{ item.name }}</h3>
+						        	<p>{{ item.description | truncatechars:40 | linebreaks }}</p>
+                                    </td>
+                                    <td class="price">${{ item.price }}</td>
+                                    <td class="quantity">
+						        	<div class="input-group mb-3">
+					             	<input id="quantity" type="text" name="quantity" class="quantity form-control input-number" value={{ item.quantity }} min="1" max="100">
+					          	</div>
+					          </td>
+                                    <td class="discount">{{ item.discount }}%</td>
+
+                                    <td class="total">${{ item.item_total }}</td>
+
+                                     </tr><!-- END TR-->
+                                {% endfor %}
+
+						    </tbody>
+						  </table>
+					  </div>
+    			</div>
+    		</div>
+    		<div class="row justify-content-end">
+    			<div class="col col-lg-3 col-md-6 mt-5 cart-wrap ftco-animate">
+    				<div class="cart-total mb-3">
+    					<h3>Cart Totals</h3>
+    					<p class="d-flex">
+    						<span>Subtotal</span>
+    						<span>${{subtotal}}</span>
+    					</p>
+    					<p class="d-flex">
+    						<span>Delivery</span>
+    						<span>${{delivery_cost}}</span>
+    					</p>
+    					<p class="d-flex">
+    						<span>Discount</span>
+
+    						<span> ${{discount_total}}</span>
+    					</p>
+    					<hr>
+    					<p class="d-flex total-price">
+    						<span>Total</span>
+    						<span>${{total}}</span>
+    					</p>
+    				</div>
+
+                    {% else %}
+					<p>Your cart is empty.</p>
+
+                    {% endif %}
+
+
+                    <p class="text-center"><a href="{% url 'cafe:cart-receipt' 'payment' %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+
+
+
+
+    			</div>
+    		</div>
+			</div>
+		</section>
+
+    <section class="ftco-section">
+    	<div class="container">
+    		<div class="row justify-content-center mb-5 pb-3">
+          <div class="col-md-7 heading-section ftco-animate text-center">
+          	<span class="subheading">Discover</span>
+            <h2 class="mb-4">Related products</h2>
+            <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+          </div>
+        </div>
+
+        <div class="row">
+			{% for item in similarity_item.similar_item %}
+        	<div class="col-md-3 ">
+        		<div class="menu-entry">
+    					<a href="#" class="img" style="background-image: url({% static 'images/menu-1.jpg' %});"></a>
+    					<div class="text text-center pt-4">
+    						<h3><a href="{% url 'cafe:detail_item' item.id %}">{{item.title}}</a></h3>
+    						<p>{{item.description | truncatechars:20}}</p>
+    						<p class="price"><span>${{item.price}}</span></p>
+    						<p><a href="{% url 'cafe:detail_item' item.id %}" class="btn btn-primary btn-outline-primary">See Detail</a></p>
+    					</div>
+
+
+
+
+    				</div>
+        	</div>
+			{% empty %}
+			<h2>No similar item found</h2>
+			{% endfor %}
+        </div>
+
+    	</div>
+    </section>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+$(document).ready(function() {
+    $('.icon-close').on('click', function(){
+        console.log("hello");
+        var item_id = $(this).attr('value');
+        var button = $(this);
+        $.ajax({
+            type: "POST",
+            url: '/delete-item-from-cart/',
+            data: {
+                'item_id': item_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.message) {
+                    
+                    button.removeClass('icon-close');
+                    window.location.href=`/cart/`;
+					
+					
+					
+                } else {
+                    console.log('Item could not be removed from the cart.');
+                }
+            },
+            error: function (error) {
+                console.log('Error in sending AJAX request: ' + error);
+            }
+        });
+    });
+});
+ 
+
+
+   
+</script>
+
+
+{% endblock %}

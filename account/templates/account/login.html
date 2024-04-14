@@ -1,0 +1,103 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+  {% block content %}
+     <section class="section justify-content-center align-items-center" style="background-color:rgba(28,21,13,0.7);" >
+          <div class="container">
+            <div class="row slider-text justify-content-center">
+              <div class="col-md-8 col-sm-12 text-center ftco-animate">
+              	<h2 class="bread">Welcome to your Coffee </h2>
+                  <h3 class=" mt-5 bread">I hope you have a good time with us </h3>
+              </div>
+            </div>
+          </div>
+    </section>
+
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card " style="border-radius: 1rem; background: linear-gradient(to bottom, #251001, #836a4b);">
+                        <div class="row m-3 g-0">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <!-- Center the image within the left column -->
+                                <div class="d-flex align-items-center  m-3 h-100">
+                                    <img src="{% static 'images/menu-4.jpg' %}" alt="login form" class="img-fluid"
+                                        style="border-radius: 1rem 0 0 1rem; margin: 0 auto;" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                              <form action="{% url 'account:User_login' %}" method="post" class=" col-md-6 col-lg-12">
+                                {% csrf_token %}
+                                <div class="d-flex align-items-center mb-3 pb-1">
+                                <i class="fas fa-cubes fa-2x me-3"></i>
+                                <span class="h1 fw-bold mb-0">Login</span>
+                                </div>
+                                <h4 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">sign in into your account</h4>
+                                <div class="form-outline">
+                                  <label class="form-label mt-4" >{{ form.username.label_tag }}</label>
+                                </div>
+                                <div class="form2Example27" >
+                                  {{ form.username }}
+                                </div>
+                                <div class="form-outline">
+                                  <label class="form-label mt-5" >{{ form.password.label_tag }}</label>
+                                </div>
+                                <div class="form2Example27 " >
+                                 {{ form.password }}
+                                </div>
+                                <div class="pt-1 m-4">
+                                  <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
+                                </div>
+                                <p class="mb-2 pb-lg-2" style="color: #c4c7e7;"><a href="{% url 'account:reset_password' %}"
+                                    style="color: #c4c7e7;">forgot your password</a></p>
+                                <p class=" pb-lg-2" style="color: #c4c7e7;">Don't have an account? <a href="{% url 'account:Customer_signup' %}"
+                                    style="color: #c4c7e7;">Register here</a></p>
+                                  <a href="{% url 'cafe:index' %}" style="color: #642c01;">Coffee BLEND Home Page</a>
+                              </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+  <script>
+		$(document).ready(function(){
+
+		var quantitiy=0;
+		   $('.quantity-right-plus').click(function(e){
+		        
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		            
+		            $('#quantity').val(quantity + 1);
+
+		          
+		            // Increment
+		        
+		    });
+
+		     $('.quantity-left-minus').click(function(e){
+		        // Stop acting like a button
+		        e.preventDefault();
+		        // Get the field name
+		        var quantity = parseInt($('#quantity').val());
+		        
+		        // If is not undefined
+		      
+		            // Increment
+		            if(quantity>0){
+		            $('#quantity').val(quantity - 1);
+		            }
+		    });
+		    
+		});
+	</script>
+

@@ -1,29 +1,79 @@
+    <!--  nav -->
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-	    <div class="container">
-	      <a class="navbar-brand" href="{% include 'index.html' %}">Coffee<small>Blend</small></a>
+	    <div class="container m-2">
+	      <a class="navbar-brand" href="{% url 'cafe:index' %}">Coffee<small>BigBoSs</small></a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item active"><a href="{% include 'index.html' %}" class="nav-link">Home</a></li>
-	          <li class="nav-item"><a href="{% include 'menu.html' %}" class="nav-link">Menu</a></li>
-	          <li class="nav-item"><a href="{% include 'services.html' %}" class="nav-link">Services</a></li>
-	          <li class="nav-item"><a href="{% include 'blog.html' %}" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="{% include 'about.html' %}" class="nav-link">About</a></li>
+{#                index.html#}
+                <li class="nav-item active" ><a href="{% url 'cafe:index' %}" class="nav-link">Home</a></li>
+{#                menu.html#}
+	           <li class="nav-item"><a href="{% url 'cafe:menu' %}" class="nav-link">Menu</a></li>
+
+{#                services.html#}
+	          <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
+{#                blog.html#}
+	          <li class="nav-item"><a href="/best_items/" class="nav-link">Best Itemes</a></li>
+{#                about.html#}
+	          <li class="nav-item"><a href="#" class="nav-link">About</a></li>
 	          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="{% include 'room.htm' %}l" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
               <div class="dropdown-menu" aria-labelledby="dropdown04">
-              	<a class="dropdown-item" href="{% include 'shop.html' %}">Shop</a>
-                <a class="dropdown-item" href="{% include 'product-single.html' %}">Single Product</a>
-                <a class="dropdown-item" href="{% include 'room.html' %}">Cart</a>
-                <a class="dropdown-item" href="{% include 'checkout.html' %}">Checkout</a>
+{#                  shop.html#}
+              	<a class="dropdown-item" href="#">Shop</a>
+{#                  product-single.html#}
+                <a class="dropdown-item" href="#">Single Product</a>
+{#                  cart.html#}
+                <a class="dropdown-item" href="{% url 'cafe:cart' %}">Cart</a>
+                {% if user.is_authenticated %}
+                <a class="dropdown-item" href="">Checkout</a>
+                  {% endif %}
+
               </div>
-            </li>
-	          <li class="nav-item"><a href="{% include 'contact.html' %}" class="nav-link">Contact</a></li>
-	          <li class="nav-item cart"><a href="{% include 'cart.html' %}" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
+              </li>
+              <li class="nav-item dropdown">
+{#                   Join us.html#}
+               <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Join Us</a>
+               <div class="dropdown-menu" aria-labelledby="dropdown04">
+{#                   signup Staff.html#}
+               	<a class="dropdown-item" href="{% url 'account:Staff_signup' %}">Job application form</a>
+{#                   logout.html#}
+                {% if user.is_authenticated %}
+                <form action="{% url 'account:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="color:grey;" type="submit" value="log out" ></form>
+                {% endif %}
+{#                    signup Customer.html#}
+                <a class="dropdown-item" href="{% url 'account:Customer_signup' %}">SignUp As Customer</a>
+{#                   login.html#}
+               {% if not user.is_authenticated %}
+                 <a class="dropdown-item" href="{% url 'account:User_login' %}" >Log in</a>
+               {% endif %}
+               </div>
+              </li>
+              {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+{#                   Join us.html#}
+               <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">BigBosS Team</a>
+               <div class="dropdown-menu" aria-labelledby="dropdown04">
+{#                   Collaborators' profiles.html#}
+               <a href="{% url 'account:Staff_profile' user.id  %}" class="dropdown-item">Collaborators' profiles</a>
+{#                   Customuser profile.html#}
+               	<a href="{% url 'account:about_us' %}" class="dropdown-item">About Us</a>
+               </div>
+              </li>
+              {% endif %}
+{#                contact.html#}
+	          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+{#                cart.html#}
+              <li class="nav-item cart "><a href="#" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center p-1"><small>1</small></span></a></li>
 	        </ul>
 	      </div>
 		  </div>
+          <ul class="navbar-nav ml-auto">
+              {% if user.is_authenticated  %}
+                <li class="nav-item"> <button class="btn btn-dark m-4"style="background-color: rgba(44,44,44,0.7);width: 200px;" ><a href="{% url 'account:user_profile' user.id  %}">{{ user.firstname }} {{ user.lastname }}</a></button></li>
+              {% endif %}
+          </ul>
 	  </nav>
     <!-- END nav -->

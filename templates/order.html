@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    {% for order in item_orders %}
+    <p>Order Time: {{ order.order_time }}</p>
+    <p>User Order: {{ order.user_order }}</p>
+    <p>Delivery: {{ order.delivery_cost }}</p>
+        <form>
+        {% csrf_token %}
+    <p>Delivery Time: {{ form.delivery_time }}</p></form>
+    <p>Items:</p>
+
+        {% for item in order.items.all %}
+            <ul>
+            <li>{{ item.title }} : <span>{{ item.number_items }}</span></li>
+            </ul>
+        {% endfor %}
+        <hr>
+
+{% endfor %}
+    <br>
+    <br>
+    <br>
+
+    <input type="button" value="submit">
+
+</body>
+</html>
+

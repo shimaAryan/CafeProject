@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block title %}cart{% endblock %}
+{% block content %}
+
+ <section class="ftco-section">
+    	<div class="container">
+        <div class="row">
+
+        	<div class="col-md-6 mb-5 mt-5 pb-3">
+        		<h3 class="mb-5 heading-pricing ftco-animate">{{cat_name.title}}</h3>
+                {% for item in cat_item %}
+        		<div class="pricing-entry d-flex ftco-animate">
+							{% for image in images %}
+                                    {% if image.object_id == item.id %}
+
+									 <td class="image-prod"><div class="img" ><img src="{{image.image.url}}" class="img" alt="item picture"></div></td>
+                                    {% endif %}
+                                {% endfor %}
+
+
+        			<div class="desc pl-3">
+	        			<div class="d-flex text align-items-center">
+
+	        				<a href="{% url 'cafe:detail_item' item.id %}"><h3><span>{{item.title}}</span></h3></a>
+	        				<span class="price">${{item.price}}</span>
+	        			</div>
+	        			<div class="d-block">
+	        				<p>{{item.description|truncatechars:80}}</p>
+	        			</div>
+        			</div>
+
+        		</div>
+						{% empty %}
+		<h1>you have no categorys</h1>
+        {% endfor %}
+        	</div>
+
+        </div>
+    	</div>
+
+
+
+
+
+    </section>
+{% endblock %}
